@@ -1,0 +1,8 @@
+experiment_id,workload_type,workload_seed,duration_s,arrival_pattern,rate_params,max_rate,request_mean_length_mi,request_length_variation,request_pes,requests_generated,expected_requests
+exp-default-seed42,LOW,-4767286540954276203,900,"homogeneous Poisson, constant rate",rate=2.0,2,2000,0.5,1,1812,1800
+exp-default-seed42,MEDIUM,2949826092126892291,900,"homogeneous Poisson, constant rate",rate=5.0,5,2000,0.5,1,4489,4500
+exp-default-seed42,HIGH,5139283748462763858,900,"homogeneous Poisson, constant rate",rate=10.0,10,2000,0.5,1,8981,9000
+exp-default-seed42,BURST,6349198060258255764,900,"Poisson, base rate with a rectangular burst at peak rate",baseRate=4.0;peakRate=16.0;startSeconds=300.0;durationSeconds=120.0,16,2000,0.5,1,5021,5040.72
+exp-default-seed42,INCREASING,701532786141963250,900,"non-homogeneous Poisson, rate rises linearly",startRate=1.0;endRate=12.0,12,2000,0.5,1,5971,5850
+exp-default-seed42,DECREASING,-2430762948046562554,900,"non-homogeneous Poisson, rate falls linearly",startRate=12.0;endRate=1.0,12,2000,0.5,1,5760,5850
+exp-default-seed42,FLUCTUATING,4028864712777624925,900,"non-homogeneous Poisson, sinusoidal rate",baseRate=6.0;amplitude=4.0;periodSeconds=240.0,10,2000,0.5,1,5459,5552.788781
