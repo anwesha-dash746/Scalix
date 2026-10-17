@@ -4,13 +4,14 @@
 
 ```
 ┌────────────────────────── Python (dashboard/) ──────────────────────────┐
-│ app.py + views/        Streamlit UI (7 tabs)                            │
+│ app.py + views/        Streamlit UI (6 pages, plain-language)           │
 │ scalix_dash/params     validate form input → Java .properties            │
 │ scalix_dash/runner     run engine process, capture status, write manifest│
 │ scalix_dash/results    load + schema-validate engine CSVs                │
 │ scalix_dash/catalog    discover experiments, combine valid repetitions   │
 │ scalix_dash/analysis   aggregates, CIs, comparisons, fairness checks     │
 │ scalix_dash/plots      matplotlib figures   scalix_dash/exports  CSV/zip │
+│ scalix_dash/story      plain-language names, verdicts, trade-off text    │
 │ scalix_dash/cloud      provider interface, mock + CloudStack (optional)  │
 └───────────────┬───────────────────────────────────────▲─────────────────┘
                 │ java -jar scalix-…-all.jar            │ CSV files
@@ -61,7 +62,7 @@ Anything else is recorded as FAILED, TIMEOUT or ERROR in `batch.yaml`, together 
 * **Same conditions.** VM type, hosts, tick, decision interval, boot delay, drain limit and pricing come from one configuration file per repetition.
 * **Same starting fleet.** The dashboard sets `policy.static.vmCount` and `policy.scaling.initialVms` to the same initial VM count.
 * **Shared thresholds.** `upper` and `lower` are shared by THRESHOLD and SCALIX. SCALIX's trend window and cooldowns are its only extra inputs.
-* **Pooling check.** Repetitions differ only in their seed, and `config_consistency()` verifies this from each repetition's `config_used.properties`. The Policy Comparison tab shows the result.
+* **Pooling check.** Repetitions differ only in their seed, and `config_consistency()` verifies this from each repetition's `config_used.properties`. The *Full statistics* section of the Results page (and *Under the hood*) shows the result.
 * **No assumed winner.** Comparisons are per metric. A lead is labelled "single run", "not clear (95% CIs overlap)" or "clear". STATIC and THRESHOLD win wherever the data says they do.
 
 ## Scaling algorithms (implemented in Java, Part 1)

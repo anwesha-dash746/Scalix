@@ -77,25 +77,48 @@ Then open http://localhost:8501. `.streamlit/config.toml` binds the server to **
 
 ### Running a complete SCALIX experiment from the dashboard
 
-1. Open the **Run Experiments** tab. If Java or the jar is missing, a red message explains how to fix it and the button stays disabled.
-2. Choose workloads such as `BURST` and `INCREASING`, keep all three policies selected, and set the duration, initial / minimum / maximum VMs, thresholds, trend window, cooldowns, and **repetitions** (3 or more gives meaningful variability).
-3. Click **Run experiment**. Each repetition runs the Java engine with seed `base + i`, and progress and per-repetition status appear live. Invalid parameters are listed and nothing is run. Failed or timed-out repetitions are reported as such and excluded.
-4. When the run finishes, the new experiment (`dash-YYYYMMDD-HHMMSS`) is selected in the sidebar. Explore it in the tabs:
+The dashboard uses plain names:
 
-| Tab | What it shows |
-|-----|---------------|
-| **Overview** | For each policy: mean ± std of response time (avg and p95), CPU utilization, simulated cost, VM count and scaling actions; action totals; experiment conditions. |
-| **Policy Comparison** | A fairness check; a mean ± std table and a bar chart with 95% CIs for any metric; a trade-off scatter (cost vs p95 by default); the best policy per workload and metric, with evidence labels; win counts; % change vs STATIC. |
-| **Time-Series Analysis** | Arrival rate, billable VM count and active-VM utilization over time, for one repetition or the mean of all. |
-| **Scaling Event Log** | Every scale-up and scale-down with time, direction, VMs before and after, the utilization and arrival rate seen, the trend, and the recorded reason. Optionally includes non-actions and cooldown blocks. |
-| **Export Results** | CSV downloads (run summaries, aggregated statistics, time series, scaling events, workloads) and a zip with the raw engine files. |
-| **Cloud Adapter (optional)** | Replays a run's decisions through the mock adapter, and shows the CloudStack calls they map to (planned only). |
+| Engine id | Shown as |
+|-----------|----------|
+| `STATIC` | Fixed fleet |
+| `THRESHOLD` | Rule-based |
+| `SCALIX` | SCALIX |
+| `LOW`, `MEDIUM`, `HIGH` | Quiet day, Normal day, Busy day |
+| `BURST` | Sudden rush |
+| `INCREASING`, `DECREASING` | Growing demand, Winding down |
+| `FLUCTUATING` | Up and down |
+
+To run an experiment:
+
+1. On the **Start** page, pick one or more traffic patterns.
+2. Choose how careful the test should be:
+
+   | Option | Runs |
+   |---|---|
+   | Quick look | 1 |
+   | Balanced | 3 |
+   | Thorough | 5 |
+
+   Each run uses a different seed, `base + i`.
+3. Optionally, open **Fine-tune the simulation** to change any technical setting: strategies, duration, server counts, thresholds, the SCALIX trend window and cooldowns, the seed, and an exact run count. A further **Show expert settings** switch reveals the trend threshold, the preemptive and target utilization, the decision interval, the boot time, the price and the drain limit.
+4. Click **Run the comparison**. Progress appears live. If a setting is invalid, the problem is listed and nothing is run. Failed or timed-out runs are reported as such and left out. If Java or the jar is missing, a red message explains the fix and the button stays disabled.
+5. When the runs finish, the app opens **Results** for the new experiment, which also appears in the sidebar under *Your experiments*.
+
+| Page | What it shows |
+|------|---------------|
+| **Start** | What SCALIX solves, the three strategies, and the run form. |
+| **Results** | Three verdict cards (fastest for users, cheapest to run, least idle capacity), each with an honest confidence note: "clear lead", "too close to call" or "single run". Then a plain trade-off sentence, one card per strategy (mean ± std), and the time chart. A collapsed *Full statistics* section has the fairness check, any-metric tables and bar charts with 95% CIs, the speed-vs-cost scatter, the best strategy per pattern with evidence, win counts, and % change vs the fixed fleet. |
+| **Over time** | Incoming traffic, servers paid for, and how busy they were, for one run or the average of all runs. |
+| **Decision log** | Each resize, with time, what was done, servers before → after, % busy, requests/s, demand trend and the recorded reason. Optionally includes checks where nothing changed. |
+| **Download** | CSV files (per run, averages and spread, second-by-second, decisions, traffic patterns) and a zip with the raw engine files. |
+| **Under the hood** | The problem explained, the method, metric definitions (measured vs calculated), the conditions and fairness of the selected experiment, simulator status, and the optional cloud adapter (mock replay and planned CloudStack calls). |
 
 Dashboard settings (engine command, jar path, timeout, results folder, form defaults, cloud options) live in `config/dashboard.yaml`. To use a different file, set `SCALIX_DASHBOARD_CONFIG=<path>`.
 
 ## 6. Configuring workloads and policies
 
-* **Dashboard:** the Run Experiments form, with an *Advanced settings* section for the trend threshold, decision interval, VM boot time, price, the SCALIX preemptive threshold and target utilization, and the drain limit.
+* **Dashboard:** the Start page. Pick the traffic pattern and the number of runs; every technical setting is under *Fine-tune the simulation*, and the rarely needed ones are behind *Show expert settings*.
 * **Engine CLI:** `--config <file>` and `--set key=value`. Every key is documented in `src/main/resources/scalix-default.properties`, and unknown keys are rejected.
 
 **Workloads.** Arrivals form a Poisson process whose rate can change over time. Each workload type gets its own seed, derived from the master seed.
@@ -147,7 +170,7 @@ With one repetition, std and CI are shown as *n/a*. The full column-by-column re
 
 * **Same requests.** Within a repetition, every policy receives the **identical request sequence**. Each workload is generated once per seed.
 * **Same conditions.** VM type, hosts, timing, boot delay, drain limit and pricing come from **one configuration file** per repetition. The initial VM count is the same for every policy.
-* **Repetitions** differ only in their seed. The Policy Comparison tab checks this from each repetition's `config_used.properties` and flags any difference.
+* **Repetitions** differ only in their seed. The *Full statistics* section of the Results page checks this from each repetition's `config_used.properties` and flags any difference.
 * **Only valid runs are counted.** Repetitions that failed, timed out or produced invalid files are excluded and listed. Runs that hit the drain limit are excluded from statistics and counted.
 * **No assumed winner.** The best policy is chosen per metric. A lead is called *clear* only when the 95% CIs don't overlap; otherwise it is labelled *not clear* or *single run*. The dashboard shows where STATIC or THRESHOLD do better.
 * **Context is always visible.** The workload parameters, policy parameters, pricing model and seeds are shown next to the results.
@@ -179,7 +202,7 @@ These observations come from one seed with untuned parameters. Use repetitions i
 
 ```bash
 ./mvnw -B test                       # Java: 108 tests (unit + CloudSim Plus integration)
-.venv/Scripts/python -m pytest       # Python: 110 tests (config in pytest.ini)
+.venv/Scripts/python -m pytest       # Python: 116 tests (config in pytest.ini)
 .venv/Scripts/python -m pytest -m engine   # only the tests that run the real Java engine
 ```
 
@@ -231,8 +254,8 @@ requirements.txt, pytest.ini        Python dependencies and test configuration
 .streamlit/config.toml              localhost-only server, no usage statistics
 config/dashboard.yaml               dashboard settings (engine command, paths, defaults, cloud)
 dashboard/app.py                    Streamlit entry point
-dashboard/views/                    one module per tab
-dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, plots, exports, settings
+dashboard/views/                    one module per page (start, results, over time, decision log, download, under the hood)
+dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, story, plots, exports, settings
 dashboard/scalix_dash/cloud/        provider interface, mock adapter, CloudStack adapter (disabled by default)
 dashboard/tests/                    pytest suite, fixture writer and fake engine (test-only)
 docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md

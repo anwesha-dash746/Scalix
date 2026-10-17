@@ -1,4 +1,4 @@
-"""Export Results: downloadable CSVs (and a zip with the raw engine files)."""
+"""Download: the results as CSV files (and everything as a zip)."""
 
 from __future__ import annotations
 
@@ -9,25 +9,30 @@ from scalix_dash.exports import export_files, zip_bundle
 from .common import Context, require_experiment
 
 DESCRIPTIONS = {
-    "runs_summary.csv": "One row per run (workload x policy x repetition) with all measured metrics and parameters.",
-    "aggregated_summary.csv": "Mean, std, min, max, 95% CI per workload x policy x metric (valid runs only).",
-    "timeseries.csv": "Per-tick VM counts, utilization, arrivals and requests in system.",
-    "scaling_events.csv": "Every policy decision with reason and VM count before/after.",
-    "workloads.csv": "Workload definitions, seeds and generated request counts.",
+    "runs_summary.csv": ("One row per run", "Every measured number for each strategy, traffic pattern and run."),
+    "aggregated_summary.csv": ("Averages and spread", "Mean, standard deviation, min, max and 95% interval per metric."),
+    "timeseries.csv": ("Second by second", "Servers, busyness, arrivals and queue length at every simulated second."),
+    "scaling_events.csv": ("Decision log", "Every decision with its reason and server count before and after."),
+    "workloads.csv": ("Traffic patterns", "How each traffic pattern was generated, including its seed."),
 }
 
 
 def render(ctx: Context) -> None:
-    st.subheader("Export Results")
     if not require_experiment(ctx):
         return
     exp = ctx.exp
-    st.caption(f"All files are generated from the real engine output of `{exp.entry.id}` "
-               f"({exp.n_reps} valid repetition(s)).")
+    st.markdown('<div class="sx-kicker">Download</div>', unsafe_allow_html=True)
+    st.header("Take the results with you")
+    st.markdown('<p class="sx-lede">Plain CSV files that open in Excel, Google Sheets or pandas. They contain exactly '
+                "what the simulator measured, nothing smoothed or estimated.</p>", unsafe_allow_html=True)
     files = export_files(exp)
-    for name, data in files.items():
-        c1, c2 = st.columns([1, 3])
-        c1.download_button(name, data, file_name=f"{exp.entry.id}_{name}", mime="text/csv", key=f"dl_{name}")
-        c2.caption(f"{DESCRIPTIONS.get(name, '')} ({len(data) / 1024:.0f} KiB)")
-    st.download_button("Everything as .zip (derived CSVs + raw engine files)", zip_bundle(exp),
-                       file_name=f"{exp.entry.id}.zip", mime="application/zip", key="dl_zip")
+    cols = st.columns(2)
+    for i, (name, data) in enumerate(files.items()):
+        title, desc = DESCRIPTIONS.get(name, (name, ""))
+        with cols[i % 2].container(border=True):
+            st.markdown(f"**{title}**  \n<span class='sx-note'>{desc}</span>", unsafe_allow_html=True)
+            st.download_button(f"{name} · {len(data) / 1024:.0f} KB", data, file_name=f"{exp.entry.id}_{name}",
+                               mime="text/csv", key=f"dl_{name}")
+    st.write("")
+    st.download_button("Download everything (.zip, including the simulator's raw files)", zip_bundle(exp),
+                       file_name=f"{exp.entry.id}.zip", mime="application/zip", key="dl_zip", type="primary")
