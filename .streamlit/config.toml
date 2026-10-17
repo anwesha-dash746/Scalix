@@ -1,0 +1,9 @@
+# Read when Streamlit is started from the project root.
+[server]
+# The dashboard can launch simulation processes, so only accept local connections.
+# To share it on a network deliberately, override with: --server.address 0.0.0.0
+address = "localhost"
+headless = true
+
+[browser]
+gatherUsageStats = false

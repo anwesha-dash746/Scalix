@@ -1,0 +1,50 @@
+# SCALIX dashboard settings. Relative paths are resolved against the project root
+# (the parent directory of this config/ folder).
+# Override the location of this file with the SCALIX_DASHBOARD_CONFIG environment variable.
+
+engine:
+  # Command that starts the Part 1 Java engine. SCALIX appends:
+  #   --config <file> --out <dir> --experiment-id <id>
+  command: ["java", "-jar", "target/scalix-1.0.0-SNAPSHOT-all.jar"]
+  # The jar the command needs; checked before running so the error is clear.
+  jar: target/scalix-1.0.0-SNAPSHOT-all.jar
+  # Kill a single repetition that runs longer than this (seconds).
+  timeout_seconds: 900
+
+# Where experiments live. Dashboard runs go to <results_dir>/dashboard/<batch-id>/.
+# Experiments produced directly by the Java CLI (results/<experiment-id>/) are also listed.
+results_dir: results
+
+# Initial values of the "Run Experiments" form.
+defaults:
+  workloads: [BURST]
+  policies: [STATIC, THRESHOLD, SCALIX]
+  duration_s: 900
+  initial_vms: 8
+  min_vms: 1
+  max_vms: 20
+  upper_threshold: 0.70
+  lower_threshold: 0.30
+  observation_window: 6
+  trend_threshold: 0.03
+  scale_up_cooldown_s: 30
+  scale_down_cooldown_s: 90
+  threshold_cooldown_s: 0
+  repetitions: 3
+  base_seed: 42
+
+# Optional cloud integration. The dashboard works fully without it.
+cloud:
+  # "mock" records intended VM operations and never provisions anything.
+  provider: mock
+  cloudstack:
+    # Real CloudStack calls are disabled unless this is true AND credentials are set
+    # through the environment variables below AND the operator confirms each batch.
+    enabled: false
+    endpoint_env: CLOUDSTACK_ENDPOINT
+    api_key_env: CLOUDSTACK_API_KEY
+    secret_key_env: CLOUDSTACK_SECRET_KEY
+    zone_id: ""
+    template_id: ""
+    service_offering_id: ""
+    vm_group: scalix
