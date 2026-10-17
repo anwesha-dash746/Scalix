@@ -46,6 +46,31 @@ The details are in [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md): the dashboard
 
 ## 3. Installation
 
+**Windows, one command.** From the project folder in PowerShell:
+
+```powershell
+.\run.ps1
+```
+
+The script:
+1. checks for Java;
+2. builds the simulator if needed;
+3. creates `.venv` and installs `requirements.txt` on first use, and again whenever that file changes;
+4. starts the dashboard and opens it in your browser.
+
+Options:
+
+| Command | What it does |
+|---|---|
+| `.\run.ps1 -Port 8600` | Uses another port. |
+| `.\run.ps1 -Rebuild` | Rebuilds the simulator first. |
+| `.\run.ps1 -Test` | Runs all Java and Python tests instead of launching. |
+| `.\run.ps1 -NoBrowser` | Starts the server without opening a browser tab. |
+
+If Windows blocks scripts, run `powershell -ExecutionPolicy Bypass -File .\run.ps1`.
+
+**Manual setup** (any OS):
+
 ```bash
 # 1) Build the Java engine (compiles, runs the 108 Java tests, builds the runnable jar)
 ./mvnw -B clean package                      # Windows: mvnw.cmd -B clean package
