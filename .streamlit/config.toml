@@ -7,3 +7,20 @@ headless = true
 
 [browser]
 gatherUsageStats = false
+
+[client]
+# Hide Streamlit's developer menu (Deploy, rerun options) from end users.
+toolbarMode = "minimal"
+
+[theme]
+base = "light"
+primaryColor = "#0f766e"
+backgroundColor = "#fbfaf7"
+secondaryBackgroundColor = "#f2efe8"
+textColor = "#1f2328"
+borderColor = "#e4dfd5"
+font = "'Segoe UI', 'Helvetica Neue', Arial, sans-serif"
+headingFont = "Georgia, 'Iowan Old Style', 'Times New Roman', serif"
+headingFontWeights = [600, 600, 600, 600, 600, 600]
+baseRadius = "0.6rem"
+showSidebarBorder = true

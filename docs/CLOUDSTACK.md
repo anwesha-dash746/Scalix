@@ -17,7 +17,7 @@ SCALIX does **not** need a cloud to run. The simulation and the dashboard work f
 
 | Adapter | Real resources? | Network? | Use |
 |---|---|---|---|
-| `MockCloudProvider` (default) | Never | Never | Records the intended operations with generated mock VM ids. It refuses to remove the last VM. The dashboard's *Cloud Adapter* tab uses it. |
+| `MockCloudProvider` (default) | Never | Never | Records the intended operations with generated mock VM ids. It refuses to remove the last VM. The dashboard's *Under the hood → Connecting to a real cloud* section uses it. |
 | `CloudStackProvider` | Only when explicitly enabled **and** confirmed | Only when enabled **and** confirmed | Maps operations to CloudStack API commands, as shown below. |
 
 ### CloudStack mapping
@@ -39,7 +39,7 @@ Requests are signed with the standard CloudStack scheme:
 3. **Secrets never shown or passed on.** The config `repr` redacts them, and records omit the API key and signature. Response fields named `apikey`, `secretkey`, `signature` or `password` are redacted. The simulation engine is started without any `CLOUDSTACK_*` variables.
 4. **Operator confirmation.** Even when the adapter is enabled and configured, every provider instance must be created with `confirm=True`. Otherwise it raises `ProviderSafetyError`.
 5. **Conservative scale-in.** The adapter destroys only VMs it created itself, newest first, and never the last one. It never touches pre-existing VMs.
-6. **The dashboard never executes.** The Cloud Adapter tab shows mock replays and *planned* CloudStack calls only. Real execution requires writing code that constructs `CloudStackProvider(config, confirm=True)`.
+6. **The dashboard never executes.** The dashboard's cloud section (Under the hood) shows mock replays and *planned* CloudStack calls only. Real execution requires writing code that constructs `CloudStackProvider(config, confirm=True)`.
 7. **Least privilege.** Use an API key whose account can only deploy and destroy VMs in a dedicated project or zone.
 
 ## Enabling it (for a future live test)
