@@ -3,3 +3,12 @@ dependency-reduced-pom.xml
 *.iml
 .idea/
 .vscode/
+
+# Python
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Experiments launched from the dashboard (regenerate them from their batch.yaml parameters)
+results/dashboard/
