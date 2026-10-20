@@ -256,7 +256,7 @@ macOS / Linux (on Windows use `mvnw.cmd` and `.venv\Scripts\python`):
 2. All Python tests, configured in `pytest.ini`. They live in `tests/` for the `scalix` package and in `dashboard/tests/` for the dashboard.
 3. Only the tests that run the real Java engine.
 
-The `tests/` suite (AWS edition) covers package imports, run-mode validation, and a check that `import scalix` works with no AWS credentials and never loads boto3. It also renders the root `app.py`, and checks that `.gitignore` excludes credential and environment files.
+The `tests/` suite (AWS edition) covers the three Python scaling policies, including boundaries, cooldowns, rising and falling demand, spikes and capacity limits. It also runs a decision-by-decision parity check against the Java policies, using `javac` with the engine jar and no Maven, which is skipped if either is missing. It also covers package imports, run-mode validation, and a check that `import scalix` works with no AWS credentials and never loads boto3. It also renders the root `app.py`, and checks that `.gitignore` excludes credential and environment files.
 
 The `dashboard/tests/` suite covers:
 * CSV loading and schema validation;
@@ -315,5 +315,5 @@ dashboard/views/                    one module per page (start, results, over ti
 dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, story, plots, exports, settings
 dashboard/scalix_dash/cloud/        provider interface, mock adapter, CloudStack adapter (disabled by default)
 dashboard/tests/                    pytest suite, fixture writer and fake engine (test-only)
-docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md
+docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md
 ```

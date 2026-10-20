@@ -1,6 +1,43 @@
-"""Scaling policies (STATIC, THRESHOLD, SCALIX).
+"""Scaling policies: STATIC, THRESHOLD and SCALIX.
 
-Phase 1 ports these from the Java engine (``src/main/java/com/scalix/scaling``). Each policy is a
-pure function of a measurement snapshot, with no clock, network or AWS access, so the same code
-can drive the simulator and, later, the optional AWS controller.
+Each policy is a pure function of a :class:`ScalingContext` (a measurement snapshot), with no
+clock, network or AWS access. The same code can therefore drive the simulator and, later, the
+optional AWS controller. Ported from the Java engine (``src/main/java/com/scalix/scaling``).
+
+    >>> from scalix.algorithms import create_policy, ScalingContext
+    >>> policy = create_policy("THRESHOLD")
+    >>> policy.decide(ScalingContext(time=300, provisioned=4, active=4, booting=0,
+    ...                              utilization=0.85)).action.value
+    'SCALE_UP'
 """
+
+from scalix.algorithms.base import (
+    Action,
+    CapacityLimits,
+    ScalingContext,
+    ScalingDecision,
+    ScalingPolicy,
+    Trend,
+)
+from scalix.algorithms.factory import POLICY_NAMES, create_policy
+from scalix.algorithms.scalix_policy import ScalixPolicy
+from scalix.algorithms.static import StaticPolicy
+from scalix.algorithms.threshold import ThresholdPolicy
+from scalix.algorithms.trend import TrendEstimate, estimate_trend, spike_ratio
+
+__all__ = [
+    "Action",
+    "CapacityLimits",
+    "POLICY_NAMES",
+    "ScalingContext",
+    "ScalingDecision",
+    "ScalingPolicy",
+    "ScalixPolicy",
+    "StaticPolicy",
+    "ThresholdPolicy",
+    "Trend",
+    "TrendEstimate",
+    "create_policy",
+    "estimate_trend",
+    "spike_ratio",
+]
