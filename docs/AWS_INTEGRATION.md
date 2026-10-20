@@ -13,7 +13,8 @@ This page is the overview. The step-by-step details are in [AWS_SETUP.md](AWS_SE
 | Session from a named profile, with a read-only operation guard | `scalix/aws/session.py` | Implemented, **mocked** | Boto3 Stubber plus a network trap |
 | Access and permission check | `scalix/aws/check_access.py` | Implemented, **mocked** | Stubber: full report, denied, rejected credentials, no group configured, no secret in the report |
 | CloudWatch / Auto Scaling monitor | `scalix/aws/monitoring.py` | Implemented, **mocked** | Stubber, plus OK / STALE / MISSING / MALFORMED / ERROR cases |
-| Controller (dry run by default) | `scalix/aws/controller.py` | Implemented, **mocked** | 63 logic tests plus 12 Stubber tests |
+| Controller (dry run by default) | `scalix/aws/controller.py` | Implemented, **mocked** | 65 logic tests plus 12 Stubber tests |
+| CPU-derived demand signal for SCALIX (no load balancer) | `controller.py`, `audit.py`, `config.py` | Implemented in Phase 7, **mocked**; evaluated in simulation | Controller tests; `cpu-signal`, `nasa-cpu-signal` and `nasa-aws` experiments |
 | Capacity writer (`SetDesiredCapacity` only) | `scalix/aws/writer.py` | Implemented, **never used against AWS** | Stubber only |
 | Audit log | `scalix/aws/audit.py` | Implemented | Unit tests |
 | Dashboard AWS page (read-only, on button press) | `ui/pages/aws.py` | Implemented, **mocked** | Streamlit AppTest with counted calls |
@@ -91,6 +92,7 @@ These are untested assumptions about a typical AWS Academy Learner Lab. The acce
 * **SIMULATION and the tests cost nothing.** They never contact AWS.
 * **READ_ONLY** makes standard API requests only and creates no billable resources. CloudWatch API requests have a free-tier allowance on many accounts, but SCALIX doesn't assume your account has one.
 * **LIVE and the infrastructure** would cost money. EC2 instances bill per second while running, and EBS volumes, public IPv4 addresses and any load balancer bill too. A cost estimate is part of the approval request, before anything is created.
+* **Rough size of a live test,** at the list prices in `scalix/pricing.py` (us-east-1, read 21 October 2026): one t3.micro with a public IPv4 address and an 8 GB gp3 disk is about **USD 0.016 per hour**, so 2 instances are about USD 0.033 per hour. If they're kept busier than the 10% CPU baseline, add T3 CPU credits: at 60% CPU that's (0.60 − 0.10) × 2 vCPUs × 2 instances × USD 0.05 = USD 0.10 per hour, and at 100% CPU USD 0.18 per hour. No load balancer is needed, because SCALIX can use the CPU-derived signal. On AWS Academy this comes out of the lab's credit budget, and resources left running keep using it.
 
 ## 6. What would come next, only with your approval at each step
 

@@ -32,6 +32,7 @@ live:
 
 # The AWS controller (python -m scalix.aws.controller). Dry-run unless every LIVE gate passes.
 controller:
-  policy: THRESHOLD                # CPU-only on AWS; see docs/CONTROLLER.md for why not SCALIX by default
+  policy: THRESHOLD                # CPU-only rule; SCALIX also works via demand_signal: CPU (docs/CONTROLLER.md)
   policy_settings: {}
   decision_interval_seconds: 300   # CloudWatch basic monitoring = 5-minute data
+  demand_signal: CPU               # SCALIX's demand input: CPU x in-service instances (free); NONE = no signal

@@ -24,6 +24,7 @@ from scalix.algorithms import (
 )
 from scalix.metrics import aggregate, t_critical_95, weighted_percentile
 from scalix.simulation import Scenario, SimulationConfig, WorkloadSpec, generate, simulate
+from scalix.simulation.workloads import SYNTHETIC_SCENARIOS
 from scalix.simulation.experiment import default_policies
 
 CAP = CapacityLimits(2, 6, 12)
@@ -38,7 +39,7 @@ def trace(scenario=Scenario.NORMAL, **kw):
 def all_runs():
     """Every policy on every scenario for two seeds (48 runs)."""
     runs = []
-    for scenario in Scenario:
+    for scenario in SYNTHETIC_SCENARIOS:
         for seed in (1, 2):
             tr = trace(scenario, seed=seed)
             runs.extend(simulate(p, tr) for p in POLICIES)
@@ -51,7 +52,7 @@ def test_hand_checked_tiny_run():
     """1 worker (1 req/s), constant 2 req/s, 5 s steps, 60 s: queue grows by 5 every step."""
     tr = generate(WorkloadSpec(scenario=Scenario.RISING, duration_seconds=60, step_seconds=5, base_rate=2.0,
                                rising_start=1.0, rising_end=1.0, poisson_noise=False))
-    cfg = SimulationConfig(price_per_worker_hour=0.36, service_time_seconds=2.0)
+    cfg = SimulationConfig(price_per_worker_hour=0.36, service_time_seconds=2.0, charge_cpu_credits=False)
     r = simulate(StaticPolicy(worker_count=1), tr, cfg)
     ts = r.timeseries
     assert ts["served"].tolist() == [5.0] * 12
@@ -62,7 +63,7 @@ def test_hand_checked_tiny_run():
     assert m["total_arrivals"] == 120 and m["total_served"] == 60 and m["unserved_at_end"] == 60
     assert m["served_fraction"] == pytest.approx(0.5)
     assert m["worker_seconds"] == 60 and m["worker_minutes"] == 1
-    assert m["illustrative_cost"] == pytest.approx(60 / 3600 * 0.36)
+    assert m["estimated_cost"] == pytest.approx(60 / 3600 * 0.36) and m["cost_cpu_credits"] == 0
     # Little's law: sum(queue x step) / arrivals = 5*(1+...+12)*5 / 120 = 16.25 s
     assert m["response_time_proxy_avg_s"] == pytest.approx(2.0 + 16.25)
     assert m["time_above_threshold_s"] == 60 and m["time_with_queue_s"] == 60
@@ -87,7 +88,7 @@ def test_minimum_billing_applies_per_worker():
 
 # --------------------------------------------------------------------------- static
 
-@pytest.mark.parametrize("scenario", list(Scenario))
+@pytest.mark.parametrize("scenario", SYNTHETIC_SCENARIOS)
 def test_static_never_changes_capacity(scenario):
     r = simulate(StaticPolicy(worker_count=6), trace(scenario))
     assert (r.timeseries["provisioned"] == 6).all() and (r.timeseries["active"] == 6).all()

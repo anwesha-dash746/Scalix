@@ -38,8 +38,13 @@ with st.form("simulation_form"):
                             help="Requests one worker can serve per second.")
     delay = c[0].number_input("Start-up delay (s)", 0, 600, int(form_values["startup_delay_s"]), step=10,
                               help="New workers are paid for immediately but only serve after this delay.")
-    price = c[1].number_input("Illustrative price per worker-hour", 0.0, 10.0, float(form_values["price"]),
-                              step=0.01, format="%.3f", help="An assumed rate for comparison only. Not an AWS price.")
+    price = c[1].number_input("Price per worker-hour", 0.0, 10.0, float(form_values["price"]),
+                              step=0.001, format="%.4f",
+                              help="Default: t3.micro + public IPv4 + 8 GB gp3 at AWS us-east-1 list prices "
+                                   "(see scalix/pricing.py). An estimate, not an AWS bill.")
+    credits = c[3].checkbox("Add T3 CPU credits", bool(form_values.get("cpu_credits", True)),
+                            help="T3 instances charge extra when busy above their 10% baseline (Unlimited mode). "
+                                 "Untick for a flat hourly price, like a non-burstable instance.")
     currency = c[2].text_input("Currency label", form_values["currency"], max_chars=8)
 
     with st.expander("Strategy settings (starting values, not proven optimums)"):
@@ -71,7 +76,7 @@ if submitted:
     new_form = {
         "scenarios": scenarios or [], "duration_min": duration, "step_s": step, "base_rate": rate, "seed": seed,
         "repetitions": reps, "startup_delay_s": delay, "capacity_rps": cap, "min_workers": min_w,
-        "initial_workers": init_w, "max_workers": max_w, "price": price, "currency": currency.strip() or "USD",
+        "initial_workers": init_w, "max_workers": max_w, "price": price, "cpu_credits": credits, "currency": currency.strip() or "USD",
         "th_upper": th_upper, "th_lower": th_lower, "th_cooldown": th_cd, "sx_preemptive": sx_pre,
         "sx_target": sx_target, "sx_window": sx_window, "sx_trend": sx_trend, "sx_up_cd": sx_up,
         "sx_down_cd": sx_down, "sx_step": sx_step, "sx_spike": sx_spike, "sx_low": sx_low,
@@ -102,7 +107,7 @@ st.plotly_chart(charts.utilization_chart(ts, threshold), width="stretch", theme=
 with st.expander("Table view and downloads"):
     st.dataframe(result.summary[["scenario", "policy", "seed", "avg_utilization", "peak_utilization",
                                  "worker_minutes", "scale_up_events", "scale_down_events",
-                                 "response_time_proxy_avg_s", "illustrative_cost"]],
+                                 "response_time_model_avg_s", "response_time_model_p95_s", "estimated_cost"]],
                  hide_index=True, width="stretch")
     st.download_button("Download per-run summary (CSV)", result.summary.to_csv(index=False),
                        "scalix-summary.csv", "text/csv")

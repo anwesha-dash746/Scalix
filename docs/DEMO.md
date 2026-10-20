@@ -49,28 +49,28 @@ Then open **Policy comparison**.
 **Show:**
 * **Workers over time:** SCALIX (green) climbs first and in bigger steps. Threshold (orange) climbs one worker at a time. Static (blue) stays flat.
 * **Requests waiting:** Static's queue keeps growing. Threshold's queue is smaller, and SCALIX's is smallest.
-* **The table:** response proxy and overload favour SCALIX; worker-minutes and cost favour Static and Threshold. Read out the verdict column.
+* **The table:** response time (queueing model) and overload favour SCALIX; worker-minutes and cost favour Static and Threshold. Read out the verdict column.
 
 ## 4. The real evaluation (2 min)
 
-Open `docs/EVALUATION.md`, or show `docs/figures/response.png` and `docs/figures/tradeoff.png`.
+Open `docs/EVALUATION.md`, or show `docs/figures/response.png`, `docs/figures/nasa_day.png` and `docs/figures/tradeoff.png`.
 
-**Say:** "This is the fixed suite: 4 scenarios × 3 strategies × 10 seeds, defined before running, all runs reported. On a spike, SCALIX's response proxy was about 2.5 s against Threshold's 23.6 s. But SCALIX cost 22 to 36% more than Threshold in every scenario, and on calm or slowly rising demand it was no faster. So it trades money for responsiveness to sudden changes."
+**Say:** "This is the fixed suite: 11 experiments, 1,164 runs, defined before running, all reported. With default settings, on a sudden spike SCALIX's p95 response was about 9 s against Threshold's 73 s. On 27 real days of NASA's 1995 web traffic it was 7 s against 28 s. With t3.micro list prices it cost only 2–4% more than Threshold, 10% on real traffic, because T3 CPU credits make spare workers cheap. When we tuned every strategy on separate training seeds they became almost equal on synthetic traffic, but on the real traffic only SCALIX still met our 10-second target at a normal cost."
 
-To show it's reproducible, run it live:
+To show it's reproducible, run one experiment live:
 
 ```bash
-.venv/bin/python -m scalix.evaluation run
+.venv/bin/python -m scalix.evaluation run --only main
 git status --short results/
 ```
 
-The run takes about 10 seconds. `git status` lists only the four `experiment.json` files, and only their `created_utc` time has changed. Every results CSV is byte-for-byte identical, because the runs are deterministic. Put the timestamps back afterwards with `git checkout results/`.
+The run takes a few seconds. `git status` lists only `results/experiments/main/experiment.json`, and only its `created_utc` time has changed. Every results CSV is byte-for-byte identical, because the runs are deterministic. Put the timestamp back afterwards with `git checkout results/`. The full suite takes about 6 minutes, so don't run it during the viva.
 
-## 5. Why SCALIX costs more (1 min)
+## 5. Why SCALIX uses more workers (1 min)
 
-Show section 5 of `EVALUATION.md`, the decision-log table.
+Show section 9 of `EVALUATION.md`, the decision-log table, and `docs/figures/nasa_day.png`.
 
-**Say:** "When utilization was low, SCALIX usually held its workers. The reasons were its 90-second cooldown and its rule of waiting for two low intervals. That caution is where the extra cost comes from."
+**Say:** "When utilization was low, SCALIX usually held its workers. The reasons were its 90-second cooldown and its rule of waiting for two low intervals. On real, noisy traffic that keeps it several workers above Threshold all day: 1.84 times the worker-time."
 
 ## 6. AWS safety, without AWS (2 min)
 

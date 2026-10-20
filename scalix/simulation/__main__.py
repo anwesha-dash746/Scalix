@@ -18,6 +18,7 @@ from pathlib import Path
 
 import pandas as pd
 
+from scalix import pricing
 from scalix.algorithms import CapacityLimits
 from scalix.config import PROJECT_ROOT
 from scalix.simulation.engine import SimulationConfig
@@ -29,13 +30,13 @@ from scalix.simulation.experiment import (
     run_experiment,
     save_experiment,
 )
-from scalix.simulation.workloads import Scenario, WorkloadSpec
+from scalix.simulation.workloads import SYNTHETIC_SCENARIOS, Scenario, WorkloadSpec
 
 
 def build_parser() -> argparse.ArgumentParser:
     p = argparse.ArgumentParser(prog="python -m scalix.simulation",
                                 description="Run STATIC, THRESHOLD and SCALIX on identical simulated workloads.")
-    p.add_argument("--scenarios", default=",".join(s.value for s in Scenario),
+    p.add_argument("--scenarios", default=",".join(s.value for s in SYNTHETIC_SCENARIOS),
                    help="comma-separated: NORMAL,RISING,SPIKE,MIXED (default: all)")
     p.add_argument("--repetitions", type=int, default=5, help="runs per scenario, seeds base..base+n-1 (default 5)")
     p.add_argument("--seed", type=int, default=42, help="base random seed (default 42)")
@@ -48,8 +49,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--min-workers", type=int, default=1)
     p.add_argument("--initial-workers", type=int, default=8)
     p.add_argument("--max-workers", type=int, default=20)
-    p.add_argument("--price", type=float, default=0.10, help="illustrative price per worker-hour (default 0.10)")
-    p.add_argument("--currency", default="USD", help="label for the illustrative price (default USD)")
+    p.add_argument("--price", type=float, default=pricing.WORKER_HOURLY,
+                   help=f"hourly price per worker (default {pricing.WORKER_HOURLY:.6f}: t3.micro + IPv4 + 8 GB gp3, "
+                        f"us-east-1 list prices)")
+    p.add_argument("--no-cpu-credits", action="store_true",
+                   help="flat hourly price only; don't add T3 Unlimited surplus CPU credits")
+    p.add_argument("--currency", default="USD", help="currency label (default USD)")
     p.add_argument("--out", type=Path, default=None,
                    help="output folder (default results/simulations/sim-<timestamp>)")
     return p
@@ -67,7 +72,8 @@ def main(argv: list[str] | None = None) -> int:
             simulation=SimulationConfig(decision_interval_seconds=args.decision_interval,
                                         startup_delay_seconds=args.startup_delay,
                                         worker_capacity_rps=args.capacity,
-                                        price_per_worker_hour=args.price, currency=args.currency),
+                                        price_per_worker_hour=args.price, currency=args.currency,
+                                        charge_cpu_credits=not args.no_cpu_credits),
             policies=default_policies(capacity),
         )
         result = run_experiment(spec)

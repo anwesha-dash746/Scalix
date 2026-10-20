@@ -14,24 +14,27 @@ SCALIX is a student research project. It compares three ways of deciding how man
 
 | Part | Status |
 |---|---|
-| Algorithms, simulator, metrics, experiments, dashboard | **Implemented and tested locally.** All results in this repository are **SIMULATED**, from a documented model. |
+| Algorithms, simulator, metrics, experiments, tuning, dashboard | **Implemented and tested locally.** All results in this repository are **SIMULATED**, from a documented model. |
+| Real traffic | One real trace, replayed in the simulator: the NASA web server log, July 1995 (request counts only). |
+| Response time | From a queueing model (M/M/c). **Not measured latency.** |
+| Cost | **Estimated** from AWS list prices: a t3.micro in us-east-1, plus IPv4, storage and T3 CPU credits. Not an AWS bill. |
 | Read-only AWS monitoring (CloudWatch, Auto Scaling) | **Implemented, tested with mocks only.** It has never been run against a real AWS account. |
-| AWS scaling controller | **Implemented, tested with mocks only.** It is dry-run by default, and **no real scaling action has ever been made.** |
+| AWS scaling controller | **Implemented, tested with mocks only.** It's dry-run by default, and **no real scaling action has ever been made.** |
 | CloudFormation deployment template | **Not built yet.** No AWS infrastructure exists for this project. |
 
-**No result here is an AWS measurement.** Costs are illustrative estimates from an assumed price, not AWS charges.
+**No result here is an AWS measurement.**
 
-## Headline results (simulated, 10 seeds per cell)
+## Headline results (simulated)
 
-From [`docs/EVALUATION.md`](docs/EVALUATION.md):
+From [`docs/EVALUATION.md`](docs/EVALUATION.md). Synthetic results use 10 test seeds; real traffic uses all 27 NASA days.
 
-* **Sudden spike:** SCALIX's average response-time proxy was **2.52 s** against Threshold's **23.56 s**, and Static's 139.12 s. The 95% confidence intervals don't overlap.
-* **Mixed workload:** SCALIX 2.09 s, Threshold 5.80 s.
-* **Normal and gradually rising demand:** SCALIX and Threshold were **tied** on the response proxy (2.00 s each), while SCALIX cost **22–28% more**.
-* **Cost:** SCALIX cost more than Threshold in **every** scenario (+22% to +36%) and had the lowest utilization. It buys responsiveness to *sudden* demand with money.
-* **Static** was always cheapest. It falls behind badly when demand grows: about 1,866 requests were still waiting at the end of the rising run.
+* **Sudden spike:** SCALIX's p95 response time was **9.08 s** against Threshold's **72.73 s** and Static's 295.79 s, with non-overlapping 95% intervals.
+* **Real traffic (NASA 1995):** SCALIX's p95 was **7.02 s** against Threshold's 27.92 s, but it used 1.84× Threshold's worker-time.
+* **Cost:** at t3.micro list prices SCALIX cost only **2–4% more** than Threshold on synthetic traffic and **10% more** on real traffic, because T3 CPU credits make extra headroom cheap. Without credits, i.e. on a non-burstable instance, the premium would be 22–36% and 84%.
+* **Tuned on separate training seeds,** all three strategies became almost equal on synthetic traffic. On real traffic, which tuning never saw, only SCALIX still met the 10 s p95 target at a normal cost.
+* **Without a load balancer,** SCALIX using a CPU-only demand signal made the same decisions in every synthetic run and lost nothing measurable on real traffic.
 
-No strategy wins outright. The evaluation explains why, using the decision logs.
+SCALIX gave the best balance at default settings, at a small extra cost. The evaluation explains where it doesn't win and why, using the decision logs.
 
 ## Quick start (local, costs nothing, no AWS account needed)
 
@@ -56,6 +59,7 @@ Other useful commands:
 
 ```bash
 .venv/bin/python -m pytest -q
+.venv/bin/python -m scalix.tuning run
 .venv/bin/python -m scalix.evaluation run
 .venv/bin/python -m scalix.evaluation report
 .venv/bin/python -m scalix.simulation --scenarios SPIKE --repetitions 3
@@ -64,11 +68,12 @@ Other useful commands:
 ```
 
 1. **Tests:** the whole suite, which takes about a minute.
-2. **Evaluation run:** re-runs every experiment (about 10 s). Results are identical every time.
-3. **Evaluation report:** rebuilds the results tables and figures from the saved outputs.
-4. **One experiment:** a single custom experiment from the command line.
-5. **Examples:** shows each strategy deciding on hand-made situations.
-6. **Controller dry run:** uses mocked data and never contacts AWS.
+2. **Tuning:** re-tunes every strategy on the training seeds (about 3 minutes).
+3. **Evaluation run:** re-runs every experiment (about 6 minutes). Results are identical every time.
+4. **Evaluation report:** rebuilds the results tables and figures from the saved outputs.
+5. **One experiment:** a single custom experiment from the command line.
+6. **Examples:** shows each strategy deciding on hand-made situations.
+7. **Controller dry run:** uses mocked data and never contacts AWS.
 
 AWS features are optional. Install them with `.venv/bin/pip install -r requirements-aws.txt` and read [`docs/AWS_INTEGRATION.md`](docs/AWS_INTEGRATION.md) first.
 
@@ -98,10 +103,14 @@ scalix/                    Python package (no Streamlit, no AWS needed)
   metrics/                 per-run metrics, statistics across seeds
   aws/                     optional: read-only monitor, access check, controller, writer, audit log
   evaluation.py            the fixed experiment suite and report generator
+  tuning.py                tuning on training seeds (separate from the test seeds)
+  pricing.py               AWS list prices used for the cost estimate
   config.py, sources.py    run modes (SIMULATION / READ_ONLY / LIVE), data-source labels
 ui/                        Streamlit dashboard (streamlit run app.py)
 tests/                     pytest suite for scalix/ and ui/
 results/experiments/       evaluation outputs (summaries committed; large files regenerated)
+results/tuning/            tuning results (grid and chosen settings)
+data/traces/               the NASA July 1995 trace as request counts per 5 s
 docs/                      documentation (see the table above), figures, generated tables
 config/                    scalix.yaml (safe defaults); scalix.local.yaml is yours, git-ignored
 src/, pom.xml, dashboard/  Part 1: the original Java engine and its dashboard (kept as reference)

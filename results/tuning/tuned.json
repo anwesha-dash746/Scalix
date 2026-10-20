@@ -1,0 +1,66 @@
+{
+  "capacity": {
+    "initial": 8,
+    "maximum": 20,
+    "minimum": 1
+  },
+  "chosen": {
+    "SCALIX": {
+      "meets_slo": true,
+      "params": {
+        "low_intervals_required": 2,
+        "preemptive_upper": 0.55,
+        "scale_down_cooldown_seconds": 30.0,
+        "target_utilization": 0.6,
+        "upper": 0.7
+      },
+      "settings_meeting_slo": 30,
+      "settings_tried": 126,
+      "training_mean_cost": 0.37024628909817353,
+      "training_worst_p95_s": 9.123152807988664
+    },
+    "STATIC": {
+      "meets_slo": true,
+      "params": {
+        "worker_count": 15
+      },
+      "settings_meeting_slo": 6,
+      "settings_tried": 20,
+      "training_mean_cost": 0.371893398021309,
+      "training_worst_p95_s": 8.33785016066674
+    },
+    "THRESHOLD": {
+      "meets_slo": true,
+      "params": {
+        "cooldown_seconds": 15.0,
+        "lower": 0.3,
+        "upper": 0.5
+      },
+      "settings_meeting_slo": 11,
+      "settings_tried": 92,
+      "training_mean_cost": 0.3701738933282598,
+      "training_worst_p95_s": 9.661089594135877
+    }
+  },
+  "data_source": "SIMULATED",
+  "objective": "lowest average estimated cost across scenarios among settings meeting the SLO",
+  "scenarios": [
+    "NORMAL",
+    "RISING",
+    "SPIKE",
+    "MIXED"
+  ],
+  "slo": "average p95 response time (queueing model) <= 10.0 s in every scenario",
+  "training_seeds": [
+    101,
+    102,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    110
+  ]
+}

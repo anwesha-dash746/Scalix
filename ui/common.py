@@ -8,6 +8,7 @@ from typing import Any
 import pandas as pd
 import streamlit as st
 
+from scalix import pricing
 from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, ThresholdPolicy
 from scalix.config import ConfigError, Mode, ScalixConfig, load_config
 from scalix.simulation import ExperimentSpec, SimulationConfig, WorkloadSpec, run_experiment
@@ -82,7 +83,7 @@ def sidebar(config: ScalixConfig, config_error: str | None) -> None:
         for src in DataSource:
             st.markdown(f"{badge(src)}&nbsp; <span style='font-size:0.85rem'>{html.escape(src.label)}</span>",
                         unsafe_allow_html=True)
-        st.caption("Costs are illustrative estimates from an assumed price, never AWS charges.")
+        st.caption("Costs are estimates from AWS list prices (t3.micro, us-east-1), never AWS bills.")
 
 
 # --------------------------------------------------------------------------- the current simulation run
@@ -90,7 +91,7 @@ def sidebar(config: ScalixConfig, config_error: str | None) -> None:
 DEFAULT_FORM: dict[str, Any] = {
     "scenarios": ["MIXED"], "duration_min": 30, "step_s": 5, "base_rate": 5.0, "seed": 42, "repetitions": 3,
     "startup_delay_s": 30, "capacity_rps": 1.0, "min_workers": 1, "initial_workers": 8, "max_workers": 20,
-    "price": 0.10, "currency": "USD",
+    "price": round(pricing.WORKER_HOURLY, 6), "cpu_credits": True, "currency": "USD",
     "th_upper": 0.70, "th_lower": 0.30, "th_cooldown": 60,
     "sx_preemptive": 0.55, "sx_target": 0.60, "sx_window": 6, "sx_trend": 0.03, "sx_up_cd": 30, "sx_down_cd": 90,
     "sx_step": 3, "sx_spike": 1.5, "sx_low": 2,
@@ -121,7 +122,8 @@ def build_spec(form: dict[str, Any]) -> ExperimentSpec:
                               base_rate=float(form["base_rate"])),
         simulation=SimulationConfig(startup_delay_seconds=float(form["startup_delay_s"]),
                                     worker_capacity_rps=float(form["capacity_rps"]),
-                                    price_per_worker_hour=float(form["price"]), currency=str(form["currency"])),
+                                    price_per_worker_hour=float(form["price"]), currency=str(form["currency"]),
+                                    charge_cpu_credits=bool(form.get("cpu_credits", True))),
         policies=policies,
     )
 

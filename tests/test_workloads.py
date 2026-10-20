@@ -7,7 +7,7 @@ from dataclasses import replace
 import numpy as np
 import pytest
 
-from scalix.simulation.workloads import Scenario, WorkloadSpec, expected_rate, generate
+from scalix.simulation.workloads import SYNTHETIC_SCENARIOS, Scenario, WorkloadSpec, expected_rate, generate
 
 SMOOTH = dict(poisson_noise=False)
 
@@ -16,7 +16,7 @@ def spec(scenario, **kw) -> WorkloadSpec:
     return WorkloadSpec(scenario=scenario, **kw)
 
 
-@pytest.mark.parametrize("scenario", list(Scenario))
+@pytest.mark.parametrize("scenario", SYNTHETIC_SCENARIOS)
 def test_every_scenario_generates_a_valid_trace(scenario):
     tr = generate(spec(scenario))
     assert len(tr.times) == len(tr.arrivals) == len(tr.expected_rate) == 360  # 1800 s / 5 s

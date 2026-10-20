@@ -53,7 +53,12 @@ read group + CPU (read-only) --> data checks --> policy decides --> action check
 
 The policy is the same code the simulator uses, chosen by `controller.policy`. Its capacity limits are the group's min and max, with the max capped at `live.max_capacity` (default **2**). CPU history and the last scale-up/down times come from the audit log, so the policies' own cooldowns work across runs.
 
-**Default policy: THRESHOLD, not SCALIX.** On AWS without a load balancer there is no request-rate metric. SCALIX's trend is then always UNKNOWN, and by design it never scales down while demand is unknown, so the group would stay at its highest size. A test documents this. SCALIX still works for scale-ups (CPU at or above 70%). Using SCALIX fully on AWS needs a demand signal, which is a later decision with cost implications.
+**Demand signal without a load balancer (Phase 7).** On AWS without a load balancer there is no request-rate metric. Before Phase 7, SCALIX's trend was therefore always UNKNOWN, and by design it never scales down while demand is unknown. Now, with `controller.demand_signal: CPU` (the default), the controller gives SCALIX **CPU utilization × in-service instances** as its demand history: the busy-instance equivalents, i.e. the load actually served. The history comes from earlier runs in the audit log, which now records the in-service count. It costs nothing and needs no extra AWS permission. `demand_signal: NONE` restores the old behaviour.
+
+* **What it can't see:** demand above what the group serves. When every instance is saturated, CPU × instances stays at the group's capacity, so SCALIX's trend under-reports a rise. Its 70% CPU rule still scales up.
+* **What the simulation shows** ([EVALUATION.md](EVALUATION.md)): with this CPU-only signal, SCALIX's decisions were identical to the full-signal version on all 40 synthetic runs, and almost identical on the 27 NASA days. Under AWS-like timing (5-minute decisions, 120 s start-up, CPU-only signal, `nasa-aws`), SCALIX's p95 response was 7.89 ± 1.70 s lower than Threshold's per day, for 3.0% more estimated cost.
+
+**Default policy: still THRESHOLD, for the first live test.** The approved first test caps the group at 2 instances, changes 1 instance at a time and waits 5 minutes between changes. At that size the two policies can only make the same few moves, and Threshold's single rule (above 70% add one, below 30% remove one) is the easiest to check by hand against the audit log. Once the controller is proven on real AWS, `controller.policy: SCALIX` is the choice the simulation supports. It's a one-line change in your local config file.
 
 ## 4. Action checks (any failure means REFUSED, in dry runs too)
 
@@ -145,7 +150,7 @@ AWS Academy roles may not allow `SetDesiredCapacity` at all. If AWS returns Acce
 
 * **Never run against real AWS.** Every test uses mocks, Boto3's Stubber, or a network trap that would catch any request that tried to leave.
 * **Slow feedback.** CloudWatch basic data is 5–10 minutes old and the controller cooldown is 5 minutes, so the AWS controller reacts in minutes, not the simulator's 15 seconds.
-* **CPU only.** There's no request-rate signal, so SCALIX's trend logic can't work on AWS without a load balancer metric.
+* **CPU only.** There's no request-rate signal. SCALIX uses CPU × in-service instances instead, which can't see demand beyond what the group serves while it is saturated.
 * **One action per run.** There's no unattended apply loop: `--watch` is dry-run only. That's deliberately conservative for a student project.
 * **No draining.** Scale-down uses `SetDesiredCapacity`, and AWS picks which instance to terminate under the group's termination policy. In-flight requests on that instance aren't drained.
 * **Wall-clock time.** Cooldowns use the controller machine's clock. A badly wrong clock would make them inaccurate. CPU readings from the future are already rejected.
