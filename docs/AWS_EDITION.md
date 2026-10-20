@@ -23,10 +23,11 @@ scalix/                  Python package (AWS edition)
   config.py              run mode + AWS names; SIMULATION by default      (Phase 0, extended in 3)
   sources.py             SIMULATED / MOCKED / LIVE_AWS labels               (Phase 3)
 tests/                   pytest suite for scalix/ (tests/java/ = Java parity harness, test-only)
-app.py                   streamlit run app.py (hands over to dashboard/app.py)
+app.py                   streamlit run app.py (starts the dashboard in ui/)
+ui/                      AWS-edition dashboard: app.py, charts.py, common.py, pages/ (Phase 5)
 config/scalix.yaml       run-mode settings (committed, safe defaults)
 config/scalix.local.yaml your profile/region/group names (git-ignored; copy scalix.local.example.yaml)
-dashboard/               existing Streamlit dashboard (views/, scalix_dash/, tests/)
+dashboard/               original Part 1 dashboard for the Java engine (streamlit run dashboard/app.py)
 src/, pom.xml            existing Java engine, kept as a reference to cross-check the Python port
 results/                 experiment output (the repository's equivalent of a data/ folder);
                          results/simulations/ = Python simulator output
@@ -70,7 +71,8 @@ results/                 experiment output (the repository's equivalent of a dat
 | 2 | Python workload generator, simulator, metrics and results ([SIMULATION.md](SIMULATION.md)) | Done |
 | 3 | Optional read-only AWS access: environment and permission check, CloudWatch / Auto Scaling monitor, data-source labels ([AWS_SETUP.md](AWS_SETUP.md)) | Done (mocked; not yet run against a real account) |
 | 4 | AWS controller: policy -> safety checks -> dry run, or one gated SetDesiredCapacity; allowlist, approved max 2, cooldowns, duplicate prevention, audit log, kill switch ([CONTROLLER.md](CONTROLLER.md)) | Done (offline only; never applied to a real group) |
-| Later | As briefed phase by phase: dashboard, CloudFormation template and cost review, viva preparation | Not started |
+| 5 | Streamlit dashboard on the Python engine: overview, workload simulation, policy comparison, AWS monitoring (read-only, on demand), scaling history; every value labelled ([DASHBOARD.md](DASHBOARD.md)) | Done |
+| 6 | As briefed | Not started |
 
 ## Known issues and open questions
 
