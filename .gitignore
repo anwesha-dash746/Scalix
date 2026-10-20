@@ -12,3 +12,22 @@ __pycache__/
 
 # Experiments launched from the dashboard (regenerate them from their batch.yaml parameters)
 results/dashboard/
+
+# macOS
+.DS_Store
+
+# Secrets and credentials: never commit these. AWS credentials belong in ~/.aws (via
+# `aws configure --profile ...`), never in this repository.
+.env
+.env.*
+.aws/
+credentials
+credentials.csv
+*_accessKeys.csv
+*.pem
+*.key
+*.p12
+*.pfx
+
+# Personal SCALIX settings that should stay on your machine
+config/*.local.yaml

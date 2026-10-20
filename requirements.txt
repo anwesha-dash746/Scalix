@@ -1,7 +1,9 @@
-# SCALIX dashboard (Part 2). Versions verified together on Python 3.11.9 (Windows).
+# SCALIX core: simulation, dashboard and tests. Runs fully locally; no AWS library needed.
+# Versions verified together on Python 3.11.9 (Windows) and 3.13 (Linux).
 streamlit==1.66.0
 pandas==3.0.6
 numpy==2.4.6
+plotly==7.1.0
 matplotlib==3.11.2
 PyYAML==6.0.3
 pytest==9.1.1

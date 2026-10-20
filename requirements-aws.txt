@@ -1,0 +1,4 @@
+# Optional: only needed for the READ_ONLY and LIVE AWS modes (Phase 4 onwards).
+# SIMULATION mode and the dashboard do not need this file.
+-r requirements.txt
+boto3==1.43.115
