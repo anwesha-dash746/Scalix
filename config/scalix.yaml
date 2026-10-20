@@ -15,12 +15,23 @@
 
 mode: SIMULATION
 
-live:
-  enabled: false
-
 aws:
   profile: null                 # name of a profile in ~/.aws/credentials, e.g. scalix-academy
   region: null                  # e.g. us-east-1
   auto_scaling_group: null      # exact name of the group to watch
   metric_period_seconds: 300    # EC2 basic (free) monitoring = 5-minute data points
   max_metric_age_seconds: 900   # older CPU readings are STALE and never used for decisions
+
+# LIVE-mode gates. All of them are re-checked immediately before any capacity change.
+live:
+  enabled: false
+  allowed_groups: []               # exact names of the ONLY groups SCALIX may ever change
+  max_capacity: 2                  # approved maximum workers; raising it needs explicit approval
+  max_step: 1                      # at most this many workers added/removed per action
+  min_seconds_between_actions: 300 # whatever the policy says
+
+# The AWS controller (python -m scalix.aws.controller). Dry-run unless every LIVE gate passes.
+controller:
+  policy: THRESHOLD                # CPU-only on AWS; see docs/CONTROLLER.md for why not SCALIX by default
+  policy_settings: {}
+  decision_interval_seconds: 300   # CloudWatch basic monitoring = 5-minute data
