@@ -21,6 +21,7 @@ aws:
   auto_scaling_group: null      # exact name of the group to watch
   metric_period_seconds: 300    # EC2 basic (free) monitoring = 5-minute data points
   max_metric_age_seconds: 900   # older CPU readings are STALE and never used for decisions
+  budget_usd: 20                # STRICT spending limit for this project's AWS work (AWS Academy credit), in USD
 
 # LIVE-mode gates. All of them are re-checked immediately before any capacity change.
 live:

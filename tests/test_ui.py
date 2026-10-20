@@ -37,6 +37,7 @@ def isolated(monkeypatch, tmp_path):
     monkeypatch.setattr(config_module, "LOCAL_CONFIG_PATH", tmp_path / "scalix.local.yaml")
     monkeypatch.setattr(audit_module, "DEFAULT_AUDIT_PATH", tmp_path / "audit.jsonl")
     monkeypatch.setattr(audit_module, "MOCK_AUDIT_PATH", tmp_path / "audit-mock.jsonl")
+    monkeypatch.setattr(check_access_module, "REPORTS_DIR", tmp_path / "aws-reports")
     calls = {"monitor": 0, "access": 0}
 
     def no_monitor(*a, **k):
@@ -161,7 +162,7 @@ def test_aws_page_in_simulation_mode_never_contacts_aws(isolated):
     at = app().switch_page("ui/pages/aws.py").run()
     assert not at.exception
     text = markdown_text(at)
-    assert "AWS is switched off" in text and "MOCKED" in text
+    assert "AWS reading is switched off" in text and "MOCKED" in text
     assert not [b for b in at.button if "Read group" in b.label]
     assert isolated == {"monitor": 0, "access": 0}
 
@@ -332,3 +333,56 @@ def test_metric_bars_show_intervals_when_available():
     single = agg.assign(ci95_low=math.nan, ci95_high=math.nan, n=1)
     fig1 = charts.metric_bars(single, "m", "M")
     assert not fig1.data[0].error_y.visible and list(fig1.data[0].text) == ["1.00", "2.00", "3.00"]
+
+
+# --------------------------------------------------------------------------- budget and saved connection check
+
+def _saved_report(tmp_path, identity_status="OK"):
+    folder = tmp_path / "aws-reports"
+    folder.mkdir(exist_ok=True)
+    report = {"generated_utc": "2026-10-20T22:14:07+00:00",
+              "environment": {"selected_profile": "scalix-academy", "temporary_credentials": True},
+              "checks": [{"check": "Credentials", "status": "OK", "detail": "found"},
+                         {"check": "Caller identity", "status": identity_status,
+                          "detail": "account ********7325, identity arn:aws:sts::********7325:assumed-role/voclabs/use…"},
+                         {"check": "Describe Auto Scaling groups", "status": "OK", "detail": "permitted; 0 group(s)"}],
+              "calls_made": ["sts:GetCallerIdentity"]}
+    (folder / "access-report-20261021-034412.json").write_text(json.dumps(report))
+    (folder / "access-report-20261020-000000.json").write_text("not json")
+
+
+def test_aws_page_states_the_strict_budget_in_every_mode(tmp_path, isolated):
+    for setup in (lambda: None, lambda: read_only_config(tmp_path)):
+        setup()
+        at = app().switch_page("ui/pages/aws.py").run()
+        assert not at.exception
+        warnings = "\n".join(w.value for w in at.warning)
+        assert "**Strict AWS budget: USD 20 only.**" in warnings
+    assert isolated == {"monitor": 0, "access": 0}
+
+
+def test_aws_page_shows_the_last_saved_check_without_contacting_aws(tmp_path, isolated):
+    _saved_report(tmp_path)
+    at = app().switch_page("ui/pages/aws.py").run()
+    assert not at.exception
+    ok = "\n".join(s.value for s in at.success)
+    assert "connected (read-only)" in ok and "scalix-academy" in ok and "Oct 2026" in ok
+    assert "SIMULATION" in markdown_text(at)
+    assert isolated == {"monitor": 0, "access": 0}
+
+
+def test_aws_page_reports_a_failed_saved_check(tmp_path, isolated):
+    _saved_report(tmp_path, identity_status="ERROR")
+    read_only_config(tmp_path)
+    at = app().switch_page("ui/pages/aws.py").run()
+    assert not at.exception
+    assert any("not connected" in e.value for e in at.error)
+    assert isolated == {"monitor": 0, "access": 0}
+
+
+def test_latest_saved_report_skips_unreadable_files(tmp_path):
+    assert check_access_module.latest_saved_report(tmp_path / "missing") is None
+    _saved_report(tmp_path)
+    (tmp_path / "aws-reports" / "access-report-20991231-000000.json").write_text("{broken")
+    path, data = check_access_module.latest_saved_report(tmp_path / "aws-reports")
+    assert path.name == "access-report-20261021-034412.json" and data["checks"][1]["status"] == "OK"

@@ -12,7 +12,8 @@ This is the full list of what the project does **not** show. The topic-specific 
 | SCALIX works without a load balancer | **Shown, in simulation only.** The CPU-only signal changed no synthetic decision. The controller supports it, tested with mocks |
 | SCALIX improves real response times on AWS | **Not shown.** No real application latency was measured |
 | The cost estimates match a real AWS bill | **Not shown.** They're list-price estimates |
-| The AWS monitor and controller work on a real account | **Not shown.** Tested with mocks and Boto3's Stubber only; no real scaling action was ever made |
+| SCALIX can connect to a real AWS account | **Shown, read-only.** The access check succeeded on an AWS Academy account on 21 October 2026 |
+| The AWS monitor and controller work on a real group | **Not shown.** No group exists yet; tested with mocks and Boto3's Stubber only, and no real scaling action was ever made |
 | A deployable AWS environment exists | **No.** The CloudFormation template is the next phase |
 
 ## 2. What Phase 7 fixed, and what's left of each limitation
@@ -43,11 +44,11 @@ This is the full list of what the project does **not** show. The topic-specific 
 
 ## 5. The AWS layer
 
-1. **Never run against a real account.** Everything AWS-related was tested with mocks, Boto3's Stubber and a network trap.
+1. **Only the read-only access check has run against a real account** (21 October 2026, AWS Academy). Reading a real group, the controller and the writer were tested with mocks, Boto3's Stubber and a network trap only.
 2. **Slow feedback.** Free CloudWatch data arrives every 5 minutes, a few minutes late. In simulation, even SCALIX missed the 10 s p95 target at that pace.
 3. **One action per run.** There's no unattended apply loop. This is deliberate.
 4. **No connection draining** on scale-down.
-5. **AWS Academy restrictions are unknown** until the access check is run on the real account.
+5. **Write permissions are unknown.** The read-only check showed the lab allows reading groups, instances and metrics. Whether it allows creating a stack or changing a group's size only shows at the first approved step.
 
 ## 6. Process
 

@@ -154,7 +154,7 @@ The read calls don't create billable resources. CloudWatch `GetMetricStatistics`
 
 ## 10. Limitations and open points
 
-* **Not yet run against a real account.** It has only been tested with Boto3's Stubber and mocks. The first real run is yours, using the access check.
+* **Only the access check has run against a real account.** On 21 October 2026 the read-only access check ran successfully against a real AWS Academy Learner Lab account (us-east-1, `voclabs` lab role): describing Auto Scaling groups, EC2 instances and CloudWatch metrics was permitted, and the account had no groups or instances. The monitor has not yet read a real group or real CPU, because no group exists.
 * **No group exists yet,** so the group and CPU checks are skipped until one does. Creating one is a later, separately approved step.
 * **CloudWatch delay.** Basic monitoring publishes every 5 minutes and arrives a few minutes late, so a fresh reading is normally 5–10 minutes old. A live controller can't react on the simulator's 15 s timescale.
 * **No request rate without a load balancer.** EC2 and Auto Scaling metrics give CPU only, so SCALIX's demand-trend input is unavailable on AWS unless a (billable) load balancer is added. This has to be decided before LIVE mode.

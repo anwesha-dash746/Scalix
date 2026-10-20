@@ -45,7 +45,8 @@ _CONTROLLER_KEYS = {"policy", "policy_settings", "decision_interval_seconds", "d
 _DEMAND_SIGNALS = ("CPU", "NONE")
 _POLICY_NAMES = ("STATIC", "THRESHOLD", "SCALIX")
 _CAPACITY_KEYS = {"capacity", "min_capacity", "initial_capacity", "max_capacity", "worker_count"}
-_AWS_KEYS = {"profile", "region", "auto_scaling_group", "metric_period_seconds", "max_metric_age_seconds"}
+_AWS_KEYS = {"profile", "region", "auto_scaling_group", "metric_period_seconds", "max_metric_age_seconds",
+             "budget_usd"}
 _REGION_RE = re.compile(r"^[a-z]{2}(-gov|-iso[a-z]*)?-[a-z]+-\d+$")
 _GROUP_RE = re.compile(r"^[\w\-.:/ ]{1,255}$")
 _PROFILE_RE = re.compile(r"^[\w\-.@+]{1,128}$")
@@ -85,8 +86,15 @@ class AwsSettings:
     metric_period_seconds: int = 300
     #: A CPU reading older than this is treated as STALE and not used for decisions.
     max_metric_age_seconds: int = 900
+    #: The AWS spending limit for this project, in USD (e.g. the AWS Academy lab credit). Shown on the
+    #: dashboard and used for cost reviews. SCALIX never spends money by itself; this is a reminder of
+    #: the ceiling every approved action must stay under, not an AWS budget alarm.
+    budget_usd: float | None = None
 
     def __post_init__(self) -> None:
+        b = self.budget_usd
+        if b is not None and (isinstance(b, bool) or not isinstance(b, (int, float)) or not 0 < b <= 10_000):
+            raise ConfigError(f"aws.budget_usd must be a number above 0 (USD), got {b!r}")
         for name, pattern in (("profile", _PROFILE_RE), ("auto_scaling_group", _GROUP_RE)):
             value = getattr(self, name)
             if value is not None and not (isinstance(value, str) and pattern.match(value)):

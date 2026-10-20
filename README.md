@@ -18,11 +18,11 @@ SCALIX is a student research project. It compares three ways of deciding how man
 | Real traffic | One real trace, replayed in the simulator: the NASA web server log, July 1995 (request counts only). |
 | Response time | From a queueing model (M/M/c). **Not measured latency.** |
 | Cost | **Estimated** from AWS list prices: a t3.micro in us-east-1, plus IPv4, storage and T3 CPU credits. Not an AWS bill. |
-| Read-only AWS monitoring (CloudWatch, Auto Scaling) | **Implemented, tested with mocks only.** It has never been run against a real AWS account. |
+| Read-only AWS monitoring (CloudWatch, Auto Scaling) | **Implemented and tested with mocks.** The read-only access check **ran successfully on a real AWS Academy account** on 21 October 2026, making 4 reads and changing nothing. No group exists yet, so no real group or CPU has been read. |
 | AWS scaling controller | **Implemented, tested with mocks only.** It's dry-run by default, and **no real scaling action has ever been made.** |
 | CloudFormation deployment template | **Not built yet.** No AWS infrastructure exists for this project. |
 
-**No result here is an AWS measurement.**
+**No result here is an AWS measurement. Strict AWS budget: USD 20 only.**
 
 ## Headline results (simulated)
 

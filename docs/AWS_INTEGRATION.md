@@ -1,7 +1,9 @@
 # AWS integration guide
 
-> **Status: implemented, tested with mocks only, never run against real AWS.**
-> No AWS infrastructure was created for this project, no real AWS call was ever made during development or testing, and no scaling action has ever been applied. **No result in this repository comes from AWS.**
+> **Status: implemented and tested with mocks; read-only connection verified on a real account; no deployment.**
+> On 21 October 2026 the read-only access check ran successfully against a real AWS Academy Learner Lab account (us-east-1, `voclabs` lab role): describing Auto Scaling groups, EC2 instances and CloudWatch metrics was permitted, and the account had no groups or instances. That check made 4 read requests and created, changed and deleted nothing. No AWS infrastructure has been created for this project, and no scaling action has ever been applied. **No experiment result in this repository comes from AWS.**
+>
+> **Strict budget: USD 20 only** (`aws.budget_usd` in `config/scalix.yaml`). Every step that costs money needs separate approval, an itemised estimate and a deletion plan, and everything together must stay under USD 20.
 
 This page is the overview. The step-by-step details are in [AWS_SETUP.md](AWS_SETUP.md) (read-only access) and [CONTROLLER.md](CONTROLLER.md) (the controller and the approved-action procedure).
 
@@ -19,7 +21,7 @@ This page is the overview. The step-by-step details are in [AWS_SETUP.md](AWS_SE
 | Audit log | `scalix/aws/audit.py` | Implemented | Unit tests |
 | Dashboard AWS page (read-only, on button press) | `ui/pages/aws.py` | Implemented, **mocked** | Streamlit AppTest with counted calls |
 | CloudFormation template (VPC, launch template, Auto Scaling group, max 2) | – | **Not built** | – |
-| Real account access check | – | **Not run** | – |
+| Real account access check | `python -m scalix.aws.check_access` | **Done, 21 October 2026:** AWS Academy Learner Lab, us-east-1, `voclabs` role; 4 reads permitted; 0 groups, 0 instances | Real account (read-only) |
 | Live scaling test | – | **Not run, not approved** | – |
 
 "Mocked" means the code was exercised with AWS-shaped fake responses (Boto3's Stubber), never by AWS itself. A network trap fails the test if any request tries to leave the computer.
