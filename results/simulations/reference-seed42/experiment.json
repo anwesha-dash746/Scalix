@@ -1,7 +1,7 @@
 {
   "experiment_id": "reference-seed42",
   "data_label": "SIMULATED: utilization is estimated, response time is a documented proxy, and cost is an illustrative estimate. None of these are AWS measurements or AWS charges.",
-  "created_utc": "2026-10-20T16:36:02+00:00",
+  "created_utc": "2026-10-20T17:07:12+00:00",
   "scalix_version": "0.1.0",
   "python": "3.13.16",
   "numpy": "2.4.6",

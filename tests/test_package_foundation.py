@@ -20,6 +20,10 @@ SUBPACKAGES = [
     "scalix.metrics",
     "scalix.aws",
     "scalix.config",
+    "scalix.sources",
+    "scalix.aws.session",
+    "scalix.aws.monitoring",
+    "scalix.aws.check_access",
 ]
 
 
@@ -44,8 +48,9 @@ def test_package_works_without_aws_and_never_loads_boto3(tmp_path):
     code = (
         "import sys\n"
         "import scalix, scalix.algorithms, scalix.simulation, scalix.metrics, scalix.aws\n"
-        "from scalix.config import load_config, Mode\n"
-        "assert load_config().mode is Mode.SIMULATION\n"
+        "from scalix.config import load_config, Mode, DEFAULT_CONFIG_PATH\n"
+        "assert load_config(DEFAULT_CONFIG_PATH).mode is Mode.SIMULATION\n"
+        "import scalix.aws.session, scalix.aws.monitoring, scalix.aws.check_access, scalix.sources\n"
         "loaded = sorted(m for m in sys.modules if m.split('.')[0] in ('boto3', 'botocore'))\n"
         "assert not loaded, loaded\n"
         "print('ok')\n"
@@ -76,6 +81,7 @@ def test_root_entry_point_renders_the_dashboard():
     "credentials.csv",
     "student_accessKeys.csv",
     "config/scalix.local.yaml",
+    "results/aws/access-report-1.json",
 ])
 def test_secret_and_local_files_are_git_ignored(path):
     result = subprocess.run(["git", "check-ignore", "-q", "--no-index", path], cwd=ROOT)

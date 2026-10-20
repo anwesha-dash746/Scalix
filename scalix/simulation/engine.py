@@ -36,6 +36,7 @@ import numpy as np
 import pandas as pd
 
 from scalix.algorithms import Action, ScalingContext, ScalingPolicy
+from scalix.sources import DataSource
 from scalix.simulation.workloads import WorkloadTrace
 
 
@@ -107,7 +108,7 @@ class RunResult:
     summary: dict[str, Any]    # metrics, see scalix.metrics.summary
 
 
-EVENT_COLUMNS = ["time_s", "action", "requested_delta", "applied_delta", "workers_before", "workers_after",
+EVENT_COLUMNS = ["data_source", "time_s", "action", "requested_delta", "applied_delta", "workers_before", "workers_after",
                  "active", "booting", "utilization", "arrival_rate_rps", "trend", "relative_slope", "spike",
                  "cooldown_blocked", "reason"]
 
@@ -182,7 +183,7 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
                     applied, last_down = -allowed, t
             active_after, booting_after = counts(t)
             events.append({
-                "time_s": t, "action": d.action.value, "requested_delta": d.delta, "applied_delta": applied,
+                "data_source": DataSource.SIMULATED.value, "time_s": t, "action": d.action.value, "requested_delta": d.delta, "applied_delta": applied,
                 "workers_before": before, "workers_after": active_after + booting_after,
                 "active": active, "booting": booting, "utilization": util, "arrival_rate_rps": rate,
                 "trend": d.trend.value, "relative_slope": d.relative_slope, "spike": d.spike,
@@ -205,6 +206,7 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
         interval_utils.append(utilization)
         interval_arrivals += arrivals
         rows.append({
+            "data_source": DataSource.SIMULATED.value,
             "time_s": t,
             "expected_rate_rps": float(trace.expected_rate[k]),
             "arrivals": arrivals,
