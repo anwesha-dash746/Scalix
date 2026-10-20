@@ -15,6 +15,8 @@ The project has two parts:
 
 Every number in the dashboard comes from engine output. The dashboard contains **no demonstration or synthetic data**. Fixture CSVs exist only inside `dashboard/tests/`, for testing.
 
+> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. Until the Python engine is finished, the dashboard still uses the Java engine described below. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
+
 ---
 
 ## 1. Architecture
@@ -69,34 +71,51 @@ Options:
 
 If Windows blocks scripts, run `powershell -ExecutionPolicy Bypass -File .\run.ps1`.
 
-**Manual setup** (any OS):
+**Manual setup, macOS / Linux.** Paste the lines exactly as shown. The blocks contain no inline `#` comments, because zsh, the macOS default shell, does not treat `#` as a comment in pasted commands.
 
 ```bash
-# 1) Build the Java engine (compiles, runs the 108 Java tests, builds the runnable jar)
-./mvnw -B clean package                      # Windows: mvnw.cmd -B clean package
+./mvnw -B clean package
+python3 -m venv .venv
+.venv/bin/python -m pip install -r requirements.txt
+```
 
-# 2) Python environment for the dashboard
+The first line builds the Java engine. It compiles, runs the 108 Java tests and builds the runnable jar. The other two lines create the Python environment. `requirements.txt` contains no AWS library. Install `requirements-aws.txt` instead only when you reach the optional AWS modes.
+
+**Manual setup, Windows (PowerShell):**
+
+```powershell
+.\mvnw.cmd -B clean package
 python -m venv .venv
-.venv/Scripts/python -m pip install -r requirements.txt     # macOS/Linux: .venv/bin/python -m pip ...
+.venv\Scripts\python -m pip install -r requirements.txt
 ```
 
 ## 4. Running the Java simulation directly
 
 ```bash
-java -jar target/scalix-1.0.0-SNAPSHOT-all.jar                                  # 7 workloads x 3 policies
+java -jar target/scalix-1.0.0-SNAPSHOT-all.jar
 java -jar target/scalix-1.0.0-SNAPSHOT-all.jar --experiment-id exp-default-seed42
 java -jar target/scalix-1.0.0-SNAPSHOT-all.jar --config configs/quick.properties --seed 7
 java -jar target/scalix-1.0.0-SNAPSHOT-all.jar --workloads BURST --policies THRESHOLD,SCALIX --set vm.bootSeconds=60
 java -jar target/scalix-1.0.0-SNAPSHOT-all.jar --help
 ```
 
-Results go to `results/<experiment-id>/`, and the dashboard lists them automatically. Exit codes: `0` success, `2` invalid configuration (reported before any simulation runs), `1` runtime failure.
+The first command runs all 7 workloads × 3 policies with the defaults. Results go to `results/<experiment-id>/`, and the dashboard lists them automatically. Exit codes: `0` success, `2` invalid configuration (reported before any simulation runs), `1` runtime failure.
 
 ## 5. Launching the dashboard
 
+macOS / Linux:
+
 ```bash
-.venv/Scripts/streamlit run dashboard/app.py        # macOS/Linux: .venv/bin/streamlit run dashboard/app.py
+.venv/bin/streamlit run app.py
 ```
+
+Windows:
+
+```powershell
+.venv\Scripts\streamlit run app.py
+```
+
+`app.py` in the project root hands over to `dashboard/app.py`, so `streamlit run dashboard/app.py` starts the same app.
 
 Then open http://localhost:8501. `.streamlit/config.toml` binds the server to **localhost only**, because the dashboard can start processes, and turns off Streamlit's usage statistics.
 
@@ -225,13 +244,21 @@ These observations come from one seed with untuned parameters. Use repetitions i
 
 ## 10. Tests
 
+macOS / Linux (on Windows use `mvnw.cmd` and `.venv\Scripts\python`):
+
 ```bash
-./mvnw -B test                       # Java: 108 tests (unit + CloudSim Plus integration)
-.venv/Scripts/python -m pytest       # Python: 116 tests (config in pytest.ini)
-.venv/Scripts/python -m pytest -m engine   # only the tests that run the real Java engine
+./mvnw -B test
+.venv/bin/python -m pytest
+.venv/bin/python -m pytest -m engine
 ```
 
-The Python suite covers:
+1. The Java suite: 108 tests, unit plus CloudSim Plus integration.
+2. All Python tests, configured in `pytest.ini`. They live in `tests/` for the `scalix` package and in `dashboard/tests/` for the dashboard.
+3. Only the tests that run the real Java engine.
+
+The `tests/` suite (AWS edition) covers package imports, run-mode validation, and a check that `import scalix` works with no AWS credentials and never loads boto3. It also renders the root `app.py`, and checks that `.gitignore` excludes credential and environment files.
+
+The `dashboard/tests/` suite covers:
 * CSV loading and schema validation;
 * missing, empty and malformed files;
 * parameter validation;
@@ -275,13 +302,18 @@ src/main/resources/                 scalix-default.properties (all engine parame
 src/test/java/                      Java unit + integration tests
 configs/                            example engine configurations
 results/exp-default-seed42/         reference engine output
-requirements.txt, pytest.ini        Python dependencies and test configuration
+requirements.txt, pytest.ini        Python dependencies (no AWS library) and test configuration
+requirements-aws.txt                optional extras for READ_ONLY / LIVE modes (boto3)
 .streamlit/config.toml              localhost-only server, no usage statistics
 config/dashboard.yaml               dashboard settings (engine command, paths, defaults, cloud)
-dashboard/app.py                    Streamlit entry point
+config/scalix.yaml                  AWS-edition run mode: SIMULATION (default), READ_ONLY, LIVE
+app.py                              entry point: streamlit run app.py (hands over to dashboard/app.py)
+scalix/                             AWS-edition Python package: algorithms, simulation, metrics, aws, config
+tests/                              pytest suite for the scalix package
+dashboard/app.py                    Streamlit dashboard
 dashboard/views/                    one module per page (start, results, over time, decision log, download, under the hood)
 dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, story, plots, exports, settings
 dashboard/scalix_dash/cloud/        provider interface, mock adapter, CloudStack adapter (disabled by default)
 dashboard/tests/                    pytest suite, fixture writer and fake engine (test-only)
-docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md
+docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md
 ```
