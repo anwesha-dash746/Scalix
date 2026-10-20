@@ -15,7 +15,7 @@ The project has two parts:
 
 Every number in the dashboard comes from engine output. The dashboard contains **no demonstration or synthetic data**. Fixture CSVs exist only inside `dashboard/tests/`, for testing.
 
-> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. The Python simulator can already be run from the command line: `python -m scalix.simulation` (see [`docs/SIMULATION.md`](docs/SIMULATION.md)). The dashboard switches to it in Phase 3; until then it still uses the Java engine described below. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
+> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. The Python simulator can already be run from the command line: `python -m scalix.simulation` (see [`docs/SIMULATION.md`](docs/SIMULATION.md)). An optional, read-only AWS check and CloudWatch monitor is in [`docs/AWS_SETUP.md`](docs/AWS_SETUP.md). The dashboard switches to the Python engine in a later phase; until then it still uses the Java engine described below. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
 
 ---
 
@@ -307,6 +307,7 @@ requirements-aws.txt                optional extras for READ_ONLY / LIVE modes (
 .streamlit/config.toml              localhost-only server, no usage statistics
 config/dashboard.yaml               dashboard settings (engine command, paths, defaults, cloud)
 config/scalix.yaml                  AWS-edition run mode: SIMULATION (default), READ_ONLY, LIVE
+config/scalix.local.example.yaml    template for your git-ignored scalix.local.yaml (AWS profile/region/group names)
 app.py                              entry point: streamlit run app.py (hands over to dashboard/app.py)
 scalix/                             AWS-edition Python package: algorithms, simulation, metrics, aws, config
 tests/                              pytest suite for the scalix package
@@ -315,6 +316,6 @@ dashboard/views/                    one module per page (start, results, over ti
 dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, story, plots, exports, settings
 dashboard/scalix_dash/cloud/        provider interface, mock adapter, CloudStack adapter (disabled by default)
 dashboard/tests/                    pytest suite, fixture writer and fake engine (test-only)
-docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md, SIMULATION.md
+docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md, SIMULATION.md, AWS_SETUP.md
 results/simulations/                Python simulator output (reference-seed42 is committed)
 ```

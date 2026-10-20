@@ -1,0 +1,13 @@
+# Copy this file to config/scalix.local.yaml (that name is git-ignored) and fill it in.
+# Values here override config/scalix.yaml.
+#
+# This file holds NAMES only. Your AWS keys stay in ~/.aws/credentials, written by you
+# (for example with `aws configure --profile scalix-academy`), never in this repository
+# and never pasted into a chat.
+
+mode: READ_ONLY
+
+aws:
+  profile: scalix-academy        # the [profile name] in ~/.aws/credentials
+  region: us-east-1
+  auto_scaling_group: null       # fill in once a group exists; the access check works without it

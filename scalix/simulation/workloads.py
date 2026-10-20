@@ -144,6 +144,7 @@ class WorkloadTrace:
 
     def to_frame(self) -> pd.DataFrame:
         return pd.DataFrame({
+            "data_source": "SIMULATED",
             "time_s": self.times,
             "expected_rate_rps": self.expected_rate,
             "arrivals": self.arrivals,

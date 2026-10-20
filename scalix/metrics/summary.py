@@ -61,6 +61,7 @@ def summarize(timeseries: pd.DataFrame, events: pd.DataFrame, workers: pd.DataFr
     avg_wait = queue_integral / total_arrivals if total_arrivals > 0 else 0.0
 
     return {
+        "data_source": "SIMULATED",
         "duration_s": duration,
         "steps": n_steps,
         "total_arrivals": float(total_arrivals),

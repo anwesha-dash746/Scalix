@@ -1,15 +1,26 @@
 # SCALIX run-mode settings (AWS edition). Read by scalix/config.py.
 #
+# Keep this committed file on safe defaults. Put your own AWS profile name, region and group
+# in config/scalix.local.yaml (git-ignored); see config/scalix.local.example.yaml.
+#
 # mode:
 #   SIMULATION  default. Everything runs on this computer. AWS is never contacted. Costs nothing.
-#   READ_ONLY   may read AWS state (for example CloudWatch metrics). Never changes anything.
+#   READ_ONLY   may read AWS state (CloudWatch CPU, Auto Scaling group). Never changes anything.
+#               Needs aws.profile and aws.region.
 #   LIVE        may change the capacity of one allowlisted Auto Scaling group.
 #               Needs live.enabled: true as well. Only use it after an explicitly approved plan.
 #
 # Unknown keys are rejected so typos are caught. Environment variables never change the mode.
-# Never put AWS keys, tokens or passwords in this file; use a named AWS CLI profile instead.
+# Never put AWS keys, tokens or passwords in any SCALIX file; aws.profile is only a profile NAME.
 
 mode: SIMULATION
 
 live:
   enabled: false
+
+aws:
+  profile: null                 # name of a profile in ~/.aws/credentials, e.g. scalix-academy
+  region: null                  # e.g. us-east-1
+  auto_scaling_group: null      # exact name of the group to watch
+  metric_period_seconds: 300    # EC2 basic (free) monitoring = 5-minute data points
+  max_metric_age_seconds: 900   # older CPU readings are STALE and never used for decisions

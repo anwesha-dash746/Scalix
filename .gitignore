@@ -34,3 +34,6 @@ config/*.local.yaml
 
 # Ad-hoc Python simulator runs (python -m scalix.simulation); the reference run stays committed
 results/simulations/sim-*/
+
+# AWS-edition runtime output (access reports, audit logs); may contain masked account details
+results/aws/

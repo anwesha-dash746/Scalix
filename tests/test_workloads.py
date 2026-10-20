@@ -23,7 +23,8 @@ def test_every_scenario_generates_a_valid_trace(scenario):
     assert tr.times[0] == 0 and tr.times[-1] == 1795
     assert (tr.arrivals >= 0).all() and (tr.expected_rate >= 0).all()
     assert np.all(tr.arrivals == np.round(tr.arrivals))  # Poisson counts are whole requests
-    assert tr.to_frame().shape == (360, 4)
+    assert tr.to_frame().shape == (360, 5)
+    assert (tr.to_frame()["data_source"] == "SIMULATED").all()
 
 
 def test_normal_fluctuates_moderately_around_the_base():
