@@ -104,7 +104,7 @@ Every value carries one of these labels (`scalix/sources.py`):
 | `MOCKED` | scripted test data shaped like AWS data, never from AWS |
 | `LIVE_AWS` | read from a real account through the read-only adapter |
 
-The dashboard will show these labels when it's connected in a later phase.
+The dashboard (Phase 5) shows these labels on every page.
 
 ## 6. Safety design
 
@@ -118,7 +118,7 @@ The dashboard will show these labels when it's connected in a later phase.
 | Operation | Why not |
 |---|---|
 | `cloudwatch:GetMetricData` | AWS always bills it, even within the free tier. `GetMetricStatistics` gets the same CPU average. |
-| `autoscaling:SetDesiredCapacity` / `UpdateAutoScalingGroup` | changes capacity. That's LIVE mode only, after explicit approval, in a later phase. |
+| `autoscaling:SetDesiredCapacity` / `UpdateAutoScalingGroup` | changes capacity. That's LIVE mode only, after explicit approval (see [CONTROLLER.md](CONTROLLER.md)). |
 | `ec2:RunInstances` / `TerminateInstances` | creates or deletes servers. SCALIX never calls these. |
 | `cloudformation:CreateStack` / `DeleteStack` | creates or deletes infrastructure. That's a manual, separately approved step. |
 | `iam:*` | SCALIX never creates or changes permissions, and never tries to escalate. |

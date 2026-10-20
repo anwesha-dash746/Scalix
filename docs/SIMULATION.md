@@ -83,6 +83,8 @@ Re-run any experiment with the same settings and seeds and you get identical CSV
 
 ## 5. Reference experiment: `results/simulations/reference-seed42/`
 
+> This is the first check run, made while building the simulator (Phase 2), with seeds 42–46. **The final evaluation uses a separate, pre-defined suite with seeds 1–10: see [EVALUATION.md](EVALUATION.md).** The two agree on every conclusion below.
+
 Settings: all defaults, 4 scenarios × 3 strategies, 5 seeds (42–46). Mean ± 95% CI half-width. **All values are simulated.**
 
 | Scenario | Strategy | Response proxy avg (s) | Response proxy p95 (s) | Illustrative cost ($) | Avg utilization | Worker-min |
@@ -104,7 +106,7 @@ Settings: all defaults, 4 scenarios × 3 strategies, 5 seeds (42–46). Mean ± 
 
 * **Sudden changes (SPIKE, MIXED):** SCALIX had a clearly lower response-time proxy than Threshold, with non-overlapping 95% CIs: about 3 s against 28 s on SPIKE. Scaling up early, and by more than one worker, is what helps here.
 * **Calm or gradual changes (NORMAL, RISING):** Threshold and SCALIX were indistinguishable on the response proxy, both at the 2 s floor. **SCALIX cost 21–28% more for no measured benefit** here.
-* **Resource efficiency:** SCALIX had the **lowest** utilization (0.40–0.51) and the highest cost of the two auto-scalers in *every* scenario. That's partly by design, because its target utilization is 0.60 while Threshold only acts at 0.70. A fairer comparison would tune SCALIX's target, which the dashboard will allow in Phase 3.
+* **Resource efficiency:** SCALIX had the **lowest** utilization (0.40–0.51) and the highest cost of the two auto-scalers in *every* scenario. That's partly by design, because its target utilization is 0.60 while Threshold only acts at 0.70. The dashboard now lets you change SCALIX's target, and the evaluation's `scalix-target-70` experiment tests a 0.70 target: it lowers the cost, but SCALIX still costs more than Threshold ([EVALUATION.md §6.2](EVALUATION.md#62-scalix-target-70-instead-of-60)).
 * **Static** was cheapest everywhere. On RISING and SPIKE it fell badly behind: about 1,800 and 500 requests were still waiting when those runs ended.
 * So **no strategy wins outright.** SCALIX trades money for responsiveness to sudden demand. Whether that's worth it depends on how much waiting costs compared with servers.
 

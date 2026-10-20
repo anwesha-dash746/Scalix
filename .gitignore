@@ -39,3 +39,8 @@ results/simulations/sim-*/
 results/aws/
 # Global live-action disable (create with: touch config/LIVE_DISABLED); local state, never committed
 config/LIVE_DISABLED
+
+# Large, regenerable experiment outputs (python -m scalix.evaluation run); summaries stay committed
+results/experiments/*/timeseries.csv
+results/experiments/*/events.csv
+results/experiments/*/workloads.csv
