@@ -121,7 +121,7 @@ Even with `--apply --confirm mock-scalix-workers`, mocked data gives `REFUSED: a
 
 This is the procedure. **None of it has been done.** Each numbered step that touches AWS needs your separate, explicit approval at the time.
 
-1. **Infrastructure exists (separate approval).** A small Auto Scaling group with max 2 workers, created from a reviewed CloudFormation template after a billable-resource and cost review. That's a later phase.
+1. **Infrastructure exists (separate approval).** A small Auto Scaling group with max 2 workers, created from a reviewed CloudFormation template after a billable-resource and cost review. Not built yet; see [AWS_INTEGRATION.md](AWS_INTEGRATION.md#6-what-would-come-next-only-with-your-approval-at-each-step).
 2. **Read-only first.** `mode: READ_ONLY`, then `python -m scalix.aws.check_access` and several dry runs (`--watch`). Check that the group, CPU readings and proposed actions all make sense.
 3. **Approval request.** I'd give you one written request: the exact group name and region, current to proposed desired capacity (for example 1 → 2), why the policy wants it, the cost of one extra worker per hour at that instance type's price, how long the test runs, and the rollback (desired back to its previous value, which is itself an approved action).
 4. **You enable it locally.** In `config/scalix.local.yaml`, set `mode: LIVE`, `live.enabled: true` and `live.allowed_groups: [<exact name>]`. This file is never committed.

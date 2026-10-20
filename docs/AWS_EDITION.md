@@ -1,6 +1,6 @@
 # SCALIX AWS edition
 
-This file covers the AWS edition: its structure, run modes and safety rules, and how far each phase has got. The original Java and CloudSim Plus project is described in the [README](../README.md).
+This file covers the AWS edition: its structure, run modes and safety rules, and how far each phase has got. The original Java and CloudSim Plus project is described in [PART1_JAVA_ENGINE.md](PART1_JAVA_ENGINE.md); the project overview is the [README](../README.md).
 
 ## Goal
 
@@ -36,7 +36,7 @@ results/                 experiment output (the repository's equivalent of a dat
 **How the structure fits the existing repository**
 
 * **No separate `data/` folder.** `results/` already stores experiment output, and the dashboard already reads from it. A second folder would split the data in two.
-* **The dashboard stays in `dashboard/`.** It already works and has 113 tests. The root `app.py` is a thin entry point, not a second copy.
+* **The dashboard stays in `dashboard/`.** It already works and has its own tests (116 at Phase 6). The root `app.py` is a thin entry point, not a second copy.
 * **The Java engine is kept.** The rest of the repository is Python, so the engine is ported to Python. The Java version stays as a reference, so tests can show that the Python policies make the same decisions on the same inputs.
 * **`dashboard/scalix_dash/cloud/` (CloudStack) is kept for now.** Phase 4 replaces it with `scalix/aws/`. It is removed only after the AWS adapter covers the same ground.
 
@@ -72,7 +72,7 @@ results/                 experiment output (the repository's equivalent of a dat
 | 3 | Optional read-only AWS access: environment and permission check, CloudWatch / Auto Scaling monitor, data-source labels ([AWS_SETUP.md](AWS_SETUP.md)) | Done (mocked; not yet run against a real account) |
 | 4 | AWS controller: policy -> safety checks -> dry run, or one gated SetDesiredCapacity; allowlist, approved max 2, cooldowns, duplicate prevention, audit log, kill switch ([CONTROLLER.md](CONTROLLER.md)) | Done (offline only; never applied to a real group) |
 | 5 | Streamlit dashboard on the Python engine: overview, workload simulation, policy comparison, AWS monitoring (read-only, on demand), scaling history; every value labelled ([DASHBOARD.md](DASHBOARD.md)) | Done |
-| 6 | As briefed | Not started |
+| 6 | Evaluation (fixed suite, 4 experiments × 120 runs, seeds 1–10) and final documentation ([EVALUATION.md](EVALUATION.md), [README](../README.md)) | Done (simulated results only; no AWS deployment) |
 
 ## Known issues and open questions
 

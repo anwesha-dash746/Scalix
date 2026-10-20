@@ -1,0 +1,28 @@
+scenario,policy,outcome,decisions
+MIXED,SCALIX,cooldown,215
+MIXED,SCALIX,demand just spiked,5
+MIXED,SCALIX,demand rising,74
+MIXED,SCALIX,not low for 2 intervals yet,43
+MIXED,SCALIX,scaled down,64
+MIXED,THRESHOLD,cooldown,149
+MIXED,THRESHOLD,other (e.g. exactly at the threshold),5
+MIXED,THRESHOLD,scaled down,80
+NORMAL,SCALIX,cooldown,15
+NORMAL,SCALIX,demand rising,2
+NORMAL,SCALIX,not low for 2 intervals yet,77
+NORMAL,SCALIX,scaled down,27
+NORMAL,THRESHOLD,cooldown,3
+NORMAL,THRESHOLD,other (e.g. exactly at the threshold),3
+NORMAL,THRESHOLD,scaled down,22
+RISING,SCALIX,demand rising,6
+RISING,SCALIX,demand trend unknown,7
+RISING,SCALIX,not low for 2 intervals yet,10
+RISING,SCALIX,scaled down,2
+RISING,THRESHOLD,scaled down,12
+SPIKE,SCALIX,cooldown,98
+SPIKE,SCALIX,demand rising,11
+SPIKE,SCALIX,not low for 2 intervals yet,76
+SPIKE,SCALIX,scaled down,50
+SPIKE,THRESHOLD,cooldown,28
+SPIKE,THRESHOLD,other (e.g. exactly at the threshold),9
+SPIKE,THRESHOLD,scaled down,41
