@@ -104,7 +104,7 @@ This is the output of `python -m scalix.algorithms.examples`. These are illustra
 | 15% busy for 2 intervals, demand falling | hold | −1 | −1 |
 | 20% busy but demand just jumped | hold | −1 | **hold** (spike) |
 
-**This table does not show that SCALIX is better.** Acting early and in bigger steps should cut waiting time, but it also means *more workers, so more cost*. The evaluation measured this trade-off on full workloads: SCALIX cost 22–36% more than Threshold in every scenario, and responded much faster only under sudden changes. See [EVALUATION.md](EVALUATION.md).
+**This table does not show that SCALIX is better.** Acting early and in bigger steps should cut waiting time, but it also means *more workers, so more cost*. The evaluation measured this trade-off on full workloads, including 27 days of real traffic. At default settings SCALIX responded much faster under sudden changes and on real traffic, used much more worker-time, and cost 2–10% more than Threshold at t3.micro list prices. See [EVALUATION.md](EVALUATION.md).
 
 ## 6. Design choices to be ready to defend
 
@@ -128,7 +128,7 @@ To check that this comparison can actually fail, small bugs were deliberately pl
 
 * **Spike detection is noise-sensitive at very low traffic.** At 1–2 requests/s, a random 1.5× jump between intervals is fairly common. The effect is limited, because a spike only matters when utilization is already ≥ 55% (scale up) or ≤ 30% (it then delays scale-down by one interval).
 * **Utilization saturates at 100% during a backlog,** which hides the true demand. SCALIX's step sizing then underestimates. The "at least +1" rule only partly compensates.
-* **The trend needs a demand signal** (requests/s). On AWS that normally comes from a load balancer, which is billable. Without one, only CPU utilization is available. Phase 4 decided: the AWS controller defaults to Threshold, because with CPU only SCALIX's trend is always UNKNOWN and it would never scale down ([CONTROLLER.md §3](CONTROLLER.md#3-policy)).
+* **The trend needs a demand signal** (requests/s). On AWS that normally comes from a load balancer, which is billable. Phase 7 added a free alternative: the rate actually served, CPU utilization × serving capacity (`demand_signal="cpu"` in the simulator, `controller.demand_signal: CPU` on AWS). It equals demand until the workers saturate, then under-reports it. [EVALUATION.md](EVALUATION.md) measures what that costs SCALIX.
 * **The overload check on scale-down never fired in the experiments.** In the decision logs of the main experiment, the "would the remaining workers exceed 60%?" rule blocked no scale-down at all. SCALIX's cautious scale-down came entirely from the 90 s cooldown and the 2-interval rule. See [EVALUATION.md](EVALUATION.md), section 5.
 
 ## 9. Likely viva questions

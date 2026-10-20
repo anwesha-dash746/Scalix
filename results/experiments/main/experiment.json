@@ -1,7 +1,7 @@
 {
   "experiment_id": "main",
-  "data_label": "SIMULATED: utilization is estimated, response time is a documented proxy, and cost is an illustrative estimate. None of these are AWS measurements or AWS charges.",
-  "created_utc": "2026-10-20T18:33:28+00:00",
+  "data_label": "SIMULATED: utilization is estimated, response time comes from a documented queueing model, and cost is estimated from AWS list prices. None of these are AWS measurements or AWS bills.",
+  "created_utc": "2026-10-20T21:15:08+00:00",
   "scalix_version": "0.1.0",
   "python": "3.13.16",
   "numpy": "2.4.6",
@@ -39,7 +39,8 @@
       "spike_multiplier": 3.0,
       "spike_start_fraction": 0.3333333333333333,
       "spike_hold_fraction": 0.1,
-      "spike_decline_fraction": 0.25
+      "spike_decline_fraction": 0.25,
+      "nasa_scale": 2.37
     },
     "simulation": {
       "decision_interval_seconds": 15.0,
@@ -47,9 +48,15 @@
       "startup_delay_seconds": 30.0,
       "service_time_seconds": 2.0,
       "utilization_threshold": 0.7,
-      "price_per_worker_hour": 0.1,
+      "price_per_worker_hour": 0.016276712328767123,
       "minimum_billed_seconds": 60.0,
-      "currency": "USD"
+      "currency": "USD",
+      "charge_cpu_credits": true,
+      "cpu_credit_price_per_vcpu_hour": 0.05,
+      "vcpus_per_worker": 2,
+      "cpu_baseline_per_vcpu": 0.1,
+      "queueing_max_utilization": 0.95,
+      "demand_signal": "arrivals"
     },
     "policies": [
       {
@@ -89,7 +96,8 @@
           "low_intervals_required": 2
         }
       }
-    ]
+    ],
+    "same_start": true
   },
   "files": [
     "summary.csv",
@@ -98,5 +106,5 @@
     "events.csv",
     "workloads.csv"
   ],
-  "question": "How do the three strategies compare with the default settings?"
+  "question": "How do the three strategies compare with their default settings?"
 }

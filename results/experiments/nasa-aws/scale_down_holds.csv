@@ -1,0 +1,9 @@
+scenario,policy,outcome,decisions
+NASA,SCALIX,already at minimum,50
+NASA,SCALIX,demand just spiked,43
+NASA,SCALIX,demand rising,218
+NASA,SCALIX,demand trend unknown,26
+NASA,SCALIX,not low for 2 intervals yet,816
+NASA,SCALIX,scaled down,625
+NASA,THRESHOLD,already at minimum,90
+NASA,THRESHOLD,scaled down,606

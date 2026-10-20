@@ -120,6 +120,18 @@ class AuditLog:
                     down = max(down, float(e["epoch"]))
         return up, down
 
+    def busy_history(self, group: str, limit: int = 20) -> list[float]:
+        """CPU utilization x in-service instances of earlier runs (busy-instance equivalents), oldest first.
+
+        This is the CPU-derived demand signal (Phase 7). Only runs with an OK CPU reading and a
+        recorded in-service count are used; entries written before Phase 7 have no count and are skipped.
+        """
+        values = [e["cpu_value"] * e["in_service"] for e in self._for_group(group)
+                  if e.get("cpu_status") == "OK" and isinstance(e.get("cpu_value"), (int, float))
+                  and isinstance(e.get("in_service"), int) and not isinstance(e.get("in_service"), bool)
+                  and e["in_service"] >= 1 and e.get("outcome") not in ("APPLIED", "FAILED")]
+        return [float(v) for v in values[-limit:]]
+
     def cpu_history(self, group: str, limit: int = 20) -> list[float]:
         """Utilization (0..1) of earlier runs whose CPU reading was OK, oldest first."""
         values = [e["cpu_value"] for e in self._for_group(group)

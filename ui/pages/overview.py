@@ -44,12 +44,13 @@ row2[0].metric("Scaling events", f"{m['scale_up_events'] + m['scale_down_events'
                     "scale-downs.")
 row2[1].metric("Worker-minutes", f"{m['worker_minutes']:.0f}",
                help="Total time all workers existed (including start-up), summed. This is what you pay for.")
-row2[2].metric(f"Estimated cost ({currency})", f"{m['illustrative_cost']:.3f}",
-               help=f"Illustrative only: billed worker-time x {summary['price_per_worker_hour'].iloc[0]} "
-                    f"{currency} per worker-hour (assumed). Not an AWS charge.")
-row2[3].metric("Avg response (proxy)", f"{m['response_time_proxy_avg_s']:.1f} s",
-               help="Simulated proxy: 2 s service time + average queueing delay (Little's law). "
-                    "Not a measured latency.")
+row2[2].metric(f"Estimated cost ({currency})", f"{m['estimated_cost']:.3f}",
+               help=f"Estimated from AWS list prices: billed worker-time x {summary['price_per_worker_hour'].iloc[0]:.4f} "
+                    f"{currency} per worker-hour (t3.micro + IPv4 + 8 GB storage, us-east-1), plus "
+                    f"{m['cost_cpu_credits']:.3f} of T3 Unlimited CPU credits. Not an AWS bill.")
+row2[3].metric("Avg response (model)", f"{m['response_time_model_avg_s']:.2f} s",
+               help="Simulated with a queueing model (M/M/c): service time + waiting for a free worker + "
+                    "waiting behind any backlog. Not a measured latency.")
 
 st.plotly_chart(charts.workers_chart(ts_one, policies=(policy,),
                                      title=f"Workers paid for: {common.policy_label(policy)} (seed {first_seed})"),
@@ -58,8 +59,9 @@ with st.expander("What these numbers mean"):
     st.markdown(
         "- All values come from the **local simulator**, a documented model (see `docs/SIMULATION.md`), "
         "not from a real cloud.\n"
-        "- **Utilization** is estimated as served work ÷ capacity. **Response time** is a proxy formula.\n"
-        "- **Cost** = billed worker-time × an assumed price per worker-hour. It is for comparing "
-        "strategies, not a bill.\n"
+        "- **Utilization** is estimated as served work ÷ capacity. **Response time** comes from a queueing "
+        "model (M/M/c).\n"
+        "- **Cost** = billed worker-time × an hourly price from AWS list prices (t3.micro, us-east-1), plus "
+        "T3 Unlimited CPU credits for busy workers. It is an estimate, not a bill.\n"
         "- Every strategy receives the **identical** demand for each seed, so differences come from the "
         "strategy alone.")

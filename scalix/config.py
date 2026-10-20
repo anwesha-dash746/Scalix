@@ -41,7 +41,8 @@ KILL_SWITCH_ENV = "SCALIX_LIVE_DISABLED"
 
 _TOP_LEVEL_KEYS = {"mode", "live", "aws", "controller"}
 _LIVE_KEYS = {"enabled", "allowed_groups", "max_capacity", "max_step", "min_seconds_between_actions"}
-_CONTROLLER_KEYS = {"policy", "policy_settings", "decision_interval_seconds"}
+_CONTROLLER_KEYS = {"policy", "policy_settings", "decision_interval_seconds", "demand_signal"}
+_DEMAND_SIGNALS = ("CPU", "NONE")
 _POLICY_NAMES = ("STATIC", "THRESHOLD", "SCALIX")
 _CAPACITY_KEYS = {"capacity", "min_capacity", "initial_capacity", "max_capacity", "worker_count"}
 _AWS_KEYS = {"profile", "region", "auto_scaling_group", "metric_period_seconds", "max_metric_age_seconds"}
@@ -146,13 +147,17 @@ class LiveSettings:
 class ControllerSettings:
     """Which policy the AWS controller uses, and how often it decides."""
 
-    #: THRESHOLD by default: on AWS without a load balancer there is no request-rate signal, so
-    #: SCALIX's trend never becomes known and it would never scale down (see docs/CONTROLLER.md).
+    #: THRESHOLD by default: it needs CPU only. SCALIX can be chosen too; it then gets the
+    #: CPU-derived demand signal below (Phase 7). See docs/CONTROLLER.md.
     policy: str = "THRESHOLD"
     #: Extra policy settings (thresholds, cooldowns...). Capacity is set by the controller, not here.
     policy_settings: dict = field(default_factory=dict)
     #: Seconds between decisions in --watch mode. Matches CloudWatch's 5-minute basic monitoring.
     decision_interval_seconds: int = 300
+    #: Demand signal for SCALIX's trend and spike checks. CPU: CPU utilization x in-service
+    #: instances (busy-instance equivalents), free and needs no load balancer. NONE: no signal, so
+    #: SCALIX's trend stays UNKNOWN (the Phase 4 behaviour).
+    demand_signal: str = "CPU"
 
     def __post_init__(self) -> None:
         if not (isinstance(self.policy, str) and self.policy.strip().upper() in _POLICY_NAMES):
@@ -165,6 +170,10 @@ class ControllerSettings:
             raise ConfigError(f"controller.policy_settings may not set capacity ({', '.join(sorted(bad))}); "
                               "the controller takes it from the group and live.max_capacity")
         _whole("controller.decision_interval_seconds", self.decision_interval_seconds, 60)
+        if not (isinstance(self.demand_signal, str) and self.demand_signal.strip().upper() in _DEMAND_SIGNALS):
+            raise ConfigError(f"controller.demand_signal must be one of {', '.join(_DEMAND_SIGNALS)}, "
+                              f"got {self.demand_signal!r}")
+        object.__setattr__(self, "demand_signal", self.demand_signal.strip().upper())
 
 
 @dataclass(frozen=True)

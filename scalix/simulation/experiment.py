@@ -14,7 +14,7 @@ Output folder (default ``results/simulations/<experiment_id>/``):
 * ``workloads.csv``: the exact arrivals each repetition used
 * ``experiment.json``: every setting needed to reproduce the run
 
-Everything in these files is SIMULATED, and cost is an illustrative estimate, not an AWS charge.
+Everything in these files is SIMULATED, and cost is an estimate from AWS list prices, not an AWS bill.
 """
 
 from __future__ import annotations
@@ -33,18 +33,19 @@ import scalix
 from scalix.algorithms import CapacityLimits, ScalingPolicy, ScalixPolicy, StaticPolicy, ThresholdPolicy
 from scalix.metrics.stats import aggregate
 from scalix.simulation.engine import RunResult, SimulationConfig, simulate
-from scalix.simulation.workloads import Scenario, WorkloadSpec, generate, parse_scenario
+from scalix.simulation.workloads import SYNTHETIC_SCENARIOS, Scenario, WorkloadSpec, generate, parse_scenario
 
 #: Metrics included in aggregate.csv.
 REPORT_METRICS = (
     "avg_utilization", "peak_utilization", "time_above_threshold_s", "avg_workers", "peak_workers",
     "worker_minutes", "scale_up_events", "scale_down_events", "cooldown_blocks", "time_with_queue_s",
-    "peak_queue_requests", "unserved_at_end", "served_fraction", "response_time_proxy_avg_s",
-    "response_time_proxy_p95_s", "illustrative_cost",
+    "peak_queue_requests", "unserved_at_end", "served_fraction", "response_time_model_avg_s",
+    "response_time_model_p95_s", "queueing_wait_avg_s", "response_time_proxy_avg_s", "response_time_proxy_p95_s",
+    "estimated_cost", "cost_hourly_part", "cost_cpu_credits",
 )
 
-DATA_LABEL = ("SIMULATED: utilization is estimated, response time is a documented proxy, and cost is an "
-              "illustrative estimate. None of these are AWS measurements or AWS charges.")
+DATA_LABEL = ("SIMULATED: utilization is estimated, response time comes from a documented queueing model, and "
+              "cost is estimated from AWS list prices. None of these are AWS measurements or AWS bills.")
 
 
 def default_policies(capacity: CapacityLimits | None = None) -> tuple[ScalingPolicy, ...]:
@@ -56,12 +57,16 @@ def default_policies(capacity: CapacityLimits | None = None) -> tuple[ScalingPol
 
 @dataclass(frozen=True)
 class ExperimentSpec:
-    scenarios: tuple[Scenario, ...] = tuple(Scenario)
+    scenarios: tuple[Scenario, ...] = SYNTHETIC_SCENARIOS
     repetitions: int = 5
     base_seed: int = 42
     workload: WorkloadSpec = field(default_factory=WorkloadSpec)  # scenario and seed are overridden
     simulation: SimulationConfig = field(default_factory=SimulationConfig)
     policies: tuple[ScalingPolicy, ...] = field(default_factory=default_policies)
+    #: True (default): every policy starts with the same number of workers. False is only for tuned
+    #: comparisons, where a fixed fleet's size *is* its tuned setting: the policies that can scale
+    #: must still share one start, and fixed fleets (minimum == maximum) may differ.
+    same_start: bool = True
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "scenarios", tuple(parse_scenario(s) for s in self.scenarios))
@@ -80,9 +85,13 @@ class ExperimentSpec:
         names = [p.name for p in self.policies]
         if len(set(names)) != len(names):
             raise ValueError(f"each policy may appear only once, got {names}")
-        initial = {p.limits.initial for p in self.policies}
-        if len(initial) != 1:
-            raise ValueError(f"all policies must start with the same number of workers for a fair "
+        if not isinstance(self.same_start, bool):
+            raise ValueError("same_start must be true or false")
+        compared = [p for p in self.policies if self.same_start or p.limits.minimum != p.limits.maximum]
+        initial = {p.limits.initial for p in compared}
+        if len(initial) > 1:
+            who = "all policies" if self.same_start else "all policies that can scale"
+            raise ValueError(f"{who} must start with the same number of workers for a fair "
                              f"comparison, got {sorted(initial)}")
 
     def seeds(self) -> list[int]:
@@ -97,6 +106,7 @@ class ExperimentSpec:
             "workload": {k: v for k, v in self.workload.to_dict().items() if k not in ("scenario", "seed")},
             "simulation": self.simulation.to_dict(),
             "policies": [{"name": p.name, "parameters": p.parameters()} for p in self.policies],
+            "same_start": self.same_start,
         }
 
 
@@ -143,15 +153,25 @@ def run_experiment(spec: ExperimentSpec | None = None) -> ExperimentResult:
     )
 
 
-def save_experiment(result: ExperimentResult, out_dir: str | Path, experiment_id: str | None = None) -> Path:
-    """Write the result files to ``out_dir`` (created if needed) and return the folder."""
+def save_experiment(result: ExperimentResult, out_dir: str | Path, experiment_id: str | None = None,
+                    large_files: bool = True) -> Path:
+    """Write the result files to ``out_dir`` (created if needed) and return the folder.
+
+    ``large_files=False`` skips the per-step time series, decision log and workload files (used for
+    the day-long NASA runs, where they would be hundreds of MB); summary and aggregate are always written.
+    """
     out = Path(out_dir)
     out.mkdir(parents=True, exist_ok=True)
     result.summary.to_csv(out / "summary.csv", index=False)
     result.aggregate.to_csv(out / "aggregate.csv", index=False)
-    result.timeseries.to_csv(out / "timeseries.csv", index=False)
-    result.events.to_csv(out / "events.csv", index=False)
-    result.workloads.to_csv(out / "workloads.csv", index=False)
+    large = ["timeseries.csv", "events.csv", "workloads.csv"] if large_files else []
+    for stale in ("timeseries.csv", "events.csv", "workloads.csv"):
+        if stale not in large and (out / stale).exists():
+            (out / stale).unlink()
+    if large_files:
+        result.timeseries.to_csv(out / "timeseries.csv", index=False)
+        result.events.to_csv(out / "events.csv", index=False)
+        result.workloads.to_csv(out / "workloads.csv", index=False)
     manifest = {
         "experiment_id": experiment_id or out.name,
         "data_label": DATA_LABEL,
@@ -161,7 +181,7 @@ def save_experiment(result: ExperimentResult, out_dir: str | Path, experiment_id
         "numpy": np.__version__,
         "pandas": pd.__version__,
         "spec": result.spec.to_dict(),
-        "files": ["summary.csv", "aggregate.csv", "timeseries.csv", "events.csv", "workloads.csv"],
+        "files": ["summary.csv", "aggregate.csv"] + large,
     }
     (out / "experiment.json").write_text(json.dumps(manifest, indent=2), encoding="utf-8")
     return out
@@ -169,8 +189,8 @@ def save_experiment(result: ExperimentResult, out_dir: str | Path, experiment_id
 
 def headline_table(result: ExperimentResult) -> pd.DataFrame:
     """A compact mean-per-scenario-and-policy table for printing."""
-    cols = {"response_time_proxy_avg_s": "resp_proxy_avg_s", "response_time_proxy_p95_s": "resp_proxy_p95_s",
-            "avg_utilization": "avg_util", "worker_minutes": "worker_min", "illustrative_cost": "illus_cost",
+    cols = {"response_time_model_avg_s": "resp_avg_s", "response_time_model_p95_s": "resp_p95_s",
+            "avg_utilization": "avg_util", "worker_minutes": "worker_min", "estimated_cost": "est_cost",
             "scale_up_events": "ups", "scale_down_events": "downs", "time_above_threshold_s": "above_thr_s",
             "unserved_at_end": "unserved_end"}
     table = (result.summary.groupby(["scenario", "policy"], sort=False)[list(cols)].mean()

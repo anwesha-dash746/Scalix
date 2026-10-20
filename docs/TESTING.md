@@ -4,8 +4,8 @@
 
 | Environment | Command | Result |
 |---|---|---|
-| Full environment: Python 3.13, `requirements.txt` + `requirements-aws.txt`, Java 17 + engine jar | `.venv/bin/python -m pytest -q` | **570 passed**, 0 failed, 0 skipped (57 s) |
-| Clean environment: fresh venv with `requirements.txt` only (no boto3), all environment variables cleared | `python -m pytest -q` | **530 passed, 2 skipped**, 0 failed. The 2 skips are the two boto3 Stubber modules (40 tests), which skip with the reason "boto3 not installed". |
+| Full environment: Python 3.13, `requirements.txt` + `requirements-aws.txt`, Java 17 + engine jar | `.venv/bin/python -m pytest -q` | **616 passed**, 0 failed, 0 skipped (67 s) |
+| Clean environment: fresh venv with `requirements.txt` only (no boto3), all environment variables cleared | `python -m pytest -q` | **576 passed, 2 skipped**, 0 failed. The 2 skips are the two boto3 Stubber modules (40 tests), which skip with the reason "boto3 not installed". |
 | Original Java engine (Part 1), on your Mac, 20 October 2026 | `./mvnw -B test` | 108 / 108 passed |
 
 **No test contacts AWS.** The AWS tests use Boto3's Stubber and a network trap, a hook that fails the test if any request tries to leave the computer.
@@ -19,16 +19,18 @@
 | `tests/test_policies.py` | 119 | Static, Threshold and SCALIX decisions: boundaries, cooldowns, capacity limits, trend, spike, step sizing, reasons |
 | `tests/test_java_parity.py` | 5 | The Python policies equal the original Java policies on 15,000 random and boundary situations (action, step, trend, slope, cooldown flag, exact reason text) |
 | `tests/test_workloads.py` | 29 | Scenario shapes, Poisson arrivals, seeding, reproducibility |
-| `tests/test_simulation.py` | 37 | Queue model, start-up delay, billing, metrics and the response proxy, checked against hand calculations |
-| `tests/test_experiment.py` | 13 | Identical traces for every policy, output files, statistics (mean, std, 95% CI), reproducibility |
-| `tests/test_evaluation.py` | 10 | Suite fixed in advance; identical traces across experiments; every report cell computed from the outputs; verdict rules; paired differences; scale-down hold reasons; the committed report equals what the committed CSVs regenerate |
+| `tests/test_simulation.py` | 37 | Queue model, start-up delay, billing, metrics and the original response proxy, checked against hand calculations |
+| `tests/test_queueing_pricing.py` | 17 | *(Phase 7)* Erlang C against textbook values and the direct formula; the p95 against a Monte Carlo simulation; the utilization cap; the price adds up from its cited parts; CPU credits checked by hand, including workers removed while booting |
+| `tests/test_traces_tuning_signal.py` | 23 | *(Phase 7)* The NASA trace keeps every request of the log (1,891,714) and the per-day totals; one scale constant; tuning picks the cheapest setting meeting the target in every scenario and never uses test seeds; the CPU demand signal equals demand below saturation and under-reports it when saturated |
+| `tests/test_experiment.py` | 14 | Identical traces for every policy, output files, statistics (mean, std, 95% CI), reproducibility, the same-start rule |
+| `tests/test_evaluation.py` | 13 | Suite fixed in advance; test seeds never overlap training seeds; identical traces across experiments; tuned experiments use the committed tuned settings; every report cell computed from the outputs; verdicts; paired differences; hold reasons; the committed report **and the tables in EVALUATION.md** equal what the committed CSVs regenerate |
 | `tests/test_aws_logic.py` | 41 | Metric judging (OK / STALE / MISSING / MALFORMED / ERROR, never 0%), masking, access-check logic, no boto3 needed |
 | `tests/test_aws_stubbed.py` | 28 | Read-only guard blocks writes and billed calls *before sending*; exact read requests; denied and expired credentials; explicit profile ignores environment keys |
-| `tests/test_controller.py` | 63 | Data checks, action checks, every live gate, cooldowns, duplicates, unresolved actions, the kill switch, the audit log, and the dashboard having no write path |
+| `tests/test_controller.py` | 65 | Data checks, action checks, every live gate, cooldowns, duplicates, unresolved actions, the kill switch, the audit log, the dashboard having no write path, and *(Phase 7)* the CPU-derived demand signal |
 | `tests/test_controller_stubbed.py` | 12 | The writer sends exactly one `SetDesiredCapacity` with `HonorCooldown=True`, never retries, re-checks the kill switch, and is blocked from every other write |
 | `tests/test_ui.py` | 18 | Every dashboard page renders and is labelled; AWS reads only on a button press; errors are shown, not crashed on; no credentials shown; no write path |
 | `dashboard/tests/` (Part 1 dashboard) | 116 | The original Java-engine dashboard, including 3 integration tests with the real engine jar |
-| **Total** | **570** | |
+| **Total** | **616** | |
 
 ## 3. Do the tests actually catch bugs? (planted-bug checks)
 
@@ -42,9 +44,13 @@ A test suite that never fails proves little. After each phase, small bugs were p
 | 4 | Controller, writer and audit log | 18 | 18 |
 | 5 | Dashboard | 10 | 10 |
 | 6 | Evaluation: CI formula, population std, verdict direction, tie naming, overlap rule, paired sign, pairing by seed, bold rule, hold threshold, hold reasons, seed count, base seed | 12 | 12 |
-| **Total** | | **73** | **73** |
+| 7 | Erlang B instead of C, one slot per worker, waiting rate ignoring load, utilization cap ignored, p90 instead of p95, mean missing the backlog wait, price missing IPv4, credits ignoring vCPUs, credits netted across workers, CPU signal ignored, controller signal switch inverted, busy history missing the instance count, NASA day off by one, NASA scale changed, target judged on the mean scenario, tuning picking the fastest instead of the cheapest, training seeds overlapping test seeds, same-start check disabled | 18 | 18 |
+| **Total** | | **91** | **91** |
 
-In Phase 6, the first run caught 11 of 12. The missed bug, `<=` changed to `<` in the low-utilization filter, led to a new boundary test, and the re-run caught all 12.
+Twice, the first run missed one bug, and each miss led to a new test before the re-run:
+
+* **Phase 6:** 11 of 12 caught at first. The missed bug, `<=` changed to `<` in the low-utilization filter, led to a new boundary test.
+* **Phase 7:** 17 of 18 caught at first. The missed bug, a changed NASA scale constant, revealed that the scale was defined in two places. It's now one constant with a test that pins it.
 
 ## 4. How to run
 
@@ -61,6 +67,7 @@ In Phase 6, the first run caught 11 of 12. The missed bug, `<=` changed to `<` i
 ## 5. What is not tested
 
 * **Real AWS.** No test, and no development step, ever contacted AWS. The read-only monitor, access check, controller and writer are tested only against Boto3's Stubber and mocks. Real AWS responses, permissions, delays and AWS Academy restrictions are untested.
-* **Real application latency.** The response time is a model output, not a measurement.
+* **Real application latency.** The response time is a queueing-model output, not a measurement.
+* **Real AWS bills.** Costs are computed from list prices; nothing checks them against an invoice.
 * **Long-running behaviour of a real controller,** such as clock drift, restarts and credential expiry during a run.
 * **Whole-run agreement with the Java engine.** Only the policies are compared decision for decision; the two simulators are different models.

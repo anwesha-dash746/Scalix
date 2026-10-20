@@ -15,15 +15,21 @@ The model, kept simple on purpose so every number can be explained:
 * **Estimated utilization** of the serving workers in a step is ``served / (capacity x step)``,
   between 0 and 1. With a queue it is 1.0 (saturated), even if demand is far above capacity.
   The policy sees the average over the last decision interval, like a monitoring system would.
-* **Demand signal.** The policy also sees the arrival rate per interval (requests/s). SCALIX uses
-  it for its trend and spike checks; the other strategies ignore it.
+* **Demand signal.** The policy also sees a demand rate per interval (requests/s). SCALIX uses it
+  for its trend and spike checks; the other strategies ignore it. With ``demand_signal="arrivals"``
+  (default) it is the true arrival rate, as a load balancer would report. With
+  ``demand_signal="cpu"`` (Phase 7) it is the rate the workers actually *served*
+  (utilization x serving capacity), which is all CPU monitoring alone can show: it equals demand
+  below saturation and under-reports it when requests queue.
 
 The policy only decides. This engine applies the decision, enforces the capacity limits again as
 a safety net (any clamp is written into the reason), and records everything. Cooldowns are each
 policy's own rule; the event log lets tests check that they were respected.
 
-All outputs are SIMULATED. Utilization is estimated from the model above, the response time is a
-documented proxy, and cost uses an illustrative price. None of them are AWS measurements or charges.
+All outputs are SIMULATED. Utilization is estimated from the model above, the response time comes
+from documented formulas (the original backlog proxy, and since Phase 7 an M/M/c queueing model, see
+``scalix.metrics.queueing``), and cost is estimated from AWS list prices (``scalix.pricing``).
+None of them are AWS measurements or AWS bills.
 """
 
 from __future__ import annotations
@@ -35,6 +41,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
+from scalix import pricing
 from scalix.algorithms import Action, ScalingContext, ScalingPolicy
 from scalix.sources import DataSource
 from scalix.simulation.workloads import WorkloadTrace
@@ -59,9 +66,18 @@ class SimulationConfig:
     startup_delay_seconds: float = 30.0
     service_time_seconds: float = 2.0
     utilization_threshold: float = 0.70
-    price_per_worker_hour: float = 0.10
+    price_per_worker_hour: float = pricing.WORKER_HOURLY
     minimum_billed_seconds: float = 60.0
     currency: str = "USD"
+    # T3 Unlimited CPU credits (Phase 7). Set charge_cpu_credits=False for a flat hourly price.
+    charge_cpu_credits: bool = True
+    cpu_credit_price_per_vcpu_hour: float = pricing.T3_SURPLUS_CREDIT_PER_VCPU_HOUR
+    vcpus_per_worker: int = pricing.T3_MICRO_VCPUS
+    cpu_baseline_per_vcpu: float = pricing.T3_MICRO_BASELINE_PER_VCPU
+    # Queueing response model (Phase 7): utilization cap for the M/M/c formula.
+    queueing_max_utilization: float = 0.95
+    # Demand signal shown to policies (Phase 7): "arrivals" (load balancer) or "cpu" (CPU x workers).
+    demand_signal: str = "arrivals"
 
     def __post_init__(self) -> None:
         _positive("decision_interval_seconds", self.decision_interval_seconds)
@@ -75,6 +91,20 @@ class SimulationConfig:
         _non_negative("minimum_billed_seconds", self.minimum_billed_seconds)
         if not (isinstance(self.currency, str) and self.currency.strip()):
             raise ValueError("currency must be a non-empty label, e.g. 'USD'")
+        if not isinstance(self.charge_cpu_credits, bool):
+            raise ValueError("charge_cpu_credits must be true or false")
+        _non_negative("cpu_credit_price_per_vcpu_hour", self.cpu_credit_price_per_vcpu_hour)
+        if not (isinstance(self.vcpus_per_worker, int) and not isinstance(self.vcpus_per_worker, bool)
+                and self.vcpus_per_worker >= 1):
+            raise ValueError(f"vcpus_per_worker must be a whole number >= 1, got {self.vcpus_per_worker!r}")
+        _non_negative("cpu_baseline_per_vcpu", self.cpu_baseline_per_vcpu)
+        if self.cpu_baseline_per_vcpu > 1:
+            raise ValueError("cpu_baseline_per_vcpu must be within [0, 1]")
+        if not (isinstance(self.queueing_max_utilization, (int, float))
+                and 0 < self.queueing_max_utilization < 1):
+            raise ValueError("queueing_max_utilization must be between 0 and 1 (exclusive)")
+        if self.demand_signal not in ("arrivals", "cpu"):
+            raise ValueError(f"demand_signal must be 'arrivals' or 'cpu', got {self.demand_signal!r}")
 
     def to_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -109,7 +139,7 @@ class RunResult:
 
 
 EVENT_COLUMNS = ["data_source", "time_s", "action", "requested_delta", "applied_delta", "workers_before", "workers_after",
-                 "active", "booting", "utilization", "arrival_rate_rps", "trend", "relative_slope", "spike",
+                 "active", "booting", "utilization", "arrival_rate_rps", "demand_signal_rps", "trend", "relative_slope", "spike",
                  "cooldown_blocked", "reason"]
 
 
@@ -135,6 +165,7 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
     rate_history: list[float] = []
     interval_utils: list[float] = []
     interval_arrivals = 0.0
+    interval_served = 0.0
     rows: list[dict[str, Any]] = []
     events: list[dict[str, Any]] = []
 
@@ -150,9 +181,10 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
         if k > 0 and k % steps_per_decision == 0:
             util = float(np.mean(interval_utils))
             rate = interval_arrivals / config.decision_interval_seconds
+            signal = rate if config.demand_signal == "arrivals" else interval_served / config.decision_interval_seconds
             util_history.append(util)
-            rate_history.append(rate)
-            interval_utils, interval_arrivals = [], 0.0
+            rate_history.append(signal)
+            interval_utils, interval_arrivals, interval_served = [], 0.0, 0.0
 
             active, booting = counts(t)
             before = active + booting
@@ -186,6 +218,7 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
                 "data_source": DataSource.SIMULATED.value, "time_s": t, "action": d.action.value, "requested_delta": d.delta, "applied_delta": applied,
                 "workers_before": before, "workers_after": active_after + booting_after,
                 "active": active, "booting": booting, "utilization": util, "arrival_rate_rps": rate,
+                "demand_signal_rps": signal,
                 "trend": d.trend.value, "relative_slope": d.relative_slope, "spike": d.spike,
                 "cooldown_blocked": d.cooldown_blocked, "reason": reason,
             })
@@ -205,6 +238,7 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
         utilization = served / capacity
         interval_utils.append(utilization)
         interval_arrivals += arrivals
+        interval_served += served
         rows.append({
             "data_source": DataSource.SIMULATED.value,
             "time_s": t,

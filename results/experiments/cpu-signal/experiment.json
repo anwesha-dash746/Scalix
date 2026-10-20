@@ -1,0 +1,110 @@
+{
+  "experiment_id": "cpu-signal",
+  "data_label": "SIMULATED: utilization is estimated, response time comes from a documented queueing model, and cost is estimated from AWS list prices. None of these are AWS measurements or AWS bills.",
+  "created_utc": "2026-10-20T21:15:24+00:00",
+  "scalix_version": "0.1.0",
+  "python": "3.13.16",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "spec": {
+    "scenarios": [
+      "NORMAL",
+      "RISING",
+      "SPIKE",
+      "MIXED"
+    ],
+    "repetitions": 10,
+    "base_seed": 1,
+    "seeds": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8,
+      9,
+      10
+    ],
+    "workload": {
+      "duration_seconds": 1800.0,
+      "step_seconds": 5.0,
+      "base_rate": 5.0,
+      "poisson_noise": true,
+      "fluctuation": 0.25,
+      "fluctuation_period_seconds": 480.0,
+      "rising_start": 0.5,
+      "rising_end": 2.5,
+      "spike_multiplier": 3.0,
+      "spike_start_fraction": 0.3333333333333333,
+      "spike_hold_fraction": 0.1,
+      "spike_decline_fraction": 0.25,
+      "nasa_scale": 2.37
+    },
+    "simulation": {
+      "decision_interval_seconds": 15.0,
+      "worker_capacity_rps": 1.0,
+      "startup_delay_seconds": 30.0,
+      "service_time_seconds": 2.0,
+      "utilization_threshold": 0.7,
+      "price_per_worker_hour": 0.016276712328767123,
+      "minimum_billed_seconds": 60.0,
+      "currency": "USD",
+      "charge_cpu_credits": true,
+      "cpu_credit_price_per_vcpu_hour": 0.05,
+      "vcpus_per_worker": 2,
+      "cpu_baseline_per_vcpu": 0.1,
+      "queueing_max_utilization": 0.95,
+      "demand_signal": "cpu"
+    },
+    "policies": [
+      {
+        "name": "STATIC",
+        "parameters": {
+          "worker_count": 8
+        }
+      },
+      {
+        "name": "THRESHOLD",
+        "parameters": {
+          "min_capacity": 1,
+          "initial_capacity": 8,
+          "max_capacity": 20,
+          "upper": 0.7,
+          "lower": 0.3,
+          "cooldown_seconds": 60.0
+        }
+      },
+      {
+        "name": "SCALIX",
+        "parameters": {
+          "min_capacity": 1,
+          "initial_capacity": 8,
+          "max_capacity": 20,
+          "upper": 0.7,
+          "lower": 0.3,
+          "preemptive_upper": 0.55,
+          "target_utilization": 0.6,
+          "observation_window": 6,
+          "trend_threshold": 0.03,
+          "projection_intervals": 2,
+          "scale_up_cooldown_seconds": 30.0,
+          "scale_down_cooldown_seconds": 90.0,
+          "max_scale_up_step": 3,
+          "spike_factor": 1.5,
+          "low_intervals_required": 2
+        }
+      }
+    ],
+    "same_start": true
+  },
+  "files": [
+    "summary.csv",
+    "aggregate.csv",
+    "timeseries.csv",
+    "events.csv",
+    "workloads.csv"
+  ],
+  "question": "How much does SCALIX lose when its demand signal comes from CPU only (no load balancer)?"
+}

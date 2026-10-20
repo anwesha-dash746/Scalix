@@ -73,10 +73,12 @@ results/                 experiment output (the repository's equivalent of a dat
 | 4 | AWS controller: policy -> safety checks -> dry run, or one gated SetDesiredCapacity; allowlist, approved max 2, cooldowns, duplicate prevention, audit log, kill switch ([CONTROLLER.md](CONTROLLER.md)) | Done (offline only; never applied to a real group) |
 | 5 | Streamlit dashboard on the Python engine: overview, workload simulation, policy comparison, AWS monitoring (read-only, on demand), scaling history; every value labelled ([DASHBOARD.md](DASHBOARD.md)) | Done |
 | 6 | Evaluation (fixed suite, 4 experiments × 120 runs, seeds 1–10) and final documentation ([EVALUATION.md](EVALUATION.md), [README](../README.md)) | Done (simulated results only; no AWS deployment) |
+| 7 | Local fixes for the Phase 6 limitations: M/M/c queueing response model, AWS list-price cost with T3 CPU credits, tuning on separate training seeds, the NASA 1995 real-traffic trace, and a CPU-derived demand signal for SCALIX (simulator and AWS controller) ([EVALUATION.md](EVALUATION.md), [SIMULATION.md](SIMULATION.md)) | Done (simulated only; no AWS contact) |
+| 8 | AWS: CloudFormation template and cost review, then (each step separately approved) access check, stack, dry runs, one live action, deletion | Not started; needs your approval at each step |
 
 ## Known issues and open questions
 
 * **CloudWatch's free EC2 metrics arrive every 5 minutes.** One-minute detailed monitoring costs extra. LIVE mode will therefore decide less often than the simulator's 15 s interval, or treat data older than one period as stale. This is designed in Phase 4.
 * **AWS Academy permissions are unknown.** Learner Lab accounts often cannot create IAM roles and use expiring temporary credentials. `python -m scalix.aws.check_access` reports what the account actually allows, using read-only calls. The project does not assume any permission.
-* **No request-rate signal on AWS without a load balancer.** SCALIX's trend and spike checks need requests per second. EC2 and Auto Scaling metrics alone only give CPU, and a load balancer is billable. This has to be decided before LIVE mode.
+* **No request-rate signal on AWS without a load balancer.** SCALIX's trend and spike checks need requests per second, and a load balancer is billable. Phase 7 added a free CPU-derived signal (CPU × in-service instances); see [CONTROLLER.md](CONTROLLER.md).
 * **The Java build needs Maven Central.** If that network is blocked, the 3 real-engine Python tests are skipped (they say why). Everything else still runs.

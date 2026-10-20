@@ -22,25 +22,62 @@ def tiny(spec):
     return replace(spec, repetitions=2, workload=replace(spec.workload, duration_seconds=300))
 
 
+SYNTHETIC_EXPERIMENTS = ["main", "slow-startup", "scalix-target-70", "scalix-no-additions", "queue-cap-0.99",
+                         "tuned", "cpu-signal"]
+NASA_EXPERIMENTS = ["nasa", "nasa-tuned", "nasa-cpu-signal", "nasa-aws"]
+
+
 def test_suite_is_fixed_in_advance():
-    assert list(SUITE) == ["main", "slow-startup", "scalix-target-70", "scalix-no-additions"]
-    for exp in SUITE.values():
-        spec = exp.spec()
-        assert spec.seeds() == list(range(1, 11)), exp.name
-        assert [p.name for p in spec.policies] == ["STATIC", "THRESHOLD", "SCALIX"]
+    assert list(SUITE) == SYNTHETIC_EXPERIMENTS + NASA_EXPERIMENTS
+    for name in SYNTHETIC_EXPERIMENTS:
+        spec = SUITE[name].spec()
+        assert spec.seeds() == list(range(1, 11)), name
         assert {s.value for s in spec.scenarios} == {"NORMAL", "RISING", "SPIKE", "MIXED"}
+    for name in NASA_EXPERIMENTS:
+        spec = SUITE[name].spec()
+        assert spec.seeds() == list(range(1, 28)), name  # every complete day of July 1995
+        assert [s.value for s in spec.scenarios] == ["NASA"]
+        assert spec.workload.duration_seconds == 86_400.0
+        assert not SUITE[name].large_files
+    for exp in SUITE.values():
+        assert [p.name for p in exp.spec().policies] == ["STATIC", "THRESHOLD", "SCALIX"]
         assert exp.question
 
 
+def test_test_seeds_never_overlap_training_seeds():
+    from scalix.tuning import TRAINING_SEEDS
+
+    for exp in SUITE.values():
+        assert not set(exp.spec().seeds()) & set(TRAINING_SEEDS), exp.name
+
+
 def test_strategy_experiments_share_identical_workloads():
-    """main, scalix-target-70 and scalix-no-additions differ only in SCALIX's settings."""
-    specs = {n: SUITE[n].spec() for n in ("main", "scalix-target-70", "scalix-no-additions")}
+    """These experiments differ only in SCALIX's settings or the model, never in the traces."""
+    specs = {n: SUITE[n].spec() for n in ("main", "scalix-target-70", "scalix-no-additions", "queue-cap-0.99",
+                                          "tuned", "cpu-signal")}
     assert len({repr(s.workload) for s in specs.values()}) == 1
-    assert len({repr(s.simulation) for s in specs.values()}) == 1
-    assert len({repr(s.policies[:2]) for s in specs.values()}) == 1  # Static and Threshold identical
+    assert len({repr(specs[n].simulation) for n in ("main", "scalix-target-70", "scalix-no-additions", "tuned")}) == 1
+    assert len({repr(specs[n].policies[:2]) for n in ("main", "scalix-target-70", "scalix-no-additions",
+                                                     "queue-cap-0.99", "cpu-signal")}) == 1
     assert specs["scalix-target-70"].policies[2].target_utilization == 0.70
     assert specs["scalix-no-additions"].policies[2].spike_factor is None
+    assert specs["queue-cap-0.99"].simulation.queueing_max_utilization == 0.99
+    assert specs["cpu-signal"].simulation.demand_signal == "cpu"
     assert SUITE["slow-startup"].spec().simulation.startup_delay_seconds == 120.0
+    aws = SUITE["nasa-aws"].spec().simulation
+    assert (aws.decision_interval_seconds, aws.startup_delay_seconds, aws.demand_signal) == (300.0, 120.0, "cpu")
+
+
+def test_tuned_experiments_use_the_committed_tuned_settings():
+    from scalix.tuning import load_tuned
+
+    tuned = load_tuned()
+    for name in ("tuned", "nasa-tuned"):
+        spec = SUITE[name].spec()
+        assert not spec.same_start
+        for policy in spec.policies:
+            assert {k: policy.parameters()[k] for k in tuned[policy.name]} == tuned[policy.name]
+        assert {p.limits.initial for p in spec.policies if p.name != "STATIC"} == {8}
 
 
 @pytest.fixture(scope="module")
@@ -59,8 +96,8 @@ def test_run_writes_outputs_and_report_is_generated(small_run):
             assert (root / name / f).is_file()
     text = tables.read_text()
     assert "SIMULATED" in text and "## Experiment `main`" in text and "Why SCALIX keeps more workers" in text
-    assert {p.name for p in figures} == {"workloads.png", "workers_over_time.png", "response.png",
-                                         "worker_minutes.png", "overload.png", "tradeoff.png"}
+    assert {p.name for p in figures} == {"workloads.png", "nasa_trace.png", "workers_over_time.png", "response.png",
+                                         "cost.png", "overload.png", "tradeoff.png"}
     assert all(p.stat().st_size > 10_000 for p in figures)
 
 
@@ -128,7 +165,7 @@ def test_paired_differences_are_variant_minus_main_by_seed():
     main = summ([10.0, 20.0, 30.0])
     variant = summ([12.0, 22.5, 33.0]).sample(frac=1, random_state=0)  # row order must not matter
     text = evaluation.paired_table({"main": {"summary": main}, "scalix-target-70": {"summary": variant}})
-    row = next(line for line in text.splitlines() if line.startswith("| scalix-target-70 | Spike |"))
+    row = next(line for line in text.splitlines() if line.startswith("| scalix-target-70 | main | Spike |"))
     mean, half, _ = evaluation._ci_stats(np.array([2.0, 2.5, 3.0]))
     assert f"+{mean:.1f} ± {half:.1f}" in row and "**" in row
 
@@ -145,3 +182,15 @@ def test_scale_down_hold_reasons_are_classified():
     holds = evaluation.scale_down_holds(events)
     counts = dict(zip(holds.outcome, holds.decisions))
     assert counts == {"scaled down": 1, "cooldown": 1, "not low for 2 intervals yet": 1, "demand rising": 1}
+
+
+def test_committed_evaluation_doc_tables_match_committed_outputs():
+    """docs/EVALUATION.md is exactly its template with tables rebuilt from the committed CSVs."""
+    from scalix import evaluation_doc
+
+    doc, template = ROOT / "docs" / "EVALUATION.md", ROOT / "docs" / "EVALUATION.template.md"
+    if not (ROOT / "results" / "experiments" / "main" / "summary.csv").exists() or not template.exists():
+        pytest.skip("evaluation outputs not present")
+    datasets = {name: evaluation.load(ROOT / "results" / "experiments", name) for name in SUITE}
+    assert doc.read_text() == evaluation_doc.render(template.read_text(), datasets)
+    assert "{{" not in doc.read_text()

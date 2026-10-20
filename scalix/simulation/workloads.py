@@ -18,6 +18,11 @@ Scenarios (``base_rate`` is the "demand intensity"; every rate below is a multip
   0-25% normal; 25-50% gradual rise to 1.5x; 50-55% sudden spike; 55-75% decline to 0.6x;
   75-100% quiet, fluctuating around 0.6x.
 
+* ``NASA`` (Phase 7): **real traffic**, one day of the NASA Kennedy Space Center web log from
+  July 1995, replayed in real time and scaled by ``nasa_scale``. Here ``seed`` is the day of July
+  (1..27), ``base_rate``, ``poisson_noise`` and the shape settings are ignored, and the run lasts at
+  most one day. See ``scalix.simulation.nasa``.
+
 The same ``WorkloadSpec`` (including ``seed``) always produces exactly the same trace. Each
 scenario mixes its own name into the seed, so NORMAL and SPIKE with seed 42 are independent
 draws, but each is reproducible.
@@ -32,13 +37,19 @@ from enum import Enum
 import numpy as np
 import pandas as pd
 
+from scalix.simulation.nasa import DEFAULT_SCALE as NASA_DEFAULT_SCALE
+
 
 class Scenario(str, Enum):
     NORMAL = "NORMAL"
     RISING = "RISING"
     SPIKE = "SPIKE"
     MIXED = "MIXED"
+    NASA = "NASA"
 
+
+#: The four generated (synthetic) scenarios; NASA is real traffic and is run separately.
+SYNTHETIC_SCENARIOS = (Scenario.NORMAL, Scenario.RISING, Scenario.SPIKE, Scenario.MIXED)
 
 _SCENARIO_SEED_SALT = {Scenario.NORMAL: 101, Scenario.RISING: 202, Scenario.SPIKE: 303, Scenario.MIXED: 404}
 
@@ -89,6 +100,8 @@ class WorkloadSpec:
     spike_start_fraction: float = 1 / 3
     spike_hold_fraction: float = 0.10
     spike_decline_fraction: float = 0.25
+    # NASA (real traffic): multiplier applied to the real request counts
+    nasa_scale: float = NASA_DEFAULT_SCALE
 
     def __post_init__(self) -> None:
         object.__setattr__(self, "scenario", parse_scenario(self.scenario))
@@ -114,6 +127,7 @@ class WorkloadSpec:
             _fraction(name, getattr(self, name))
         if self.spike_start_fraction + self.spike_hold_fraction + self.spike_decline_fraction > 1 + 1e-9:
             raise ValueError("spike start + hold + decline fractions must fit within the duration (sum <= 1)")
+        _positive("nasa_scale", self.nasa_scale)
 
     @property
     def steps(self) -> int:
@@ -165,6 +179,8 @@ def _ramp(t: np.ndarray, t0: float, t1: float, r0: float, r1: float) -> np.ndarr
 def expected_rate(spec: WorkloadSpec, t: np.ndarray) -> np.ndarray:
     """The scenario's expected arrival rate λ(t) in requests/s, at the times ``t`` (seconds)."""
     t = np.asarray(t, dtype=float)
+    if spec.scenario is Scenario.NASA:
+        raise ValueError("the NASA scenario is real traffic and has no formula; use generate(spec).expected_rate")
     b = spec.base_rate
     T = spec.duration_seconds
     s = spec.scenario
@@ -198,8 +214,22 @@ def expected_rate(spec: WorkloadSpec, t: np.ndarray) -> np.ndarray:
     )
 
 
+def _nasa_trace(spec: WorkloadSpec) -> WorkloadTrace:
+    from scalix.simulation.nasa import day_counts
+
+    times = np.arange(spec.steps, dtype=float) * spec.step_seconds
+    arrivals = day_counts(spec.seed, spec.duration_seconds, spec.step_seconds) * spec.nasa_scale
+    window = max(1, int(round(60 / spec.step_seconds)))
+    smooth = np.convolve(arrivals, np.ones(window) / window, mode="same") / spec.step_seconds
+    for arr in (times, smooth, arrivals):
+        arr.setflags(write=False)
+    return WorkloadTrace(spec=spec, times=times, expected_rate=smooth, arrivals=arrivals)
+
+
 def generate(spec: WorkloadSpec) -> WorkloadTrace:
     """Generate the trace for ``spec``. Same spec -> identical trace, on every run."""
+    if spec.scenario is Scenario.NASA:
+        return _nasa_trace(spec)
     times = np.arange(spec.steps, dtype=float) * spec.step_seconds
     rate = np.maximum(expected_rate(spec, times), 0.0)
     if spec.poisson_noise:

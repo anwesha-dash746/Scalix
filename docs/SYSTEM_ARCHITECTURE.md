@@ -9,7 +9,7 @@ flowchart LR
     subgraph local["Your computer (everything here works with no AWS account)"]
         direction TB
         UI["Streamlit dashboard<br/>ui/ (5 pages)"]
-        EVAL["Evaluation suite<br/>scalix/evaluation.py"]
+        EVAL["Evaluation suite + tuning<br/>scalix/evaluation.py, tuning.py"]
         CLI["Command lines<br/>python -m scalix.simulation<br/>python -m scalix.aws.controller"]
         subgraph core["scalix/ core (pure Python, no AWS)"]
             ALG["algorithms/<br/>Static · Threshold · SCALIX<br/>policy.decide(context) -> decision"]
@@ -67,8 +67,11 @@ If Mermaid doesn't render where you're reading, here's the same picture in text:
 |---|---|---|
 | `scalix/algorithms` | Three policies sharing one interface: `decide(ScalingContext) -> ScalingDecision`. Pure functions with no clock, network, Streamlit or AWS. | nothing else in SCALIX |
 | `scalix/simulation` | Workload scenarios (seeded Poisson arrivals), a discrete-time fluid-queue engine with start-up delay, and an experiment runner that feeds identical traces to every policy. | algorithms, metrics |
-| `scalix/metrics` | Per-run metrics (utilization, worker-time, events, overload, response proxy, illustrative cost) and statistics across seeds (mean, std, 95% Student-t CI). | pandas, NumPy |
-| `scalix/evaluation.py` | The fixed experiment suite (seeds 1–10) and the generated report (tables and figures). | simulation, metrics |
+| `scalix/metrics` | Per-run metrics (utilization, worker-time, events, overload, queueing-model response time, cost from AWS list prices with T3 credits) and statistics across seeds (mean, std, 95% Student-t CI). | pandas, NumPy |
+| `scalix/evaluation.py` | The fixed experiment suite (seeds 1–10 and 27 NASA days) and the generated report (tables and figures). | simulation, metrics, tuning |
+| `scalix/tuning.py` | Tunes each strategy on training seeds 101–110 (never the test seeds). | simulation |
+| `scalix/pricing.py` | AWS list prices behind the cost estimate (t3.micro, us-east-1). | – |
+| `scalix/simulation/nasa.py`, `data/traces/` | The NASA July 1995 real-traffic trace, as request counts per 5 s. | – |
 | `scalix/config.py`, `sources.py` | Run mode and AWS names (never credentials); the SIMULATED / MOCKED / LIVE_AWS labels. | YAML |
 | `scalix/aws/session.py` | Sessions from an explicit named profile only. Every client gets an operation guard (read-only allowlist). Error hints and redaction. | boto3 (optional) |
 | `scalix/aws/monitoring.py` | Reads group state and CPU. Judges every reading OK / STALE / MISSING / MALFORMED / ERROR; missing is never 0%. Also has a mock monitor. | session |

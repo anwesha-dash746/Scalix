@@ -475,11 +475,42 @@ def test_network_error_on_the_write(tmp_path):
 # --------------------------------------------------------------------------- policies on AWS data
 
 def test_scalix_without_a_demand_signal_never_scales_down(tmp_path):
-    """Documented limitation: without requests/s the trend is UNKNOWN, so SCALIX holds."""
+    """demand_signal NONE (the Phase 4 behaviour): the trend stays UNKNOWN, so SCALIX holds forever."""
+    cfg = replace(live_config(), controller=ControllerSettings(policy="SCALIX", demand_signal="NONE"))
+    times = iter(T0 + 600 * k for k in range(10))
+    c, _, _ = controller(tmp_path, config=cfg, mon=monitor(cpu=5.0, desired=2), clock=lambda: next(times))
+    for _ in range(5):
+        r = c.tick()
+        assert r.outcome is Outcome.HOLD and "UNKNOWN" in r.decision.reason
+
+
+def test_scalix_with_the_cpu_demand_signal_can_scale_down(tmp_path):
+    """Phase 7: CPU x in-service instances gives SCALIX a trend, so a steady quiet group scales down."""
     cfg = replace(live_config(), controller=ControllerSettings(policy="SCALIX"))
-    c, _, _ = controller(tmp_path, config=cfg, mon=monitor(cpu=5.0, desired=2))
-    r = c.tick()
-    assert r.outcome is Outcome.HOLD and "UNKNOWN" in r.decision.reason
+    assert cfg.controller.demand_signal == "CPU"
+    times = iter(T0 + 600 * k for k in range(10))
+    c, audit, _ = controller(tmp_path, config=cfg, mon=monitor(cpu=5.0, desired=2), clock=lambda: next(times))
+    first = c.tick()
+    assert first.outcome is Outcome.HOLD and "UNKNOWN" in first.decision.reason   # 1 sample: no trend yet
+    second = c.tick()
+    assert second.decision.trend.value == "STABLE"
+    assert second.outcome is Outcome.DRY_RUN and second.desired_proposed == 1
+    assert audit.busy_history(GROUP) == [0.10, 0.10]                              # 5% x 2 instances
+
+
+def test_cpu_demand_signal_rises_with_load_and_skips_old_entries(tmp_path):
+    from scalix.algorithms.trend import estimate_trend
+    audit = AuditLog(tmp_path / "audit.jsonl")
+    cfg = replace(live_config(), controller=ControllerSettings(policy="THRESHOLD"))
+    times = iter(T0 + 600 * k for k in range(10))
+    clock = lambda: next(times)  # noqa: E731
+    for cpu in (30.0, 40.0, 50.0):
+        c, _, _ = controller(tmp_path, config=cfg, mon=monitor(cpu=cpu, desired=1), clock=clock, audit=audit)
+        c.tick()
+    with audit.path.open("a") as f:   # a pre-Phase-9 entry without in_service is ignored
+        f.write(json.dumps({"epoch": T0 + 9000, "group": GROUP, "outcome": "HOLD", "cpu_status": "OK", "cpu_value": 0.9}) + "\n")
+    assert audit.busy_history(GROUP) == pytest.approx([0.30, 0.40, 0.50])
+    assert estimate_trend(audit.busy_history(GROUP), 6, 0.03).trend.value == "RISING"
 
 
 def test_static_policy_never_proposes_changes(tmp_path):

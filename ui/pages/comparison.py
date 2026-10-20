@@ -27,13 +27,15 @@ st.plotly_chart(charts.queue_chart(ts), width="stretch", theme=None)
 # ----------------------------------------------------------------------- comparison table
 METRICS = [
     ("worker_minutes", "Worker-minutes (resource-time)", ".0f", "lower"),
-    ("illustrative_cost", "Estimated cost (illustrative)", ".3f", "lower"),
+    ("estimated_cost", "Estimated cost (AWS list prices)", ".3f", "lower"),
+    ("cost_cpu_credits", "  of which CPU credits", ".3f", "lower"),
     ("avg_utilization", "Average utilization", ".1%", "higher"),
     ("time_above_threshold_s", "Time above threshold (s)", ".0f", "lower"),
     ("time_with_queue_s", "Time overloaded, requests waiting (s)", ".0f", "lower"),
     ("unserved_at_end", "Requests still waiting at the end", ".0f", "lower"),
-    ("response_time_proxy_avg_s", "Avg response, proxy (s)", ".2f", "lower"),
-    ("response_time_proxy_p95_s", "p95 response, proxy (s)", ".2f", "lower"),
+    ("response_time_model_avg_s", "Avg response, queueing model (s)", ".2f", "lower"),
+    ("response_time_model_p95_s", "p95 response, queueing model (s)", ".2f", "lower"),
+    ("response_time_proxy_avg_s", "Avg response, original proxy (s)", ".2f", "lower"),
     ("scale_up_events", "Scale-ups", ".1f", None),
     ("scale_down_events", "Scale-downs", ".1f", None),
 ]
@@ -71,8 +73,8 @@ st.caption(f"Mean over {n_runs} run(s)" + (" ± half-width of the 95% confidence
 st.dataframe(pd.DataFrame(table), hide_index=True, width="stretch")
 st.caption("'Clear lead' means the 95% intervals do not overlap; otherwise the difference may be noise. "
            "Read the metrics together: high utilization is only good if requests are not waiting, and the "
-           "cheapest strategy may be the one that lets demand queue. Costs use an assumed price and are not "
-           "AWS charges.")
+           "cheapest strategy may be the one that lets demand queue. Costs are estimates from AWS list prices "
+           "(t3.micro + IPv4 + storage, plus T3 CPU credits), not AWS bills.")
 
 choice = st.selectbox("Chart a metric", [m[0] for m in METRICS], format_func=dict((m[0], m[1]) for m in METRICS).get,
                       key="cmp_metric")

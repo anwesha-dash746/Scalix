@@ -73,6 +73,7 @@ class ControllerResult:
     decision: ScalingDecision | None = None
     cpu_status: str | None = None
     cpu_value: float | None = None
+    in_service: int | None = None
     checks: tuple[Check, ...] = ()
     live_gates: tuple[Check, ...] = ()
 
@@ -150,7 +151,7 @@ class Controller:
             "data_source": result.data_source.value, "outcome": outcome or result.outcome.value,
             "dry_run": result.dry_run, "action_id": action_id,
             "desired_before": result.desired_before, "desired_after": result.desired_proposed,
-            "cpu_status": result.cpu_status, "cpu_value": result.cpu_value,
+            "cpu_status": result.cpu_status, "cpu_value": result.cpu_value, "in_service": result.in_service,
             "policy": self.config.controller.policy,
             "decision": None if d is None else {"action": d.action.value, "delta": d.delta, "reason": d.reason,
                                                  "cooldown_blocked": d.cooldown_blocked},
@@ -190,7 +191,8 @@ class Controller:
         group = snap.group
         cpu = snap.cpu
         base = dict(time_utc=stamp, group=self.group, data_source=source, dry_run=not apply,
-                    cpu_status=cpu.status.value, cpu_value=cpu.value)
+                    cpu_status=cpu.status.value, cpu_value=cpu.value,
+                    in_service=group.in_service if group is not None else None)
 
         def finish(outcome: Outcome, reason: str, **kw) -> ControllerResult:
             result = ControllerResult(outcome=outcome, reason=reason, **base, **kw)
@@ -231,11 +233,12 @@ class Controller:
         eff_max = min(group.max_size, live.max_capacity)
         try:
             history = self.audit.cpu_history(self.group)
+            busy = self.audit.busy_history(self.group)
             last_up, last_down = self.audit.last_scale_times(self.group)
             last_change = self.audit.last_change(self.group)
             audit_ok, audit_detail = True, f"readable ({self.audit.path.name})"
         except AuditError as exc:
-            history, last_up, last_down, last_change = [], float("-inf"), float("-inf"), None
+            history, busy, last_up, last_down, last_change = [], [], float("-inf"), float("-inf"), None
             audit_ok, audit_detail = False, str(exc)
 
         if cfg.controller.policy == "STATIC":
@@ -246,7 +249,10 @@ class Controller:
                                    max_capacity=max(eff_max, desired))
         ctx = ScalingContext(time=epoch, provisioned=desired, active=group.in_service, booting=group.pending,
                              utilization=cpu.value, utilization_history=tuple(history) + (cpu.value,),
-                             arrival_rate_history=(),  # not available without a load balancer
+                             # No request rate without a load balancer. With demand_signal CPU, SCALIX gets
+                             # CPU x in-service instances instead (equals served load; see docs/CONTROLLER.md).
+                             arrival_rate_history=(tuple(busy) + (cpu.value * group.in_service,)
+                                                   if cfg.controller.demand_signal == "CPU" else ()),
                              last_scale_up_time=last_up, last_scale_down_time=last_down)
         decision = policy.decide(ctx)
         base.update(decision=decision, desired_before=desired)

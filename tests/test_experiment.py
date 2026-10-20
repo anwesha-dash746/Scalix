@@ -9,6 +9,7 @@ import pytest
 
 from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, ThresholdPolicy
 from scalix.simulation import ExperimentSpec, Scenario, WorkloadSpec, run_experiment, save_experiment
+from scalix.simulation.workloads import SYNTHETIC_SCENARIOS
 from scalix.simulation.__main__ import main as cli_main
 
 SHORT = WorkloadSpec(duration_seconds=600)
@@ -22,7 +23,7 @@ def result():
 def test_every_combination_runs(result):
     s = result.summary
     assert len(s) == 4 * 3 * 3
-    assert set(s["scenario"]) == {sc.value for sc in Scenario}
+    assert set(s["scenario"]) == {sc.value for sc in SYNTHETIC_SCENARIOS}
     assert set(s["policy"]) == {"STATIC", "THRESHOLD", "SCALIX"}
     assert sorted(s["seed"].unique()) == [10, 11, 12]
 
@@ -43,7 +44,7 @@ def test_experiment_is_reproducible(result):
 def test_aggregate_has_n_and_intervals(result):
     agg = result.aggregate
     assert (agg["n"] == 3).all()
-    row = agg[(agg.scenario == "SPIKE") & (agg.policy == "STATIC") & (agg.metric == "illustrative_cost")]
+    row = agg[(agg.scenario == "SPIKE") & (agg.policy == "STATIC") & (agg.metric == "estimated_cost")]
     assert len(row) == 1
 
 
@@ -56,7 +57,8 @@ def test_saved_files_and_labels(result, tmp_path):
     assert "not AWS" in manifest["data_label"] or "None of these are AWS" in manifest["data_label"]
     assert manifest["spec"]["seeds"] == [10, 11, 12]
     summary = pd.read_csv(out / "summary.csv")
-    assert "illustrative_cost" in summary.columns and "response_time_proxy_avg_s" in summary.columns
+    assert {"estimated_cost", "cost_cpu_credits", "response_time_model_avg_s", "response_time_model_p95_s",
+            "response_time_proxy_avg_s"} <= set(summary.columns)
     assert not any("aws" in c.lower() or "actual" in c.lower() for c in summary.columns)
     events = pd.read_csv(out / "events.csv")
     assert events["reason"].notna().all()
@@ -103,3 +105,17 @@ def test_cli_rejects_invalid_settings(args, tmp_path, capsys):
     assert cli_main(args + ["--out", str(tmp_path / "x")]) == 2
     assert "Invalid setting" in capsys.readouterr().err
     assert not (tmp_path / "x").exists()
+
+
+def test_same_start_rule_and_its_tuned_exception():
+    from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, ThresholdPolicy
+
+    auto = (ThresholdPolicy(capacity=CapacityLimits()), ScalixPolicy(capacity=CapacityLimits()))
+    with pytest.raises(ValueError, match="same number of workers"):
+        ExperimentSpec(policies=(StaticPolicy(worker_count=15), *auto))
+    spec = ExperimentSpec(policies=(StaticPolicy(worker_count=15), *auto), same_start=False)
+    assert spec.to_dict()["same_start"] is False
+    with pytest.raises(ValueError, match="policies that can scale"):
+        ExperimentSpec(policies=(ThresholdPolicy(capacity=CapacityLimits(1, 4, 20)), auto[1]), same_start=False)
+    with pytest.raises(ValueError, match="same_start"):
+        ExperimentSpec(same_start="no")
