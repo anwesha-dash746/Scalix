@@ -3,7 +3,7 @@
 import streamlit as st
 
 from scalix.sources import DataSource
-from ui import charts, common
+from ui import charts, common, live_chart
 
 common.page_header("Workload simulation", "Choose a demand pattern and settings, then run all three strategies "
                    "on the identical workload. Runs on this computer in a second or two; nothing touches AWS.")
@@ -101,8 +101,8 @@ with c[1]:
 workload = result.workloads[(result.workloads["scenario"] == scenario) & (result.workloads["seed"] == seed_sel)]
 ts = result.timeseries[(result.timeseries["scenario"] == scenario) & (result.timeseries["seed"] == seed_sel)]
 threshold = float(st.session_state.get("form", common.DEFAULT_FORM)["th_upper"])
-st.plotly_chart(charts.demand_chart(workload), width="stretch", theme=None)
-st.plotly_chart(charts.utilization_chart(ts, threshold), width="stretch", theme=None)
+live_chart.show(charts.live_demand(workload))
+live_chart.show(charts.live_utilization(ts, threshold))
 
 with st.expander("Table view and downloads"):
     st.dataframe(result.summary[["scenario", "policy", "seed", "avg_utilization", "peak_utilization",

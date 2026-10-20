@@ -3,7 +3,7 @@
 import streamlit as st
 
 from scalix.sources import DataSource
-from ui import charts, common
+from ui import charts, common, live_chart
 
 common.page_header("Overview", "How one strategy did in the latest simulated run. "
                    "Change the run on 'Workload simulation'; compare strategies on 'Policy comparison'.")
@@ -52,9 +52,8 @@ row2[3].metric("Avg response (model)", f"{m['response_time_model_avg_s']:.2f} s"
                help="Simulated with a queueing model (M/M/c): service time + waiting for a free worker + "
                     "waiting behind any backlog. Not a measured latency.")
 
-st.plotly_chart(charts.workers_chart(ts_one, policies=(policy,),
-                                     title=f"Workers paid for: {common.policy_label(policy)} (seed {first_seed})"),
-                width="stretch", theme=None)
+live_chart.show(charts.live_workers(ts_one, policies=(policy,),
+                                    title=f"Workers paid for: {common.policy_label(policy)} (seed {first_seed})"))
 with st.expander("What these numbers mean"):
     st.markdown(
         "- All values come from the **local simulator**, a documented model (see `docs/SIMULATION.md`), "

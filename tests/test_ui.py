@@ -163,7 +163,7 @@ def test_aws_page_in_simulation_mode_never_contacts_aws(isolated):
     assert not at.exception
     text = markdown_text(at)
     assert "AWS reading is switched off" in text and "MOCKED" in text
-    assert not [b for b in at.button if "Read group" in b.label]
+    assert not [b for b in at.button if b.key == "live_read"]  # only the mocked tab has buttons
     assert isolated == {"monitor": 0, "access": 0}
 
 
@@ -386,3 +386,61 @@ def test_latest_saved_report_skips_unreadable_files(tmp_path):
     (tmp_path / "aws-reports" / "access-report-20991231-000000.json").write_text("{broken")
     path, data = check_access_module.latest_saved_report(tmp_path / "aws-reports")
     assert path.name == "access-report-20261021-034412.json" and data["checks"][1]["status"] == "OK"
+
+
+# --------------------------------------------------------------------------- mocked tab mirrors the live tab
+
+def test_mocked_tab_has_the_live_tabs_controls_and_views_without_contacting_aws(tmp_path, isolated):
+    read_only_config(tmp_path)
+    at = app().switch_page("ui/pages/aws.py").run()
+    labels = {b.key: b.label for b in at.button}
+    assert labels["live_read"] == labels["mock_read"] == "Read group and CPU now"
+    assert labels["live_check"] == labels["mock_check"] == "Run access check"
+    next(b for b in at.button if b.key == "mock_read").click().run()
+    next(b for b in at.button if b.key == "mock_check").click().run()
+    assert not at.exception
+    metrics = {m.label for m in at.metric}
+    assert {"Desired workers", "In service", "Starting up", "Allowed range", "Average CPU"} <= metrics
+    assert "Access check" in [h.value for h in at.subheader]
+    table = at.dataframe[-1].value
+    assert "Caller identity" in list(table["check"]) and set(table["result"]) <= {"OK", "INFO"}
+    assert "MOCKED" in markdown_text(at)
+    assert isolated == {"monitor": 0, "access": 0}  # the mocked buttons never touch AWS
+
+
+# --------------------------------------------------------------------------- animated charts
+
+def test_live_charts_carry_exactly_the_simulated_data_and_replay_in_under_30_seconds():
+    import re
+
+    from ui import common, live_chart
+
+    result = common.run(common.DEFAULT_FORM)
+    ts = result.timeseries[(result.timeseries["scenario"] == "MIXED") & (result.timeseries["seed"] == 42)]
+    wl = result.workloads[(result.workloads["scenario"] == "MIXED") & (result.workloads["seed"] == 42)]
+    specs = [charts.live_workers(ts), charts.live_queue(ts), charts.live_utilization(ts, 0.7), charts.live_demand(wl)]
+    for spec in specs:
+        assert spec.duration_s <= live_chart.MAX_DURATION_S
+        html = live_chart.live_chart_html(spec)
+        data = json.loads(re.search(r"const D = (\{.*?\});\n", html).group(1))
+        assert data["durationMs"] <= 30_000
+        for needle in ("IntersectionObserver", "prefers-reduced-motion", "visibilitychange", "requestAnimationFrame"):
+            assert needle in html
+        assert "<script src" not in html  # self-contained: works offline, no external library
+    payload = live_chart.payload(charts.live_workers(ts))
+    for s, p in zip(payload["series"], charts.POLICY_ORDER):
+        d = ts[ts["policy"] == p]
+        assert s["y"] == [float(v) for v in d["provisioned"]] and s["color"] == charts.POLICY_COLORS[p] and s["step"]
+        assert s["x"] == [round(v / 60, 6) for v in d["time_s"]]
+
+
+def test_live_chart_rejects_long_or_empty_animations():
+    from ui.live_chart import ChartSpec, Series
+
+    s = Series("a", [0, 1], [1, 2], "#000")
+    with pytest.raises(ValueError, match="duration_s"):
+        ChartSpec("t", "y", (s,), duration_s=31)
+    with pytest.raises(ValueError, match="at least one series"):
+        ChartSpec("t", "y", ())
+    with pytest.raises(ValueError, match="matching"):
+        ChartSpec("t", "y", (Series("b", [0, 1], [1], "#000"),))

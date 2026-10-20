@@ -116,3 +116,54 @@ def metric_bars(agg: pd.DataFrame, metric: str, label: str, fmt: str = ".2f") ->
     fig.update_xaxes(title=None)
     fig.update_layout(hovermode="closest", bargap=0.4)
     return fig
+
+
+# --------------------------------------------------------------------------- animated (live replay) versions
+# The same data and colours as the Plotly figures above, drawn by ui/live_chart.py so the run replays in
+# under 30 s once the chart is on screen.
+
+def _live_series(ts: pd.DataFrame, column: str, policies=POLICY_ORDER, step: bool = False):
+    from ui.live_chart import Series
+
+    out = []
+    for p in policies:
+        d = ts[ts["policy"] == p]
+        if d.empty:
+            continue
+        out.append(Series(name=POLICY_SHORT[p], x=list(_minutes(d)), y=list(d[column]), color=POLICY_COLORS[p],
+                          step=step))
+    return tuple(out)
+
+
+def live_workers(ts: pd.DataFrame, policies=POLICY_ORDER, title: str = "Workers paid for"):
+    from ui.live_chart import ChartSpec
+
+    return ChartSpec(title=title, y_label="workers", series=_live_series(ts, "provisioned", policies, step=True),
+                     y_max=max(1, float(ts["provisioned"].max())) * 1.15, unit=" workers",
+                     caption="Steps up when a strategy adds a worker (billed from the moment it is requested).")
+
+
+def live_queue(ts: pd.DataFrame):
+    from ui.live_chart import ChartSpec
+
+    return ChartSpec(title="Requests waiting (overload)", y_label="requests waiting",
+                     series=_live_series(ts, "queue"), y_max=max(5.0, float(ts["queue"].max()) * 1.12),
+                     unit=" waiting")
+
+
+def live_utilization(ts: pd.DataFrame, threshold: float = 0.70):
+    from ui.live_chart import ChartSpec
+
+    return ChartSpec(title="How busy the workers were (estimated)", y_label="utilization",
+                     series=_live_series(ts, "utilization"), y_max=1.05, y_format="pct",
+                     ref_line=(threshold, f"{threshold:.0%} threshold"))
+
+
+def live_demand(workload: pd.DataFrame):
+    from ui.live_chart import ChartSpec, Series
+
+    x = list(_minutes(workload))
+    return ChartSpec(title="Incoming demand", y_label="requests per second", y_format="1f", unit=" req/s",
+                     series=(Series("arrivals (random draw)", x, list(workload["arrival_rate_rps"]), NEUTRAL_LIGHT,
+                                    width=1.5, label_tip=False),
+                             Series("expected demand", x, list(workload["expected_rate_rps"]), NEUTRAL_DARK)))

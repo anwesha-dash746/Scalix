@@ -4,7 +4,7 @@ import pandas as pd
 import streamlit as st
 
 from scalix.sources import DataSource
-from ui import charts, common
+from ui import charts, common, live_chart
 
 common.page_header("Policy comparison", "Static, Threshold and SCALIX on the identical workload. No strategy is "
                    "assumed to win: each metric is judged on its own, with 95% confidence intervals.")
@@ -21,8 +21,10 @@ ts = result.timeseries[(result.timeseries["scenario"] == scenario) & (result.tim
 agg = result.aggregate[result.aggregate["scenario"] == scenario]
 n_runs = int(agg["n"].max())
 
-st.plotly_chart(charts.workers_chart(ts, title=f"Workers paid for over time (seed {seed})"), width="stretch", theme=None)
-st.plotly_chart(charts.queue_chart(ts), width="stretch", theme=None)
+st.caption("The charts replay the run as if it were happening live, all three strategies on the same clock. "
+           "Each starts when it is on screen and takes 20 seconds; use 'Show all' to skip.")
+live_chart.show(charts.live_workers(ts, title=f"Workers paid for over time (seed {seed})"))
+live_chart.show(charts.live_queue(ts))
 
 # ----------------------------------------------------------------------- comparison table
 METRICS = [
