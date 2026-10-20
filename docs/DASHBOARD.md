@@ -25,7 +25,7 @@ The second line is only needed once, or after `requirements.txt` changes. Then o
 | **Overview** | One strategy in the latest run: workers at the end, workload pattern, average and peak utilization, scaling events, worker-minutes (resource-time), estimated cost (AWS list prices), response time from the queueing model, and workers over time. | SIMULATED |
 | **Workload simulation** | A form for the pattern (normal / rising / spike / mixed), duration, step, demand intensity, seeds, workers, start-up delay, price per worker-hour (default: t3.micro at us-east-1 list prices), whether to add T3 CPU credits, and every strategy setting. "Run simulation" runs all three strategies locally. It shows demand and utilization over time, a table view and CSV downloads. | SIMULATED |
 | **Policy comparison** | Workers over time, requests waiting (overload), and a side-by-side table of resource-time, cost, utilization, time above threshold, overload, unserved demand, response times (queueing model, plus the original proxy) and scaling counts. Values are mean ± 95% CI with a "clear lead / too close to call" verdict. There's also a bar chart per metric and the decision log with reasons. | SIMULATED |
-| **AWS monitoring** | A bold **strict budget** notice (USD 20, from `aws.budget_usd`), and the result of the last saved access check (a local file; no AWS call). **Live tab:** in READ_ONLY mode, two buttons, *Read group and CPU now* and *Run access check*, that make read-only calls only when pressed. In SIMULATION mode it explains how to enable reading. **Mocked tab:** scripted situations (busy, quiet, no data, stale, broken) judged by the same rules as live data. | LIVE_AWS / MOCKED |
+| **AWS monitoring** | A bold **strict budget** notice (USD 20, from `aws.budget_usd`), and the result of the last saved access check (a local file; no AWS call). **Live tab:** in READ_ONLY mode, two buttons, *Read group and CPU now* and *Run access check*, that make read-only calls only when pressed. In SIMULATION mode it explains how to enable reading. **Mocked preview tab:** the same layout, buttons and result views as the live tab (profile, region and group line; *Read group and CPU now*; *Run access check*), filled with scripted data shaped like AWS's answers for six situations (busy, normal, quiet, no data yet, stale, broken) and judged by the same rules. It never contacts AWS. | LIVE_AWS / MOCKED |
 | **Scaling history** | Simulated decisions from the latest run; the AWS controller's audit log (`results/aws/audit.jsonl`) with an **"actual AWS change?"** column that says YES only for APPLIED; and the mocked controller log, with a one-click mocked dry run. | SIMULATED / LIVE_AWS / MOCKED |
 
 On first visit the dashboard runs a small default simulation (Mixed pattern, 3 seeds), so every page has data. It takes about a second, locally.
@@ -41,7 +41,14 @@ On first visit the dashboard runs a small default simulation (Mixed pattern, 3 s
 
 ## Charts
 
-* **Fixed colours.** Plotly with one colour per strategy everywhere: Static blue, Threshold orange, SCALIX aqua. The palette passed the colour-vision checks on the app background. Aqua is below 3:1 contrast, so every multi-series chart has a legend and every chart's numbers are also in a table.
+* **Live replay of each run.** The time charts (demand, utilization, workers, requests waiting) replay the simulated run as if it were happening live, all three strategies on the same clock. Each replay:
+  * **starts only when at least half the chart is on screen**, pauses while it is scrolled away or the browser tab is hidden, and finishes in **20 seconds**. That's under 30 s by design, and a test enforces it.
+  * shows a moving "now" line with the simulated time, and labels each strategy's current value at the tip of its line.
+  * can be restarted with **Replay**, or skipped to the end with **Show all**. Hovering shows every strategy's value at that moment.
+  * jumps straight to the finished chart if your system asks for reduced motion.
+
+  The animation draws exactly the simulator's time series; nothing is interpolated into the data. The charts are plain SVG drawn by a small built-in script (`ui/live_chart.py`), with no external library, so they also work offline.
+* **Fixed colours.** One colour per strategy everywhere: Static blue, Threshold orange, SCALIX aqua. The palette passed the colour-vision checks on the app background. Aqua is below 3:1 contrast, so every multi-series chart has a legend and every chart's numbers are also in a table.
 * **One y-axis per chart.** No dual axes, 2 px lines and a hairline grid.
 * **Confidence intervals** appear as whiskers when there's more than one run.
 

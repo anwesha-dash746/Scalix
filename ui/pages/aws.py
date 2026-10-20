@@ -102,6 +102,67 @@ def render_snapshot(snap: MonitoringSnapshot) -> None:
         st.caption("This data is fit for a decision (fresh CPU and a readable group).")
 
 
+def render_access_report(report, source: DataSource) -> None:
+    """The access-check result, the same way for a live and a mocked check."""
+    st.subheader("Access check")
+    common.show_source(source, "Read-only checks of what this account allows")
+    st.dataframe(pd.DataFrame([{"check": c.check, "result": c.status, "detail": c.detail} for c in report.checks]),
+                 hide_index=True, width="stretch")
+    if report.prerequisites_missing:
+        st.warning("Missing: " + "; ".join(report.prerequisites_missing))
+    calls = ", ".join(report.calls_made) or "none"
+    if source is DataSource.MOCKED:
+        st.caption(f"Calls a real check would make: {calls}. This is scripted data: nothing was sent to AWS.")
+    else:
+        st.caption(f"AWS calls made: {calls}. Nothing was changed.")
+
+
+def mock_access_report(case: str):
+    """A scripted access check shaped like a real AWS Academy one, for the mocked tab."""
+    from scalix.aws.check_access import AccessReport, CheckResult
+
+    cpu = MOCK_CASES[case]["cpu_percents"][0]
+    cpu_detail = ("no datapoints in the latest period (MISSING, not 0%)" if cpu is None
+                  else "malformed datapoint (MALFORMED)" if cpu != cpu
+                  else f"latest 5-minute average {cpu:.0f}%")
+    return AccessReport(
+        generated_utc=datetime.now(timezone.utc).isoformat(timespec="seconds"),
+        environment={"selected_profile": MOCK_PROFILE, "temporary_credentials": True},
+        checks=[CheckResult("AWS CLI", "INFO", "not needed: the AWS Python library is enough"),
+                CheckResult("Credentials", "OK", "found via shared-credentials-file; temporary (scripted)"),
+                CheckResult("Region", "INFO", MOCK_REGION),
+                CheckResult("Caller identity", "OK", "account ********0000, identity arn:aws:sts::********0000:"
+                            "assumed-role/voclabs/use… (scripted)"),
+                CheckResult("Describe Auto Scaling groups", "OK", f"permitted; 1 group(s) visible: {MOCK_GROUP}"),
+                CheckResult("Describe EC2 instances", "OK",
+                            f"permitted; first page shows {MOCK_CASES[case]['in_service']} instance(s): running"),
+                CheckResult("List CloudWatch metrics", "OK", "permitted; 1 EC2 CPU metric series visible"),
+                CheckResult("Read CloudWatch CPU for the group", "OK", cpu_detail)],
+        calls_made=["sts:GetCallerIdentity", "autoscaling:DescribeAutoScalingGroups", "ec2:DescribeInstances",
+                    "cloudwatch:ListMetrics", "cloudwatch:GetMetricStatistics"])
+
+
+def mock_snapshot(case: str) -> MonitoringSnapshot:
+    return MockMonitor(name=MOCK_GROUP, min_size=1, max_size=2, clock=lambda: datetime.now(timezone.utc),
+                       **MOCK_CASES[case]).snapshot()
+
+
+def connection_line(profile: str, region: str, group: str | None, note: str) -> None:
+    st.markdown(f"Profile name **{profile}** · region **{region}** · group **{group or 'not set'}** ({note}).")
+
+
+def action_buttons(prefix: str, read_disabled: bool) -> tuple[bool, bool]:
+    c = st.columns(2)
+    read = c[0].button("Read group and CPU now", type="primary", icon=":material/refresh:", key=f"{prefix}_read",
+                       disabled=read_disabled,
+                       help="Two read-only calls: DescribeAutoScalingGroups and GetMetricStatistics.")
+    check = c[1].button("Run access check", icon=":material/fact_check:", key=f"{prefix}_check",
+                        help="Up to five read-only calls that show what this account allows.")
+    return read, check
+
+
+MOCK_PROFILE, MOCK_REGION, MOCK_GROUP = "mock-profile", "us-east-1", "mock-scalix-workers"
+
 tab_live, tab_mock = st.tabs(["Live AWS (read-only)", "Mocked preview"])
 
 with tab_live:
@@ -115,16 +176,12 @@ with tab_live:
                     "2. set `mode: READ_ONLY` in `config/scalix.local.yaml` with the profile *name* and region "
                     "(if you renamed that file to switch AWS off, rename it back);\n"
                     "3. restart the dashboard and use the buttons on this tab.")
+        st.caption("The **Mocked preview** tab shows exactly what this tab looks like when it is reading AWS.")
     else:
         a = config.aws
-        st.markdown(f"Profile name **{a.profile}** · region **{a.region}** · group **{a.auto_scaling_group or 'not set'}** "
-                    "(names only; credentials are never shown or entered here).")
-        c = st.columns(2)
-        read_clicked = c[0].button("Read group and CPU now", type="primary", icon=":material/refresh:",
-                                   disabled=a.auto_scaling_group is None,
-                                   help="Two read-only calls: DescribeAutoScalingGroups and GetMetricStatistics.")
-        check_clicked = c[1].button("Run access check", icon=":material/fact_check:",
-                                    help="Up to five read-only calls that show what this account allows.")
+        connection_line(a.profile, a.region, a.auto_scaling_group,
+                        "names only; credentials are never shown or entered here")
+        read_clicked, check_clicked = action_buttons("live", read_disabled=a.auto_scaling_group is None)
         if read_clicked:
             try:
                 from scalix.aws.monitoring import CloudWatchMonitor
@@ -149,22 +206,29 @@ with tab_live:
                 st.error(f"Access check failed: {describe_error('access check', exc)}")
         if "aws_snapshot" in st.session_state:
             render_snapshot(st.session_state["aws_snapshot"])
-        if "aws_report" not in st.session_state:
-            last_check_summary()
         if "aws_report" in st.session_state:
-            report = st.session_state["aws_report"]
-            st.subheader("Access check")
-            st.dataframe(pd.DataFrame([{"check": c.check, "result": c.status, "detail": c.detail}
-                                       for c in report.checks]), hide_index=True, width="stretch")
-            if report.prerequisites_missing:
-                st.warning("Missing: " + "; ".join(report.prerequisites_missing))
-            st.caption(f"AWS calls made: {', '.join(report.calls_made) or 'none'}. Nothing was changed.")
+            render_access_report(st.session_state["aws_report"], DataSource.LIVE_AWS)
+        else:
+            last_check_summary()
         if a.auto_scaling_group is None:
             st.caption("Reading the group needs `aws.auto_scaling_group`; no group exists yet for this project.")
 
 with tab_mock:
-    st.markdown("Scripted data in the same shape as AWS data, judged by the same rules. "
-                "Use it to see what each situation looks like. **It never comes from AWS.**")
+    st.markdown("The same view as the live tab, filled with **scripted data shaped exactly like AWS's answers** and "
+                "judged by the same rules. Pick a situation, then use the buttons as you would on the live tab. "
+                "**It never comes from AWS.**")
     case = st.segmented_control("Situation", list(MOCK_CASES), default="busy", key="aws_mock_case") or "busy"
-    render_snapshot(MockMonitor(name="mock-scalix-workers", min_size=1, max_size=2,
-                                clock=lambda: datetime.now(timezone.utc), **MOCK_CASES[case]).snapshot())
+    connection_line(MOCK_PROFILE, MOCK_REGION, MOCK_GROUP, "scripted names; no credentials involved")
+    mock_read, mock_check = action_buttons("mock", read_disabled=False)
+    if mock_read or ("mock_snapshot" in st.session_state and st.session_state.get("mock_case_read") != case):
+        st.session_state["mock_snapshot"] = mock_snapshot(case)
+        st.session_state["mock_case_read"] = case
+    if mock_check or ("mock_report" in st.session_state and st.session_state.get("mock_case_checked") != case):
+        st.session_state["mock_report"] = mock_access_report(case)
+        st.session_state["mock_case_checked"] = case
+    if "mock_snapshot" in st.session_state:
+        render_snapshot(st.session_state["mock_snapshot"])
+    if "mock_report" in st.session_state:
+        render_access_report(st.session_state["mock_report"], DataSource.MOCKED)
+    if "mock_snapshot" not in st.session_state and "mock_report" not in st.session_state:
+        st.caption("Press a button to see the result, exactly where the live tab shows it.")
