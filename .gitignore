@@ -37,3 +37,5 @@ results/simulations/sim-*/
 
 # AWS-edition runtime output (access reports, audit logs); may contain masked account details
 results/aws/
+# Global live-action disable (create with: touch config/LIVE_DISABLED); local state, never committed
+config/LIVE_DISABLED

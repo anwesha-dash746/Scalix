@@ -19,7 +19,7 @@ scalix/                  Python package (AWS edition)
   algorithms/            scaling policies: STATIC, THRESHOLD, SCALIX      (Phase 1, done)
   simulation/            workload generator + simulation engine           (Phase 2, done)
   metrics/               metrics, statistics, result files                (Phase 2, done)
-  aws/                   read-only AWS: session guard, CloudWatch/ASG monitor, access check (Phase 3, done)
+  aws/                   read-only monitor + access check (Phase 3); controller, writer, audit log (Phase 4)
   config.py              run mode + AWS names; SIMULATION by default      (Phase 0, extended in 3)
   sources.py             SIMULATED / MOCKED / LIVE_AWS labels               (Phase 3)
 tests/                   pytest suite for scalix/ (tests/java/ = Java parity harness, test-only)
@@ -59,7 +59,7 @@ results/                 experiment output (the repository's equivalent of a dat
 * **Credentials stay outside the repository.** They come only from Boto3's normal lookup: a named AWS CLI profile or temporary credentials. They are never hard-coded, printed or committed. `.gitignore` excludes `.env*`, `.aws/`, `credentials*`, `*_accessKeys.csv`, `*.pem` and `*.key`, and a test checks this.
 * **No cloud change without approval.** No AWS resource is created, changed, scaled or deleted without explicit approval of that exact action. That includes clean-up, because a forgotten stack keeps billing.
 * **Read-only guard (done).** Every AWS client refuses any operation outside a 5-operation read-only allowlist before the request is sent. Missing, stale or malformed metrics are never treated as 0%. See [AWS_SETUP.md](AWS_SETUP.md).
-* **More safeguards come with LIVE mode:** the group allowlist, a capacity cap of 2 by default, cooldowns, duplicate-request protection, an audit log, a global live-action disable, refusal to act on stale or malformed metrics, and a dashboard that cannot write to AWS when a page is opened or refreshed.
+* **LIVE-mode safeguards (done, offline):** exact-name group allowlist, approved maximum of 2, max step 1, a 5-minute controller cooldown, duplicate and unresolved-action protection, a single-run lock, an append-only audit log, a global kill switch (`config/LIVE_DISABLED`), refusal to act on stale, missing or malformed data, operator confirmation of the group name, and a dashboard with no path to AWS writes. See [CONTROLLER.md](CONTROLLER.md).
 
 ## Phase status
 
@@ -69,7 +69,8 @@ results/                 experiment output (the repository's equivalent of a dat
 | 1 | Python scaling policies, plus parity tests against the Java policies ([ALGORITHMS.md](ALGORITHMS.md)) | Done |
 | 2 | Python workload generator, simulator, metrics and results ([SIMULATION.md](SIMULATION.md)) | Done |
 | 3 | Optional read-only AWS access: environment and permission check, CloudWatch / Auto Scaling monitor, data-source labels ([AWS_SETUP.md](AWS_SETUP.md)) | Done (mocked; not yet run against a real account) |
-| Later | As briefed phase by phase: dashboard, LIVE-mode safeguards, CloudFormation template and cost review, viva preparation | Not started |
+| 4 | AWS controller: policy -> safety checks -> dry run, or one gated SetDesiredCapacity; allowlist, approved max 2, cooldowns, duplicate prevention, audit log, kill switch ([CONTROLLER.md](CONTROLLER.md)) | Done (offline only; never applied to a real group) |
+| Later | As briefed phase by phase: dashboard, CloudFormation template and cost review, viva preparation | Not started |
 
 ## Known issues and open questions
 

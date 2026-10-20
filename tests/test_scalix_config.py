@@ -107,8 +107,67 @@ def test_live_without_enable_switch_is_rejected():
         ScalixConfig(mode=Mode.LIVE)
 
 
-def test_live_with_both_switches_is_accepted():
-    assert parse_config({"mode": "LIVE", "live": {"enabled": True}, "aws": AWS}).mode.may_change_aws
+LIVE_OK = {"mode": "LIVE", "live": {"enabled": True, "allowed_groups": ["scalix-workers"]},
+           "aws": {**AWS, "auto_scaling_group": "scalix-workers"}}
+
+
+def test_live_with_both_switches_and_an_allowlisted_group_is_accepted():
+    cfg = parse_config(LIVE_OK)
+    assert cfg.mode.may_change_aws and cfg.live.allowed_groups == ("scalix-workers",)
+
+
+def test_live_needs_a_group_that_is_on_the_allowlist():
+    with pytest.raises(ConfigError, match="auto_scaling_group"):
+        parse_config({**LIVE_OK, "aws": AWS})
+    with pytest.raises(ConfigError, match="not in live.allowed_groups"):
+        parse_config({**LIVE_OK, "live": {"enabled": True, "allowed_groups": []}})
+    with pytest.raises(ConfigError, match="not in live.allowed_groups"):
+        parse_config({**LIVE_OK, "live": {"enabled": True, "allowed_groups": ["other-group"]}})
+
+
+def test_live_gate_defaults_are_conservative():
+    live = ScalixConfig().live
+    assert (live.enabled, live.allowed_groups, live.max_capacity, live.max_step) == (False, (), 2, 1)
+    assert live.min_seconds_between_actions == 300
+    assert ScalixConfig().controller.policy == "THRESHOLD"
+
+
+@pytest.mark.parametrize("live, match", [
+    ({"allowed_groups": "scalix-workers"}, "list"),
+    ({"allowed_groups": ["scalix-*"]}, "exact names"),
+    ({"allowed_groups": ["bad;name"]}, "invalid name"),
+    ({"max_capacity": 0}, "max_capacity"), ({"max_capacity": 50}, "max_capacity"),
+    ({"max_capacity": 2.5}, "max_capacity"), ({"max_step": 0}, "max_step"),
+    ({"min_seconds_between_actions": 10}, "min_seconds"), ({"enabled": "yes"}, "true or false"),
+])
+def test_invalid_live_gates(live, match):
+    with pytest.raises(ConfigError, match=match):
+        parse_config({"live": live})
+
+
+@pytest.mark.parametrize("controller, match", [
+    ({"policy": "MAGIC"}, "controller.policy"),
+    ({"policy_settings": {"max_capacity": 10}}, "may not set capacity"),
+    ({"policy_settings": {"worker_count": 10}}, "may not set capacity"),
+    ({"policy_settings": "fast"}, "key: value"),
+    ({"decision_interval_seconds": 5}, "decision_interval"),
+    ({"dry_run": False}, "unknown controller setting"),
+])
+def test_invalid_controller_settings(controller, match):
+    with pytest.raises(ConfigError, match=match):
+        parse_config({"controller": controller})
+
+
+def test_kill_switch(tmp_path):
+    from scalix.config import kill_switch_active
+
+    flag = tmp_path / "LIVE_DISABLED"
+    assert kill_switch_active(flag, {}) is None
+    assert "SCALIX_LIVE_DISABLED" in kill_switch_active(flag, {"SCALIX_LIVE_DISABLED": "1"})
+    for off in ("0", "false", "NO", ""):
+        assert kill_switch_active(flag, {"SCALIX_LIVE_DISABLED": off}) is None
+    flag.touch()
+    assert "LIVE_DISABLED" in kill_switch_active(flag, {})
 
 
 @pytest.mark.parametrize("data, match", [

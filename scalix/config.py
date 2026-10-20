@@ -36,8 +36,14 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent
 DEFAULT_CONFIG_PATH = PROJECT_ROOT / "config" / "scalix.yaml"
 LOCAL_CONFIG_PATH = PROJECT_ROOT / "config" / "scalix.local.yaml"
 
-_TOP_LEVEL_KEYS = {"mode", "live", "aws"}
-_LIVE_KEYS = {"enabled"}
+KILL_SWITCH_PATH = PROJECT_ROOT / "config" / "LIVE_DISABLED"
+KILL_SWITCH_ENV = "SCALIX_LIVE_DISABLED"
+
+_TOP_LEVEL_KEYS = {"mode", "live", "aws", "controller"}
+_LIVE_KEYS = {"enabled", "allowed_groups", "max_capacity", "max_step", "min_seconds_between_actions"}
+_CONTROLLER_KEYS = {"policy", "policy_settings", "decision_interval_seconds"}
+_POLICY_NAMES = ("STATIC", "THRESHOLD", "SCALIX")
+_CAPACITY_KEYS = {"capacity", "min_capacity", "initial_capacity", "max_capacity", "worker_count"}
 _AWS_KEYS = {"profile", "region", "auto_scaling_group", "metric_period_seconds", "max_metric_age_seconds"}
 _REGION_RE = re.compile(r"^[a-z]{2}(-gov|-iso[a-z]*)?-[a-z]+-\d+$")
 _GROUP_RE = re.compile(r"^[\w\-.:/ ]{1,255}$")
@@ -98,22 +104,89 @@ class AwsSettings:
         return [f"aws.{k}" for k in ("profile", "region", "auto_scaling_group") if getattr(self, k) is None]
 
 
+def _whole(name: str, value: Any, low: int, high: int | None = None) -> None:
+    if isinstance(value, bool) or not isinstance(value, int) or value < low or (high is not None and value > high):
+        bound = f"from {low} to {high}" if high is not None else f">= {low}"
+        raise ConfigError(f"{name} must be a whole number {bound}, got {value!r}")
+
+
+@dataclass(frozen=True)
+class LiveSettings:
+    """Gates for LIVE mode. All of them are checked again by the controller before any write."""
+
+    enabled: bool = False
+    #: Exact names of the only Auto Scaling groups SCALIX may ever change. Empty = none.
+    allowed_groups: tuple[str, ...] = ()
+    #: Approved maximum number of workers. SCALIX never sets desired capacity above this, even if
+    #: the group's own MaxSize is higher. Default 2; raising it needs your explicit approval.
+    max_capacity: int = 2
+    #: Largest change in desired capacity per action (a bigger proposal is reduced to this).
+    max_step: int = 1
+    #: Minimum time between two capacity changes made by SCALIX, whatever the policy says.
+    min_seconds_between_actions: int = 300
+
+    def __post_init__(self) -> None:
+        if not isinstance(self.enabled, bool):
+            raise ConfigError(f"live.enabled must be true or false (without quotes), got {self.enabled!r}")
+        groups = self.allowed_groups
+        if isinstance(groups, str) or not isinstance(groups, (list, tuple)):
+            raise ConfigError("live.allowed_groups must be a list of exact group names, e.g. [scalix-workers]")
+        for g in groups:
+            if isinstance(g, str) and any(ch in g for ch in "*?[]"):
+                raise ConfigError(f"live.allowed_groups must list exact names, not patterns: {g!r}")
+            if not (isinstance(g, str) and _GROUP_RE.match(g)):
+                raise ConfigError(f"live.allowed_groups contains an invalid name: {g!r}")
+        object.__setattr__(self, "allowed_groups", tuple(groups))
+        _whole("live.max_capacity", self.max_capacity, 1, 20)
+        _whole("live.max_step", self.max_step, 1, 5)
+        _whole("live.min_seconds_between_actions", self.min_seconds_between_actions, 60)
+
+
+@dataclass(frozen=True)
+class ControllerSettings:
+    """Which policy the AWS controller uses, and how often it decides."""
+
+    #: THRESHOLD by default: on AWS without a load balancer there is no request-rate signal, so
+    #: SCALIX's trend never becomes known and it would never scale down (see docs/CONTROLLER.md).
+    policy: str = "THRESHOLD"
+    #: Extra policy settings (thresholds, cooldowns...). Capacity is set by the controller, not here.
+    policy_settings: dict = field(default_factory=dict)
+    #: Seconds between decisions in --watch mode. Matches CloudWatch's 5-minute basic monitoring.
+    decision_interval_seconds: int = 300
+
+    def __post_init__(self) -> None:
+        if not (isinstance(self.policy, str) and self.policy.strip().upper() in _POLICY_NAMES):
+            raise ConfigError(f"controller.policy must be one of {', '.join(_POLICY_NAMES)}, got {self.policy!r}")
+        object.__setattr__(self, "policy", self.policy.strip().upper())
+        if not isinstance(self.policy_settings, dict):
+            raise ConfigError("controller.policy_settings must contain key: value pairs")
+        bad = _CAPACITY_KEYS & set(self.policy_settings)
+        if bad:
+            raise ConfigError(f"controller.policy_settings may not set capacity ({', '.join(sorted(bad))}); "
+                              "the controller takes it from the group and live.max_capacity")
+        _whole("controller.decision_interval_seconds", self.decision_interval_seconds, 60)
+
+
 @dataclass(frozen=True)
 class ScalixConfig:
     """Validated SCALIX settings. Building one with an unsafe combination raises ConfigError."""
 
     mode: Mode = Mode.SIMULATION
-    live_enabled: bool = False
+    live: LiveSettings = field(default_factory=LiveSettings)
     aws: AwsSettings = field(default_factory=AwsSettings)
+    controller: ControllerSettings = field(default_factory=ControllerSettings)
+
+    @property
+    def live_enabled(self) -> bool:
+        return self.live.enabled
 
     def __post_init__(self) -> None:
         if not isinstance(self.mode, Mode):
             raise ConfigError(f"mode must be a Mode, got {self.mode!r}")
-        if not isinstance(self.live_enabled, bool):
-            raise ConfigError(f"live.enabled must be true or false, got {self.live_enabled!r}")
-        if not isinstance(self.aws, AwsSettings):
-            raise ConfigError("aws must be an AwsSettings")
-        if self.mode is Mode.LIVE and not self.live_enabled:
+        for name, cls in (("live", LiveSettings), ("aws", AwsSettings), ("controller", ControllerSettings)):
+            if not isinstance(getattr(self, name), cls):
+                raise ConfigError(f"{name} must be a {cls.__name__}")
+        if self.mode is Mode.LIVE and not self.live.enabled:
             raise ConfigError(
                 "mode is LIVE but live.enabled is false. LIVE mode can change AWS resources, "
                 "so it needs both 'mode: LIVE' and 'live.enabled: true'."
@@ -125,6 +198,13 @@ class ScalixConfig:
                     f"mode {self.mode.value} contacts AWS, so it needs {' and '.join(missing)}. Put them in "
                     f"config/scalix.local.yaml (git-ignored); see config/scalix.local.example.yaml."
                 )
+        if self.mode is Mode.LIVE:
+            group = self.aws.auto_scaling_group
+            if not group:
+                raise ConfigError("mode LIVE needs aws.auto_scaling_group (the one group to control)")
+            if group not in self.live.allowed_groups:
+                raise ConfigError(f"mode LIVE: group {group!r} is not in live.allowed_groups; add its exact "
+                                  "name there only after you have approved SCALIX controlling it")
 
 
 def parse_mode(value: Any) -> Mode:
@@ -160,15 +240,36 @@ def parse_config(data: Any) -> ScalixConfig:
 
     mode = parse_mode(data["mode"]) if "mode" in data else Mode.SIMULATION
 
-    live = _section(data, "live", _LIVE_KEYS)
-    live_enabled = live.get("enabled", False)
-    if not isinstance(live_enabled, bool):
-        raise ConfigError(f"live.enabled must be true or false (without quotes), got {live_enabled!r}")
+    live_raw = {k: v for k, v in _section(data, "live", _LIVE_KEYS).items() if v is not None}
+    live = LiveSettings(**live_raw)
 
     aws_raw = {k: v for k, v in _section(data, "aws", _AWS_KEYS).items() if v is not None}
     aws = AwsSettings(**aws_raw)
 
-    return ScalixConfig(mode=mode, live_enabled=live_enabled, aws=aws)
+    controller_raw = {k: v for k, v in _section(data, "controller", _CONTROLLER_KEYS).items() if v is not None}
+    controller = ControllerSettings(**controller_raw)
+
+    return ScalixConfig(mode=mode, live=live, aws=aws, controller=controller)
+
+
+def kill_switch_active(path: Path | None = None, environ: dict | None = None) -> str | None:
+    """The global live-action disable. Returns why live actions are disabled, or None.
+
+    Either of these switches LIVE writes off, whatever the config says:
+    * the file ``config/LIVE_DISABLED`` exists (create it with ``touch config/LIVE_DISABLED``);
+    * the environment variable ``SCALIX_LIVE_DISABLED`` is set to anything except 0/false/no.
+    Environment variables can only ever *disable* live actions, never enable them.
+    """
+    import os
+
+    file = KILL_SWITCH_PATH if path is None else Path(path)
+    env = os.environ if environ is None else environ
+    if file.exists():
+        return f"kill switch file {file.name} exists"
+    value = str(env.get(KILL_SWITCH_ENV, "")).strip().lower()
+    if value and value not in ("0", "false", "no"):
+        return f"environment variable {KILL_SWITCH_ENV} is set"
+    return None
 
 
 def _read_yaml(file: Path) -> Any:

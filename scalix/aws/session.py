@@ -45,7 +45,15 @@ NOT_USED_OPERATIONS = {
 }
 
 
-class ReadOnlyViolation(RuntimeError):
+#: The writer client (LIVE mode only) may additionally call exactly one capacity-changing operation.
+WRITE_OPERATIONS: frozenset[tuple[str, str]] = READ_ONLY_OPERATIONS | {("autoscaling", "SetDesiredCapacity")}
+
+
+class OperationNotAllowed(RuntimeError):
+    """Code tried to call an AWS operation that is not on the client's allowlist."""
+
+
+class ReadOnlyViolation(OperationNotAllowed):
     """Code tried to call an AWS operation that is not on the read-only allowlist."""
 
 
@@ -144,35 +152,37 @@ def credential_info(session) -> CredentialInfo:
     return CredentialInfo(True, method, token is not None and token != "")
 
 
-def _guard_handler(service: str):
+def _guard_handler(service: str, allowed: frozenset, error: type, label: str):
     def guard(model=None, **kwargs):
         name = getattr(model, "name", None)
-        if (service, name) not in READ_ONLY_OPERATIONS:
-            raise ReadOnlyViolation(
-                f"{service}:{name} is not a read-only operation; SCALIX's read-only code may only call "
-                f"{', '.join(sorted(f'{s}:{o}' for s, o in READ_ONLY_OPERATIONS))}")
+        if (service, name) not in allowed:
+            raise error(
+                f"{service}:{name} is not allowed for a {label} client; it may only call "
+                f"{', '.join(sorted(f'{s}:{o}' for s, o in allowed if s == service))}")
     return guard
+
+
+def guard_operations(client, service: str, allowed: frozenset, *, label: str, error: type = OperationNotAllowed):
+    """Attach a guard so ``client`` can only call the (service, operation) pairs in ``allowed``."""
+    model = client.meta.service_model
+    event_id = model.service_id.hyphenize()
+    handler = _guard_handler(service, allowed, error, label)
+    for op in model.operation_names:
+        if (service, op) not in allowed:
+            client.meta.events.register_first(f"before-parameter-build.{event_id}.{op}", handler)
+            client.meta.events.register_first(f"before-call.{event_id}.{op}", handler)
+    client.meta.events.register_first(f"before-call.{event_id}", handler)
+    return client
 
 
 def guard_read_only(client, service: str):
     """Attach the read-only guard to an existing client (used for real and test clients).
 
     The guard runs at two points: before the request parameters are built, and again just before
-    the request would be sent (``before-call``). If anything else blocks the first hook, the
-    second one still stops a write before it leaves the computer.
+    the request would be sent (``before-call``). Handlers on the exact operation name are the most
+    specific, so botocore runs them before generic hooks.
     """
-    model = client.meta.service_model
-    event_id = model.service_id.hyphenize()  # botocore's event name for the service, e.g. "auto-scaling"
-    handler = _guard_handler(service)
-    # Handlers on the exact "<event>.<service>.<Operation>" name are the most specific, so botocore runs
-    # them before any wildcard hook. Every operation that is not allowlisted gets one.
-    for op in model.operation_names:
-        if (service, op) not in READ_ONLY_OPERATIONS:
-            client.meta.events.register_first(f"before-parameter-build.{event_id}.{op}", handler)
-            client.meta.events.register_first(f"before-call.{event_id}.{op}", handler)
-    # Catch-all for the service as a second line of defence (also checks allowlisted names).
-    client.meta.events.register_first(f"before-call.{event_id}", handler)
-    return client
+    return guard_operations(client, service, READ_ONLY_OPERATIONS, label="read-only", error=ReadOnlyViolation)
 
 
 def read_only_client(session, service: str):
