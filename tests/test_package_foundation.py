@@ -66,7 +66,7 @@ def test_root_entry_point_renders_the_dashboard():
 
     at = AppTest.from_file(str(ROOT / "app.py"), default_timeout=60).run()
     assert not at.exception, [e.value for e in at.exception]
-    assert [t.value for t in at.title] == ["SCALIX"]
+    assert [t.value for t in at.title] == ["Overview"]  # the AWS-edition dashboard in ui/
 
 
 @pytest.mark.skipif(shutil.which("git") is None or not (ROOT / ".git").exists(),

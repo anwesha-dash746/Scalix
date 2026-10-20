@@ -15,7 +15,7 @@ The project has two parts:
 
 Every number in the dashboard comes from engine output. The dashboard contains **no demonstration or synthetic data**. Fixture CSVs exist only inside `dashboard/tests/`, for testing.
 
-> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. The Python simulator can already be run from the command line: `python -m scalix.simulation` (see [`docs/SIMULATION.md`](docs/SIMULATION.md)). An optional, read-only AWS check and CloudWatch monitor is in [`docs/AWS_SETUP.md`](docs/AWS_SETUP.md). The AWS controller, which is dry-run by default and heavily gated, is in [`docs/CONTROLLER.md`](docs/CONTROLLER.md). The dashboard switches to the Python engine in a later phase; until then it still uses the Java engine described below. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
+> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. The Python simulator can already be run from the command line: `python -m scalix.simulation` (see [`docs/SIMULATION.md`](docs/SIMULATION.md)). An optional, read-only AWS check and CloudWatch monitor is in [`docs/AWS_SETUP.md`](docs/AWS_SETUP.md). The AWS controller, which is dry-run by default and heavily gated, is in [`docs/CONTROLLER.md`](docs/CONTROLLER.md). **The dashboard now runs on the Python engine: `streamlit run app.py`** (see [`docs/DASHBOARD.md`](docs/DASHBOARD.md)). The original Java-engine dashboard described below is still available with `streamlit run dashboard/app.py`. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
 
 ---
 
@@ -115,7 +115,7 @@ Windows:
 .venv\Scripts\streamlit run app.py
 ```
 
-`app.py` in the project root hands over to `dashboard/app.py`, so `streamlit run dashboard/app.py` starts the same app.
+`app.py` in the project root starts the **AWS-edition dashboard** (`ui/`, Python engine; see [`docs/DASHBOARD.md`](docs/DASHBOARD.md)). The Part 1 dashboard described in this section, which drives the Java engine, starts with `streamlit run dashboard/app.py`.
 
 Then open http://localhost:8501. `.streamlit/config.toml` binds the server to **localhost only**, because the dashboard can start processes, and turns off Streamlit's usage statistics.
 
@@ -308,14 +308,15 @@ requirements-aws.txt                optional extras for READ_ONLY / LIVE modes (
 config/dashboard.yaml               dashboard settings (engine command, paths, defaults, cloud)
 config/scalix.yaml                  AWS-edition run mode: SIMULATION (default), READ_ONLY, LIVE
 config/scalix.local.example.yaml    template for your git-ignored scalix.local.yaml (AWS profile/region/group names)
-app.py                              entry point: streamlit run app.py (hands over to dashboard/app.py)
+app.py                              entry point: streamlit run app.py (AWS-edition dashboard in ui/)
+ui/                                 AWS-edition dashboard: pages, Plotly charts, helpers
 scalix/                             AWS-edition Python package: algorithms, simulation, metrics, aws, config
 tests/                              pytest suite for the scalix package
-dashboard/app.py                    Streamlit dashboard
+dashboard/app.py                    original Part 1 dashboard (Java engine)
 dashboard/views/                    one module per page (start, results, over time, decision log, download, under the hood)
 dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, story, plots, exports, settings
 dashboard/scalix_dash/cloud/        provider interface, mock adapter, CloudStack adapter (disabled by default)
 dashboard/tests/                    pytest suite, fixture writer and fake engine (test-only)
-docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md, SIMULATION.md, AWS_SETUP.md, CONTROLLER.md
+docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md, SIMULATION.md, AWS_SETUP.md, CONTROLLER.md, DASHBOARD.md
 results/simulations/                Python simulator output (reference-seed42 is committed)
 ```
