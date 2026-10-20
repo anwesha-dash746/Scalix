@@ -15,7 +15,7 @@ The project has two parts:
 
 Every number in the dashboard comes from engine output. The dashboard contains **no demonstration or synthetic data**. Fixture CSVs exist only inside `dashboard/tests/`, for testing.
 
-> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. Until the Python engine is finished, the dashboard still uses the Java engine described below. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
+> **AWS edition: in progress on the `aws-edition` branch.** SCALIX is moving to one Python codebase, the `scalix/` package, with an optional AWS integration. That integration covers EC2 Auto Scaling, CloudWatch and CloudFormation. By default everything runs locally in **SIMULATION** mode, needs no AWS account and costs nothing. The Python simulator can already be run from the command line: `python -m scalix.simulation` (see [`docs/SIMULATION.md`](docs/SIMULATION.md)). The dashboard switches to it in Phase 3; until then it still uses the Java engine described below. The structure, run modes, safety rules and phase status are in [`docs/AWS_EDITION.md`](docs/AWS_EDITION.md).
 
 ---
 
@@ -315,5 +315,6 @@ dashboard/views/                    one module per page (start, results, over ti
 dashboard/scalix_dash/              core (no Streamlit): params, runner, results, catalog, analysis, story, plots, exports, settings
 dashboard/scalix_dash/cloud/        provider interface, mock adapter, CloudStack adapter (disabled by default)
 dashboard/tests/                    pytest suite, fixture writer and fake engine (test-only)
-docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md
+docs/                               ARCHITECTURE.md, METRICS.md, CLOUDSTACK.md, AWS_EDITION.md, ALGORITHMS.md, SIMULATION.md
+results/simulations/                Python simulator output (reference-seed42 is committed)
 ```

@@ -17,8 +17,8 @@ The AWS edition moves the algorithms and the simulator to Python. It then adds a
 ```
 scalix/                  Python package (AWS edition)
   algorithms/            scaling policies: STATIC, THRESHOLD, SCALIX      (Phase 1, done)
-  simulation/            workload generator + simulation engine           (Phase 2)
-  metrics/               metrics, statistics, result files                (Phase 2)
+  simulation/            workload generator + simulation engine           (Phase 2, done)
+  metrics/               metrics, statistics, result files                (Phase 2, done)
   aws/                   CloudWatch reader + Auto Scaling adapter, opt-in (Phase 4)
   config.py              run mode; SIMULATION by default                  (Phase 0)
 tests/                   pytest suite for scalix/ (tests/java/ = Java parity harness, test-only)
@@ -26,7 +26,8 @@ app.py                   streamlit run app.py (hands over to dashboard/app.py)
 config/scalix.yaml       run-mode settings (committed, safe defaults)
 dashboard/               existing Streamlit dashboard (views/, scalix_dash/, tests/)
 src/, pom.xml            existing Java engine, kept as a reference to cross-check the Python port
-results/                 experiment output (the repository's equivalent of a data/ folder)
+results/                 experiment output (the repository's equivalent of a data/ folder);
+                         results/simulations/ = Python simulator output
 ```
 
 **How the structure fits the existing repository**
@@ -62,7 +63,7 @@ results/                 experiment output (the repository's equivalent of a dat
 |---|---|---|
 | 0 | Inspection, package skeleton, run-mode config, dependencies, `.gitignore`, setup docs | Done |
 | 1 | Python scaling policies, plus parity tests against the Java policies ([ALGORITHMS.md](ALGORITHMS.md)) | Done |
-| 2 | Python workload generator, simulator, metrics and results | Not started |
+| 2 | Python workload generator, simulator, metrics and results ([SIMULATION.md](SIMULATION.md)) | Done |
 | 3 | Dashboard on the Python engine, Plotly charts, SIMULATED labels | Not started |
 | 4 | AWS adapters and safety guard, tested offline with Boto3's Stubber | Not started |
 | 5 | CloudFormation template, billable-resource review and IAM policy (not deployed) | Not started |
