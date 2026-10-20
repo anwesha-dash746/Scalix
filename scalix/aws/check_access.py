@@ -73,6 +73,27 @@ class AccessReport:
         return json.loads(redact(json.dumps(d)))
 
 
+#: Where the command line saves reports (git-ignored). The dashboard shows the newest one.
+REPORTS_DIR = PROJECT_ROOT / "results" / "aws"
+
+
+def latest_saved_report(folder: Path | None = None) -> tuple[Path, dict[str, Any]] | None:
+    """The newest saved access report as (path, contents), or None if there is none or it can't be read.
+
+    Reads a local JSON file only; it never contacts AWS. Reports are already redacted when saved.
+    """
+    folder = REPORTS_DIR if folder is None else folder
+    paths = sorted(folder.glob("access-report-*.json")) if folder.is_dir() else []
+    for path in reversed(paths):
+        try:
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        if isinstance(data, dict) and isinstance(data.get("checks"), list):
+            return path, data
+    return None
+
+
 def _mask_arn(arn: str) -> str:
     parts = redact(arn).split("/")
     if len(parts) >= 3 and ":assumed-role" in parts[0]:
@@ -275,7 +296,7 @@ def main(argv: list[str] | None = None) -> int:
     report = run_access_check(settings)
     print(render(report))
     if not args.no_save:
-        out = PROJECT_ROOT / "results" / "aws"
+        out = REPORTS_DIR
         out.mkdir(parents=True, exist_ok=True)
         path = out / f"access-report-{datetime.now():%Y%m%d-%H%M%S}.json"
         path.write_text(json.dumps(report.to_dict(), indent=2), encoding="utf-8")

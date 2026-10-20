@@ -111,7 +111,7 @@ Not always. Static had the highest utilization (up to 87.6%) because its workers
 ## AWS and safety
 
 **25. Did you deploy on AWS?**
-No. The AWS code is implemented and tested with mocks only. It has never contacted a real AWS account, no infrastructure was created, and no scaling action was made. All results are simulated.
+Not yet. The AWS code is implemented and tested with mocks, and SCALIX has **connected read-only** to a real AWS Academy account: the access check succeeded on 21 October 2026. No infrastructure was created and no scaling action was made, so all results are still simulated. The project's strict AWS budget is USD 20.
 
 **26. What would the AWS part do?**
 * **Read-only mode:** read the Auto Scaling group's size and its CPU from CloudWatch.

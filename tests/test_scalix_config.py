@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import pytest
 
 import scalix.config as config_module
@@ -233,3 +235,14 @@ def test_local_config_file_is_git_ignored():
                           cwd=PROJECT_ROOT).returncode == 0
     assert subprocess.run(["git", "check-ignore", "-q", "--no-index", "config/scalix.local.example.yaml"],
                           cwd=PROJECT_ROOT).returncode == 1
+
+
+def test_budget_usd_is_a_positive_number_and_the_committed_default_is_20():
+    from scalix.config import AwsSettings, ConfigError, load_config
+
+    assert AwsSettings().budget_usd is None
+    assert AwsSettings(budget_usd=20).budget_usd == 20
+    for bad in (0, -5, True, "20", 1e9):
+        with pytest.raises(ConfigError, match="budget_usd"):
+            AwsSettings(budget_usd=bad)
+    assert load_config(Path(__file__).resolve().parent.parent / "config" / "scalix.yaml").aws.budget_usd == 20
