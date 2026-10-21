@@ -1,4 +1,4 @@
-"""Policy comparison: the three strategies on identical workloads."""
+"""Policy comparison: every strategy on identical workloads."""
 
 import pandas as pd
 import streamlit as st
@@ -6,7 +6,7 @@ import streamlit as st
 from scalix.sources import DataSource
 from ui import charts, common, live_chart
 
-common.page_header("Policy comparison", "Static, Threshold and SCALIX on the identical workload. No strategy is "
+common.page_header("Policy comparison", "Static, Threshold, SCALIX and AWS target tracking (modelled) on the identical workload. No strategy is "
                    "assumed to win: each metric is judged on its own, with 95% confidence intervals.")
 
 result = common.current_result()
@@ -21,7 +21,7 @@ ts = result.timeseries[(result.timeseries["scenario"] == scenario) & (result.tim
 agg = result.aggregate[result.aggregate["scenario"] == scenario]
 n_runs = int(agg["n"].max())
 
-st.caption("The charts replay the run as if it were happening live, all three strategies on the same clock. "
+st.caption("The charts replay the run as if it were happening live, all four strategies on the same clock. "
            "Each starts when it is on screen and takes 20 seconds; use 'Show all' to skip.")
 live_chart.show(charts.live_workers(ts, title=f"Workers paid for over time (seed {seed})"))
 live_chart.show(charts.live_queue(ts))

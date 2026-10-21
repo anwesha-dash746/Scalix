@@ -17,8 +17,9 @@ The rules, fixed here before running:
   prices, T3 credits included) across the four scenarios. Ties go to the lower average p95. If no
   setting meets the target, the one with the smallest worst-case p95 is chosen and flagged.
 * **Search space:** a grid around each strategy's defaults (``GRIDS``): every fleet size for
-  Static, 92 settings for Threshold (deliberately wide, as it has only three knobs) and 126 for
-  SCALIX. Threshold and SCALIX keep the capacity limits of 1-20 workers starting at 8; Static's
+  Static, 92 settings for Threshold (deliberately wide, as it has only three knobs), 126 for
+  SCALIX and 30 for the AWS target tracking model (Phase 8). The scaling strategies keep the
+  capacity limits of 1-20 workers starting at 8; Static's
   fleet size is its only setting, so it is tuned.
 
 Run ``python -m scalix.tuning run`` (a few minutes). It writes ``results/tuning/grid.csv`` (every
@@ -39,7 +40,7 @@ from typing import Any
 
 import pandas as pd
 
-from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, ThresholdPolicy
+from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, TargetTrackingPolicy, ThresholdPolicy
 from scalix.config import PROJECT_ROOT
 from scalix.simulation import SimulationConfig, WorkloadSpec, generate, simulate
 from scalix.simulation.workloads import SYNTHETIC_SCENARIOS
@@ -71,10 +72,18 @@ def _scalix_grid() -> list[dict[str, Any]]:
     return grid
 
 
+def _target_tracking_grid() -> list[dict[str, Any]]:
+    # AWS's own knobs for target tracking: the target value and the instance warm-up; plus the scale-in
+    # threshold this model has to assume (AWS says "usually more than 10%" below the target).
+    return [dict(target_utilization=tv, warmup_seconds=w, scale_in_ratio=r)
+            for tv, w, r in itertools.product((0.4, 0.5, 0.6, 0.7, 0.8), (60.0, 120.0, 300.0), (0.8, 0.9))]
+
+
 GRIDS: dict[str, list[dict[str, Any]]] = {
     "STATIC": [dict(worker_count=n) for n in range(CAPACITY.minimum, CAPACITY.maximum + 1)],
     "THRESHOLD": _threshold_grid(),
     "SCALIX": _scalix_grid(),
+    "TARGET_TRACKING": _target_tracking_grid(),
 }
 
 
@@ -85,6 +94,8 @@ def make_policy(strategy: str, params: dict[str, Any], capacity: CapacityLimits 
         return ThresholdPolicy(capacity=capacity, **params)
     if strategy == "SCALIX":
         return ScalixPolicy(capacity=capacity, **params)
+    if strategy == "TARGET_TRACKING":
+        return TargetTrackingPolicy(capacity=capacity, **params)
     raise ValueError(f"unknown strategy {strategy!r}")
 
 

@@ -1,4 +1,4 @@
-"""Scaling policies: STATIC, THRESHOLD and SCALIX.
+"""Scaling policies: STATIC, THRESHOLD and SCALIX, plus TARGET_TRACKING (a model of AWS's own policy).
 
 Each policy is a pure function of a :class:`ScalingContext` (a measurement snapshot), with no
 clock, network or AWS access. The same code can therefore drive the simulator and, later, the
@@ -22,6 +22,7 @@ from scalix.algorithms.base import (
 from scalix.algorithms.factory import POLICY_NAMES, create_policy
 from scalix.algorithms.scalix_policy import ScalixPolicy
 from scalix.algorithms.static import StaticPolicy
+from scalix.algorithms.target_tracking import TargetTrackingPolicy
 from scalix.algorithms.threshold import ThresholdPolicy
 from scalix.algorithms.trend import TrendEstimate, estimate_trend, spike_ratio
 
@@ -34,6 +35,7 @@ __all__ = [
     "ScalingPolicy",
     "ScalixPolicy",
     "StaticPolicy",
+    "TargetTrackingPolicy",
     "ThresholdPolicy",
     "Trend",
     "TrendEstimate",

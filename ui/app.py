@@ -19,8 +19,10 @@ st.set_page_config(page_title="SCALIX", page_icon=":material/stacked_line_chart:
 PAGES = Path(__file__).resolve().parent / "pages"
 navigation = st.navigation([
     st.Page(PAGES / "overview.py", title="Overview", icon=":material/dashboard:", default=True),
+    st.Page(PAGES / "demo.py", title="Demo: real traffic", icon=":material/play_circle:"),
     st.Page(PAGES / "simulation.py", title="Workload simulation", icon=":material/tune:"),
     st.Page(PAGES / "comparison.py", title="Policy comparison", icon=":material/compare_arrows:"),
+    st.Page(PAGES / "results.py", title="Evaluation results", icon=":material/insights:"),
     st.Page(PAGES / "aws.py", title="AWS monitoring", icon=":material/cloud:"),
     st.Page(PAGES / "history.py", title="Scaling history", icon=":material/history:"),
 ])

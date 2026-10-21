@@ -17,11 +17,13 @@ Every number below comes from the experiment outputs in `results/experiments/` a
 | Synthetic workloads only | 27 real days of the NASA web server log, July 1995 | [SIMULATION.md §1.1](SIMULATION.md#11-real-traffic-the-nasa-web-server-log-july-1995-phase-7) |
 | SCALIX needed a load balancer's request rate on AWS | A CPU-derived demand signal, tested in simulation and wired into the AWS controller | §6 below, [CONTROLLER.md](CONTROLLER.md) |
 
-The sixth limitation, no AWS deployment, is unchanged: that's the next phase, and each step of it needs your approval.
+The sixth limitation, no AWS deployment, is handled by Phase 8 ([PHASE8_AWS_PLAN.md](PHASE8_AWS_PLAN.md)), where each step needs your approval.
+
+**What Phase 8 added here.** A fourth strategy: a **model of AWS's own target tracking policy** ("keep average CPU at 50%"), written from AWS's documentation. It answers the obvious question: why not just use what AWS offers? See §6.
 
 ## 1. Question and expectation
 
-**Question:** compared with a fixed fleet (Static) and a classic reactive rule (Threshold), does workload-aware scaling (SCALIX) give a better balance between responsiveness and resource use?
+**Question:** compared with a fixed fleet (Static), a classic reactive rule (Threshold) and AWS's own target tracking policy (modelled), does workload-aware scaling (SCALIX) give a better balance between responsiveness and resource use?
 
 **Expectation stated before running (Phase 1):** acting early and in larger steps should cut waiting under changing demand, but it also means more workers and so more cost. SCALIX was **not** assumed to win.
 
@@ -29,16 +31,16 @@ The sixth limitation, no AWS deployment, is unchanged: that's the next phase, an
 
 ### 2.1 Experiment suite (fixed in code before running)
 
-The suite is defined in `scalix/evaluation.py` (`SUITE`), and every experiment runs all three strategies.
+The suite is defined in `scalix/evaluation.py` (`SUITE`), and every experiment runs all four strategies.
 
 * **Synthetic experiments:** 4 scenarios × 10 test seeds (1–10). Each run is 30 minutes of simulated time in 5 s steps, with a decision every 15 s.
 * **NASA experiments:** every complete day of July 1995 (days 1–27). Each run is a full 24 hours replayed in real time.
 
-That's **1,164 runs** in total. Tuning added 9,520 training runs on other seeds: 238 settings × 4 scenarios × 10 seeds.
+That's **1,552 runs** in total. Tuning added 10,720 training runs on other seeds: 268 settings × 4 scenarios × 10 seeds.
 
 | Experiment | What changes | Question |
 |---|---|---|
-| `main` | nothing (defaults) | How do the three strategies compare? |
+| `main` | nothing (defaults) | How do the four strategies compare? |
 | `slow-startup` | new workers take **120 s** to start (default 30 s) | Does the comparison hold with a more realistic EC2 start-up time? |
 | `scalix-target-70` | SCALIX's target utilization **0.70** (default 0.60) | Is SCALIX's extra capacity caused by its lower target? |
 | `scalix-no-additions` | SCALIX without spike detection, scaling down after 1 low interval (the original Java behaviour) | What do the two Python additions contribute? |
@@ -53,7 +55,7 @@ That's **1,164 runs** in total. Tuning added 9,520 training runs on other seeds:
 ### 2.2 Fairness controls
 
 * **Identical traces.** For each scenario and seed (or day), one workload trace is generated once and given unchanged to every strategy. Experiments with the same workload settings share traces, so their variants can be compared seed by seed.
-* **Same start.** Threshold and SCALIX always start at 8 workers with limits 1–20. Static's fleet size is its only setting: 8 by default, and its tuned size in the tuned experiments.
+* **Same start.** Threshold, SCALIX and AWS target tracking always start at 8 workers with limits 1–20. Static's fleet size is its only setting: 8 by default, and its tuned size in the tuned experiments.
 * **Test seeds are never training seeds.** Tuning used seeds 101–110. The test seeds (1–10) and the NASA days were never used for tuning, and a test checks this.
 * **No cherry-picking.** Seeds, days, settings and the tuning rule were fixed before running. All runs are reported, and none was dropped or re-run.
 
@@ -163,12 +165,16 @@ Code: `scalix/tuning.py`. The rule was fixed before running.
   * Static: every fleet size from 1 to 20.
   * Threshold: 92 settings, with upper limit 40–90%, lower limit 10–40% and cooldown 15–120 s. The grid is deliberately wide, because Threshold has only three knobs. An earlier, narrower grid with upper ≥ 60% had no setting that met the target, so the grid was widened before the final run to give Threshold a fair chance.
   * SCALIX: 126 settings.
+  * AWS target tracking: 30 settings, with target 40–80%, warm-up 60–300 s and the scale-in point at 80% or 90% of the target.
 
 | Strategy | Chosen settings | Met target in training | Settings meeting target |
 |---|---|---|---|
 | Static | 15 workers | yes (worst p95 8.34 s) | 6 of 20 |
 | Threshold | up above 50%, down below 30%, 15 s cooldown | yes (worst p95 9.66 s) | 11 of 92 |
 | SCALIX | its defaults, except the scale-down cooldown cut from 90 s to 30 s | yes (worst p95 9.12 s) | 30 of 126 |
+| AWS target tracking | target 50% (its default), 60 s warm-up, scale-in below 90% of target | yes (worst p95 8.34 s) | 12 of 30 |
+
+Tuned AWS target tracking behaved exactly like its default: the shorter warm-up never mattered, because its 15 quiet minutes before a scale-in always outlast any warm-up.
 
 ### 5.2 Results on unseen seeds and real traffic
 
@@ -178,14 +184,34 @@ Code: `scalix/tuning.py`. The rule was fixed before running.
 
 {{slo}}
 
-* **Synthetic test seeds: tuning made the strategies almost equal.** All three cost within about 2% of each other in each scenario, and nearly all meet the target. Threshold just missed it on Spike, at 10.70 s. Tuned Threshold behaves like SCALIX: it scales up from 50% busy and acts every 15 s. But it gets there by changing size often, for example 18 scale-ups and 20 scale-downs per Mixed run against SCALIX's 6 and 14.
+* **Synthetic test seeds: tuning made the strategies almost equal.** Static, Threshold and SCALIX cost within about 2% of each other in each scenario, AWS target tracking up to 4% more, and nearly all meet the target. Threshold just missed it on Spike, at 10.70 s. Tuned Threshold behaves like SCALIX: it scales up from 50% busy and acts every 15 s. But it gets there by changing size often, for example 18 scale-ups and 20 scale-downs per Mixed run against SCALIX's 6 and 14.
 * **Real traffic, which tuning never saw, separated them again.**
   * **SCALIX** stayed under target, with a p95 of 8.83 s at USD 5.57 per day.
   * **Threshold** missed it, at 18.27 s, while costing about the same (USD 5.51). Its 1,763 scale-ups per day show it chasing every burst.
   * **Static** at 15 workers was fastest (6.00 s) but cost 26% more than SCALIX (USD 7.02), because it paid for 15 workers through every quiet night.
+  * **AWS target tracking** missed it too, at 12.59 s, for the same cost as SCALIX (USD 5.57).
 * **Settings found on synthetic traffic transferred to real traffic for SCALIX, but not for Threshold.** This is one trace, so it's a single, though consistent, observation: 27 days, with a paired difference that excludes 0.
 
-## 6. Demand signal without a load balancer
+## 6. Against AWS's own policy: target tracking
+
+**What was compared.** AWS recommends *target tracking* for CPU-based scaling: "keep average CPU at 50%". The fourth strategy, **AWS target tracking**, is a model of it written from AWS's documentation (`scalix/algorithms/target_tracking.py`):
+
+* **Scale out** when 3 one-minute data points in a row are above the target, adding enough instances to bring CPU back to the target (rounded up). Instances still starting count as capacity already added.
+* **Scale in** only after 15 one-minute data points below 90% of the target, never while new instances warm up, and removing as few instances as possible.
+
+The 3 and 15 data points come from an AWS maintainer's statement; the 90% scale-in point is this model's assumption, because AWS only says "usually more than 10% lower". It is **a model, not AWS itself**: CloudWatch delays and alarm details aren't simulated.
+
+{{strategy_paired_tt}}
+
+* **Synthetic bursts: AWS target tracking was the fastest.** On Spike its p95 was 7.12 s against SCALIX's 9.08 s, and on Mixed 6.15 s against 6.48 s. On Spike the difference isn't clear (the interval includes 0); on Mixed it is. It aims for 50% CPU, lower than SCALIX's 60%, and in a 30-minute run it never scales in on these patterns, because it needs 15 quiet minutes first.
+* **But it paid for that headroom:** it was 0.3–2.6% dearer than SCALIX on every synthetic pattern, with 13–81 more worker-minutes per run, all clear differences.
+* **Real traffic reversed the speed result.** On the 27 NASA days SCALIX's p95 was **5.57 ± 1.42 s lower** per day (7.02 s against 12.59 s), for 1.4% more cost. AWS target tracking missed the 10 s target on real traffic; SCALIX met it. Waiting for 3 full minutes above target before acting is too slow for real second-to-second bursts, which SCALIX's trend and spike checks catch earlier.
+* **Tuned:** target tracking's best setting was its default target of 50%. On real traffic, tuned SCALIX was still 3.76 ± 0.76 s faster at the p95, at equal cost.
+* **With AWS-like 5-minute timing** (§8) the two were **level**: SCALIX's p95 was 0.52 ± 0.60 s lower and its cost the same, neither difference clear.
+
+**So: SCALIX isn't simply better than what AWS offers.** On smooth synthetic bursts, AWS's own policy (as modelled) responded faster at a slightly higher cost. On real, noisy traffic SCALIX responded clearly faster for about the same cost. When decisions are limited to every 5 minutes, they performed alike.
+
+## 7. Demand signal without a load balancer
 
 {{paired}}
 
@@ -193,27 +219,29 @@ Code: `scalix/tuning.py`. The rule was fixed before running.
 * **`nasa-cpu-signal` vs `nasa`:** very slightly *less* worker-time (−18.6 ± 12.9 worker-minutes per day, out of about 10,450). There was no measurable change in response or overload.
 * **So, in this simulation, SCALIX lost nothing without a load balancer.** This matters for AWS, where a load balancer is billable. The caveat: the CPU signal can't see demand beyond what the fleet serves. A bigger, longer surge than these traces contain could make SCALIX under-size its steps.
 
-## 7. AWS-like timing (`nasa-aws`)
+## 8. AWS-like timing (`nasa-aws`)
 
 {{compact:nasa-aws}}
 
-With one decision every 5 minutes (free CloudWatch data), 120 s start-up and the CPU-only signal, both auto-scalers got slower. **Neither met the 10 s target:** SCALIX's p95 was 11.81 s and Threshold's 19.70 s.
+With one decision every 5 minutes (free CloudWatch data), 120 s start-up and the CPU-only signal, every auto-scaler got slower. **None met the 10 s target:** SCALIX's p95 was 11.81 s, AWS target tracking's 12.34 s (using 5-minute data points) and Threshold's 19.70 s.
 
-* **SCALIX was still faster on every measure,** with p95 7.89 ± 1.70 s lower per day than Threshold, for **3.0% more estimated cost**.
-* **On a real 5-minute controller, SCALIX is the better policy in this simulation.** [CONTROLLER.md](CONTROLLER.md) explains why the first, 2-instance live test still uses Threshold.
+* **SCALIX was still faster than Threshold,** with p95 7.89 ± 1.70 s lower per day, for **3.0% more estimated cost**. Against AWS target tracking it was level (§6).
+* **On a real 5-minute controller, SCALIX is a better choice than Threshold in this simulation, and about as good as AWS's own policy.** [CONTROLLER.md](CONTROLLER.md) explains why the first, 2-instance live test still uses Threshold.
 
-## 8. Where SCALIX does not outperform the baselines, and why
+## 9. Where SCALIX does not outperform the baselines, and why
 
 | Where | What happened | Explanation |
 |---|---|---|
-| **Cost, default settings, every scenario** | SCALIX was dearer than Threshold: +2.0–3.8% synthetic, +9.8% NASA | It adds capacity early and in bigger steps and removes it slowly (§9). T3 credits shrink the gap but don't close it. |
+| **Cost, default settings, every scenario** | SCALIX was dearer than Threshold: +2.0–3.8% synthetic, +9.8% NASA | It adds capacity early and in bigger steps and removes it slowly (§10). T3 credits shrink the gap but don't close it. |
 | **Worker-time on real traffic** | 1.84× Threshold's worker-minutes on NASA | Real traffic is noisy, so each burst restarts SCALIX's scale-down caution. |
 | **Calm or slowly rising demand** | Faster than Threshold by only 0.02–0.07 s | Threshold's one-worker steps keep up with gentle changes. The extra headroom buys almost nothing. |
 | **Tuned, synthetic** | No advantage. Tuned Threshold was slightly cheaper on Mixed (−0.7%), and tuned Static had the lowest p95 on Spike | Tuning Threshold to scale up at 50% busy with a 15 s cooldown gives it most of SCALIX's early action. |
 | **Tuned, real traffic** | Static (15 workers) was faster than SCALIX | It's simply bigger than needed most of the day, and cost 26% more. |
 | **AWS-like timing** | SCALIX missed the 10 s target too | With 5-minute decisions and 2-minute start-up, no rule reacts to a burst in time. |
+| **Against AWS target tracking, synthetic bursts** | Slower on Spike (p95 9.08 s against 7.12 s) and Mixed (6.48 s against 6.15 s) | Target tracking aims lower (50% CPU) and keeps its extra capacity for at least 15 quiet minutes; it costs 0.3–2.6% more for it. |
+| **Against AWS target tracking, AWS-like timing** | No clear difference in speed or cost | With decisions every 5 minutes, both policies see the same coarse data. |
 
-## 9. Why SCALIX keeps more workers: evidence from the decision logs
+## 10. Why SCALIX keeps more workers: evidence from the decision logs
 
 Every decision taken while utilization was at or below 30%, counted by outcome (experiment `main`, 10 seeds):
 
@@ -221,7 +249,7 @@ Every decision taken while utilization was at or below 30%, counted by outcome (
 
 SCALIX spends far more decisions at low utilization, 224 against 28 on Normal, because its scale-ups overshoot. It then mostly holds: its **90 s scale-down cooldown**, which also counts from scale-ups, and its **2-interval rule** caused most of the holds. **The "would the remaining workers exceed 60%?" check never fired.** The tuned SCALIX cut the cooldown to 30 s and used fewer worker-minutes on the NASA days (9,523 against 10,457).
 
-## 10. Sensitivity checks
+## 11. Sensitivity checks
 
 | Check | Result | Conclusion |
 |---|---|---|
@@ -232,18 +260,19 @@ SCALIX spends far more decisions at low utilization, 224 against 28 on Normal, b
 
 The full tables are in [RESULTS_TABLES.md](results/RESULTS_TABLES.md).
 
-## 11. Answer to the question
+## 12. Answer to the question
 
-**In this simulation, SCALIX gave the best balance at default settings, at a small extra cost.**
+**In this simulation, SCALIX gave the best balance on real traffic, at a small extra cost, and it is competitive with AWS's own policy rather than simply better.**
 
-* **Default settings:** SCALIX met the 10 s p95 target in every synthetic scenario and on real traffic. Threshold met it only on Normal and Rising, and Static only on Normal.
+* **Default settings:** SCALIX met the 10 s p95 target in every synthetic scenario and on real traffic. AWS target tracking met it on every synthetic scenario but not on real traffic, Threshold only on Normal and Rising, and Static only on Normal.
+* **Against AWS target tracking:** faster on real traffic (p95 5.57 ± 1.42 s lower per day), slower on synthetic Spike and Mixed bursts, cheaper on synthetic traffic and 1.4% dearer on real traffic.
 * **Cost:** 2–4% more than Threshold on synthetic traffic and 10% more on real traffic, with t3.micro list prices and CPU credits.
 * **Tuned on synthetic traffic,** Threshold caught up there, but only SCALIX's tuned settings still met the target on real traffic.
 * **Without a load balancer,** SCALIX lost nothing measurable.
 
 **The caveats are real.** These results come from one simulator, one queueing model, one instance type's prices and one real trace. The cost result depends heavily on T3 CPU credits. On a non-burstable instance, SCALIX's extra worker-time would cost 22–36% more than Threshold on synthetic traffic and 84% more on NASA.
 
-## 12. Threats to validity
+## 13. Threats to validity
 
 * **Simulated only.** It's a fluid queue with fixed worker capacity, with no request-size variation, network, failures or draining. See [LIMITATIONS.md](LIMITATIONS.md).
 * **Queueing model assumptions.** Poisson arrivals, exponential service, and each 5 s step treated as steady state, with a utilization cap of 0.95; raising it to 0.99 changed no conclusion.

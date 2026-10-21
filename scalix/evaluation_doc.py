@@ -35,6 +35,8 @@ def render(template: str, datasets: dict[str, dict]) -> str:
             return _body(ev.compact_table(datasets[arg], arg))
         if kind == "strategy_paired":
             return _body(ev.strategy_paired_table(datasets))
+        if kind == "strategy_paired_tt":
+            return _body(ev.strategy_paired_table(datasets, "TARGET_TRACKING"))
         if kind == "paired":
             return _body(ev.paired_table(datasets))
         if kind == "slo":

@@ -1,0 +1,156 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >-
+  SCALIX Phase 8 live test: the smallest Auto Scaling group SCALIX's controller can manage.
+  1 t3.micro worker (max 2) in its own small VPC, no load balancer, no IAM resources, no inbound access.
+  Each worker can burn CPU for a few minutes after boot so CloudWatch shows load. DELETE THE STACK WHEN DONE.
+
+Parameters:
+  LatestAmiId:
+    Description: Amazon Linux 2023 (x86_64), resolved from AWS's public SSM parameter at stack creation.
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/al2023-ami-kernel-default-x86_64
+  InstanceType:
+    Description: Worker size. t3.micro is the size SCALIX's cost model assumes.
+    Type: String
+    Default: t3.micro
+    AllowedValues: [t3.nano, t3.micro]
+  LoadMinutes:
+    Description: Minutes of synthetic CPU load each worker runs right after boot (0 = none).
+    Type: Number
+    Default: 25
+    MinValue: 0
+    MaxValue: 40
+  LoadPercent:
+    Description: CPU percentage the synthetic load aims for on every vCPU while it runs.
+    Type: Number
+    Default: 85
+    MinValue: 10
+    MaxValue: 95
+
+Resources:
+  Vpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.42.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags: [{Key: Name, Value: scalix-vpc}, {Key: Project, Value: SCALIX}]
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    Properties:
+      Tags: [{Key: Name, Value: scalix-igw}, {Key: Project, Value: SCALIX}]
+
+  GatewayAttachment:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref Vpc
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref Vpc
+      CidrBlock: 10.42.1.0/24
+      AvailabilityZone: !Select [0, !GetAZs ""]
+      MapPublicIpOnLaunch: true
+      Tags: [{Key: Name, Value: scalix-public}, {Key: Project, Value: SCALIX}]
+
+  RouteTable:
+    Type: AWS::EC2::RouteTable
+    Properties:
+      VpcId: !Ref Vpc
+      Tags: [{Key: Name, Value: scalix-routes}, {Key: Project, Value: SCALIX}]
+
+  DefaultRoute:
+    Type: AWS::EC2::Route
+    DependsOn: GatewayAttachment
+    Properties:
+      RouteTableId: !Ref RouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  SubnetRoutes:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    Properties:
+      SubnetId: !Ref PublicSubnet
+      RouteTableId: !Ref RouteTable
+
+  WorkerSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: SCALIX workers - no inbound access at all; outbound only
+      VpcId: !Ref Vpc
+      Tags: [{Key: Name, Value: scalix-workers}, {Key: Project, Value: SCALIX}]
+
+  WorkerLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: !Sub "${AWS::StackName}-worker"
+      LaunchTemplateData:
+        ImageId: !Ref LatestAmiId
+        InstanceType: !Ref InstanceType
+        CreditSpecification:
+          CpuCredits: unlimited       # T3 default; surplus credits are charged (see docs/PHASE8_AWS_PLAN.md)
+        Monitoring:
+          Enabled: false              # free 5-minute CloudWatch data; 1-minute detailed monitoring is billed
+        MetadataOptions:
+          HttpTokens: required
+        SecurityGroupIds: [!Ref WorkerSecurityGroup]
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs: {VolumeSize: 8, VolumeType: gp3, DeleteOnTermination: true, Encrypted: true}
+        TagSpecifications:
+          - ResourceType: instance
+            Tags: [{Key: Name, Value: scalix-worker}, {Key: Project, Value: SCALIX}]
+          - ResourceType: volume
+            Tags: [{Key: Name, Value: scalix-worker}, {Key: Project, Value: SCALIX}]
+        UserData:
+          Fn::Base64: !Sub |
+            #!/bin/bash
+            # Synthetic CPU load so CloudWatch shows a busy worker. Stops by itself after LoadMinutes.
+            cat > /usr/local/bin/scalix-load.py <<'PY'
+            import multiprocessing, sys, time
+            def burn(percent, until):
+                while time.time() < until:
+                    start = time.time()
+                    while time.time() - start < 0.1 * percent / 100:
+                        pass
+                    time.sleep(0.1 * (100 - percent) / 100)
+            if __name__ == "__main__":
+                minutes, percent = float(sys.argv[1]), float(sys.argv[2])
+                until = time.time() + minutes * 60
+                workers = [multiprocessing.Process(target=burn, args=(percent, until))
+                           for _ in range(multiprocessing.cpu_count())]
+                for w in workers:
+                    w.start()
+                for w in workers:
+                    w.join()
+            PY
+            if [ "${LoadMinutes}" -gt 0 ]; then
+              nohup python3 /usr/local/bin/scalix-load.py ${LoadMinutes} ${LoadPercent} > /var/log/scalix-load.log 2>&1 &
+            fi
+
+  WorkerGroup:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    DependsOn: DefaultRoute
+    Properties:
+      AutoScalingGroupName: scalix-workers
+      MinSize: "1"
+      MaxSize: "2"
+      DesiredCapacity: "1"
+      DefaultInstanceWarmup: 120
+      HealthCheckType: EC2
+      VPCZoneIdentifier: [!Ref PublicSubnet]
+      LaunchTemplate:
+        LaunchTemplateId: !Ref WorkerLaunchTemplate
+        Version: !GetAtt WorkerLaunchTemplate.LatestVersionNumber
+      Tags:
+        - {Key: Project, Value: SCALIX, PropagateAtLaunch: true}
+
+Outputs:
+  AutoScalingGroupName:
+    Description: Put this exact name in config/scalix.local.yaml (aws.auto_scaling_group and live.allowed_groups).
+    Value: !Ref WorkerGroup
+  Region:
+    Value: !Ref AWS::Region

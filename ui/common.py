@@ -9,7 +9,7 @@ import pandas as pd
 import streamlit as st
 
 from scalix import pricing
-from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, ThresholdPolicy
+from scalix.algorithms import CapacityLimits, ScalixPolicy, StaticPolicy, TargetTrackingPolicy, ThresholdPolicy
 from scalix.config import ConfigError, Mode, ScalixConfig, load_config
 from scalix.simulation import ExperimentSpec, SimulationConfig, WorkloadSpec, run_experiment
 from scalix.sources import DataSource
@@ -95,6 +95,7 @@ DEFAULT_FORM: dict[str, Any] = {
     "th_upper": 0.70, "th_lower": 0.30, "th_cooldown": 60,
     "sx_preemptive": 0.55, "sx_target": 0.60, "sx_window": 6, "sx_trend": 0.03, "sx_up_cd": 30, "sx_down_cd": 90,
     "sx_step": 3, "sx_spike": 1.5, "sx_low": 2,
+    "tt_target": 0.50, "tt_warmup": 300,
 }
 
 
@@ -113,6 +114,8 @@ def build_spec(form: dict[str, Any]) -> ExperimentSpec:
                      scale_down_cooldown_seconds=float(form["sx_down_cd"]),
                      max_scale_up_step=int(form["sx_step"]), spike_factor=None if spike <= 1 else spike,
                      low_intervals_required=int(form["sx_low"])),
+        TargetTrackingPolicy(capacity=cap, target_utilization=float(form.get("tt_target", 0.50)),
+                             warmup_seconds=float(form.get("tt_warmup", 300))),
     )
     if not form["scenarios"]:
         raise ValueError("choose at least one workload pattern")

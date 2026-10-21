@@ -6,7 +6,7 @@ This is the full list of what the project does **not** show. The topic-specific 
 
 | Claim | Status |
 |---|---|
-| The three strategies are implemented and make the decisions described | **Shown.** Unit tests, plus decision-for-decision parity with the original Java policies |
+| The strategies are implemented and make the decisions described | **Shown.** Unit tests, plus decision-for-decision parity with the original Java policies |
 | SCALIX responds faster than Threshold to sudden demand and on real traffic **in the simulator** | **Shown, in simulation only.** 10 seeds and 27 real days, with paired differences that exclude 0 |
 | SCALIX costs a little more than Threshold **in the simulator** | **Shown, in simulation only.** +2–4% synthetic and +10% real traffic at t3.micro list prices with CPU credits |
 | SCALIX works without a load balancer | **Shown, in simulation only.** The CPU-only signal changed no synthetic decision. The controller supports it, tested with mocks |
@@ -41,6 +41,7 @@ This is the full list of what the project does **not** show. The topic-specific 
 3. **Utilization saturates at 100% during a backlog,** which hides how much demand is really waiting, so SCALIX's step sizing then underestimates.
 4. **Spike detection is noise-sensitive at very low traffic.**
 5. **The ablation is joint.** Spike detection and the 2-interval rule were switched off together.
+6. **The AWS target tracking strategy is a model, not AWS.** It follows AWS's documentation and an AWS maintainer's statement (3 data points to scale out, 15 to scale in). The 90% scale-in point is assumed, and CloudWatch delays and alarm states aren't simulated.
 
 ## 5. The AWS layer
 

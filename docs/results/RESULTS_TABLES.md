@@ -15,15 +15,19 @@ Seeds 1–10 (10 runs per scenario and strategy). Mean ± 95% CI.
 | Normal | Static | 2.26 ± 0.03 | 6.65 ± 0.07 | 30 ± 11 | 0.277 ± 0.002 | 0.065 ± 0.000 | 240 ± 0 | 63.1% ± 0.6% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Normal | Threshold | 2.03 ± 0.01 | 6.05 ± 0.03 | 2 ± 3 | 0.285 ± 0.003 | 0.084 ± 0.002 | 308 ± 6 | 49.9% ± 0.9% | 4.6 ± 0.5 | 2.2 ± 0.6 |
 | Normal | SCALIX | 2.01 ± 0.00 | 6.01 ± 0.02 | 1 ± 2 | 0.294 ± 0.003 | 0.107 ± 0.004 | 395 ± 13 | 39.5% ± 1.2% | 4.3 ± 1.0 | 4.6 ± 1.2 |
+| Normal | AWS target tracking | 2.09 ± 0.02 | 6.23 ± 0.07 | 10 ± 5 | 0.302 ± 0.004 | 0.128 ± 0.005 | 472 ± 17 | 38.4% ± 0.7% | 4.9 ± 0.9 | 4.1 ± 1.0 |
 | Rising | Static | 42.15 ± 2.15 | 208.16 ± 8.52 | 906 ± 31 | 0.348 ± 0.001 | 0.065 ± 0.000 | 240 ± 0 | 80.7% ± 0.4% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Rising | Threshold | 2.04 ± 0.01 | 6.07 ± 0.01 | 2 ± 2 | 0.413 ± 0.002 | 0.098 ± 0.001 | 362 ± 2 | 61.8% ± 0.6% | 12.2 ± 0.3 | 1.2 ± 0.3 |
 | Rising | SCALIX | 2.00 ± 0.00 | 6.00 ± 0.00 | 0 ± 0 | 0.421 ± 0.003 | 0.120 ± 0.003 | 441 ± 9 | 50.4% ± 1.1% | 7.1 ± 0.7 | 0.2 ± 0.3 |
+| Rising | AWS target tracking | 2.00 ± 0.00 | 6.00 ± 0.00 | 0 ± 0 | 0.422 ± 0.003 | 0.123 ± 0.002 | 454 ± 6 | 49.5% ± 0.5% | 6.4 ± 0.7 | 0.0 ± 0.0 |
 | Spike | Static | 140.65 ± 4.54 | 295.79 ± 6.67 | 1201 ± 2 | 0.376 ± 0.002 | 0.065 ± 0.000 | 240 ± 0 | 87.6% ± 0.4% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Spike | Threshold | 24.13 ± 3.00 | 72.73 ± 7.85 | 470 ± 20 | 0.403 ± 0.003 | 0.104 ± 0.001 | 382 ± 5 | 59.4% ± 0.8% | 9.7 ± 0.3 | 4.1 ± 0.6 |
 | Spike | SCALIX | 2.64 ± 0.27 | 9.08 ± 1.98 | 96 ± 13 | 0.414 ± 0.003 | 0.131 ± 0.002 | 484 ± 8 | 45.7% ± 1.0% | 4.9 ± 0.5 | 5.0 ± 0.5 |
+| Spike | AWS target tracking | 2.36 ± 0.32 | 7.12 ± 1.41 | 84 ± 49 | 0.418 ± 0.003 | 0.142 ± 0.002 | 524 ± 8 | 44.1% ± 0.7% | 4.4 ± 0.5 | 0.0 ± 0.0 |
 | Mixed | Static | 52.88 ± 2.30 | 173.76 ± 6.53 | 718 ± 18 | 0.333 ± 0.002 | 0.065 ± 0.000 | 240 ± 0 | 77.0% ± 0.5% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Mixed | Threshold | 6.14 ± 0.58 | 22.79 ± 2.32 | 236 ± 10 | 0.345 ± 0.002 | 0.095 ± 0.002 | 351 ± 6 | 53.3% ± 0.7% | 8.4 ± 0.5 | 8.0 ± 0.7 |
 | Mixed | SCALIX | 2.17 ± 0.09 | 6.48 ± 0.33 | 42 ± 18 | 0.358 ± 0.002 | 0.129 ± 0.002 | 475 ± 8 | 40.1% ± 0.8% | 5.6 ± 0.5 | 6.9 ± 0.6 |
+| Mixed | AWS target tracking | 2.06 ± 0.02 | 6.15 ± 0.05 | 14 ± 8 | 0.366 ± 0.002 | 0.151 ± 0.002 | 556 ± 7 | 36.6% ± 0.5% | 2.9 ± 0.6 | 0.0 ± 0.0 |
 
 ### Compact: `tuned`
 
@@ -34,15 +38,19 @@ Seeds 1–10 (10 runs per scenario and strategy). Mean ± 95% CI.
 | Normal | Static | 2.00 ± 0.00 | 5.99 ± 0.00 | 0 ± 0 | 0.299 ± 0.002 | 0.122 ± 0.000 | 450 ± 0 | 33.6% ± 0.3% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Normal | Threshold | 2.01 ± 0.00 | 6.00 ± 0.01 | 0 ± 1 | 0.293 ± 0.003 | 0.106 ± 0.002 | 391 ± 6 | 40.5% ± 0.3% | 20.2 ± 1.5 | 16.2 ± 1.7 |
 | Normal | SCALIX | 2.01 ± 0.00 | 6.01 ± 0.02 | 1 ± 2 | 0.293 ± 0.003 | 0.106 ± 0.003 | 391 ± 11 | 40.1% ± 0.9% | 5.5 ± 1.2 | 7.3 ± 2.3 |
+| Normal | AWS target tracking | 2.09 ± 0.02 | 6.23 ± 0.07 | 10 ± 5 | 0.302 ± 0.004 | 0.128 ± 0.005 | 472 ± 17 | 38.4% ± 0.7% | 4.9 ± 0.9 | 4.1 ± 1.0 |
 | Rising | Static | 2.05 ± 0.01 | 6.08 ± 0.02 | 5 ± 3 | 0.422 ± 0.002 | 0.122 ± 0.000 | 450 ± 0 | 49.9% ± 0.3% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Rising | Threshold | 2.00 ± 0.00 | 5.99 ± 0.00 | 0 ± 0 | 0.424 ± 0.002 | 0.127 ± 0.001 | 466 ± 3 | 47.7% ± 0.4% | 13.4 ± 0.4 | 1.4 ± 0.4 |
 | Rising | SCALIX | 2.00 ± 0.00 | 6.00 ± 0.00 | 0 ± 0 | 0.421 ± 0.003 | 0.120 ± 0.003 | 441 ± 9 | 50.4% ± 1.1% | 7.1 ± 0.7 | 0.2 ± 0.3 |
+| Rising | AWS target tracking | 2.00 ± 0.00 | 6.00 ± 0.00 | 0 ± 0 | 0.422 ± 0.003 | 0.123 ± 0.002 | 454 ± 6 | 49.5% ± 0.5% | 6.4 ± 0.7 | 0.0 ± 0.0 |
 | Spike | Static | 2.74 ± 0.30 | 7.74 ± 0.94 | 214 ± 27 | 0.410 ± 0.002 | 0.122 ± 0.000 | 450 ± 0 | 48.4% ± 0.3% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Spike | Threshold | 2.96 ± 0.39 | 10.70 ± 2.15 | 120 ± 26 | 0.411 ± 0.003 | 0.125 ± 0.001 | 460 ± 5 | 47.2% ± 0.5% | 12.2 ± 0.3 | 7.0 ± 0.6 |
 | Spike | SCALIX | 2.64 ± 0.27 | 9.08 ± 1.98 | 96 ± 13 | 0.413 ± 0.003 | 0.129 ± 0.002 | 475 ± 8 | 46.3% ± 1.0% | 4.9 ± 0.5 | 5.3 ± 0.5 |
+| Spike | AWS target tracking | 2.36 ± 0.32 | 7.12 ± 1.41 | 84 ± 49 | 0.418 ± 0.003 | 0.142 ± 0.002 | 524 ± 8 | 44.1% ± 0.7% | 4.4 ± 0.5 | 0.0 ± 0.0 |
 | Mixed | Static | 2.39 ± 0.11 | 6.89 ± 0.28 | 111 ± 19 | 0.355 ± 0.002 | 0.122 ± 0.000 | 450 ± 0 | 41.1% ± 0.2% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | Mixed | Threshold | 2.05 ± 0.02 | 6.08 ± 0.04 | 10 ± 10 | 0.352 ± 0.002 | 0.114 ± 0.001 | 419 ± 4 | 43.9% ± 0.5% | 18.3 ± 0.9 | 19.8 ± 1.3 |
 | Mixed | SCALIX | 2.20 ± 0.14 | 6.66 ± 0.63 | 43 ± 20 | 0.354 ± 0.002 | 0.120 ± 0.002 | 442 ± 8 | 42.1% ± 0.7% | 6.3 ± 0.7 | 13.6 ± 0.7 |
+| Mixed | AWS target tracking | 2.06 ± 0.02 | 6.15 ± 0.05 | 14 ± 8 | 0.366 ± 0.002 | 0.151 ± 0.002 | 556 ± 7 | 36.6% ± 0.5% | 2.9 ± 0.6 | 0.0 ± 0.0 |
 
 ### Compact: `nasa`
 
@@ -53,6 +61,7 @@ NASA days 1–27 July 1995 (27 days of 24 h). Mean ± 95% CI.
 | NASA 1995 | Static | 7.63 ± 11.33 | 39.19 ± 67.53 | 1188 ± 1214 | 5.752 ± 0.585 | 3.125 ± 0.000 | 11520 ± 0 | 23.7% ± 3.0% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | NASA 1995 | Threshold | 6.75 ± 0.94 | 27.92 ± 4.28 | 16980 ± 1261 | 5.144 ± 0.656 | 1.542 ± 0.188 | 5683 ± 693 | 52.7% ± 0.5% | 508.1 ± 12.1 | 513.0 ± 12.1 |
 | NASA 1995 | SCALIX | 2.33 ± 0.09 | 7.02 ± 0.33 | 1075 ± 159 | 5.648 ± 0.677 | 2.837 ± 0.246 | 10457 ± 905 | 26.6% ± 0.9% | 242.3 ± 7.7 | 543.3 ± 11.2 |
+| NASA 1995 | AWS target tracking | 3.68 ± 0.30 | 12.59 ± 1.74 | 5433 ± 438 | 5.570 ± 0.672 | 2.600 ± 0.241 | 9584 ± 887 | 33.9% ± 0.6% | 128.6 ± 5.5 | 77.3 ± 3.0 |
 
 ### Compact: `nasa-tuned`
 
@@ -63,6 +72,7 @@ NASA days 1–27 July 1995 (27 days of 24 h). Mean ± 95% CI.
 | NASA 1995 | Static | 2.00 ± 0.01 | 6.00 ± 0.02 | 21 ± 41 | 7.016 ± 0.484 | 5.860 ± 0.000 | 21600 ± 0 | 12.6% ± 1.6% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | NASA 1995 | Threshold | 4.51 ± 0.57 | 18.27 ± 3.25 | 8960 ± 894 | 5.513 ± 0.663 | 2.207 ± 0.219 | 7718 ± 826 | 42.2% ± 0.3% | 1763.4 ± 39.8 | 1767.2 ± 39.7 |
 | NASA 1995 | SCALIX | 2.75 ± 0.20 | 8.83 ± 1.06 | 2599 ± 357 | 5.570 ± 0.674 | 2.593 ± 0.243 | 9523 ± 897 | 30.9% ± 0.6% | 425.7 ± 19.4 | 927.9 ± 30.9 |
+| NASA 1995 | AWS target tracking | 3.68 ± 0.30 | 12.59 ± 1.74 | 5433 ± 438 | 5.570 ± 0.672 | 2.600 ± 0.241 | 9584 ± 887 | 33.9% ± 0.6% | 128.6 ± 5.5 | 77.3 ± 3.0 |
 
 ### Compact: `nasa-aws`
 
@@ -73,6 +83,7 @@ NASA days 1–27 July 1995 (27 days of 24 h). Mean ± 95% CI.
 | NASA 1995 | Static | 7.63 ± 11.33 | 39.19 ± 67.53 | 1188 ± 1214 | 5.752 ± 0.585 | 3.125 ± 0.000 | 11520 ± 0 | 23.7% ± 3.0% | 0.0 ± 0.0 | 0.0 ± 0.0 |
 | NASA 1995 | Threshold | 5.40 ± 0.77 | 19.70 ± 3.57 | 11846 ± 1099 | 5.158 ± 0.658 | 1.586 ± 0.192 | 5847 ± 709 | 47.7% ± 0.5% | 18.0 ± 2.3 | 22.4 ± 2.6 |
 | NASA 1995 | SCALIX | 3.41 ± 0.40 | 11.81 ± 1.98 | 5090 ± 778 | 5.314 ± 0.678 | 1.990 ± 0.243 | 7336 ± 896 | 38.0% ± 0.3% | 15.3 ± 2.2 | 23.1 ± 2.9 |
+| NASA 1995 | AWS target tracking | 3.77 ± 0.52 | 12.34 ± 1.77 | 5637 ± 647 | 5.317 ± 0.669 | 1.998 ± 0.222 | 7366 ± 818 | 38.3% ± 0.7% | 9.9 ± 1.1 | 8.0 ± 0.8 |
 
 ## SCALIX vs Threshold in every experiment
 
@@ -135,23 +146,84 @@ Both strategies saw the identical trace in each seed (or NASA day), so each one 
 | nasa-tuned | NASA 1995 | **-1.761 ± 0.366** | **-9.45 ± 2.24** | **+0.0570 ± 0.0138** | **+0.3858 ± 0.0304** | **+1805 ± 103** |
 | nasa-aws | NASA 1995 | **-1.993 ± 0.407** | **-7.89 ± 1.70** | **+0.1558 ± 0.0212** | **+0.4038 ± 0.0549** | **+1489 ± 202** |
 
+## SCALIX vs AWS target tracking in every experiment
+
+Ratios of the means. Cost premium = SCALIX cost / AWS target tracking cost − 1. Speed-up = AWS target tracking response time / SCALIX response time (above 1 means SCALIX was faster).
+
+| Experiment | Scenario | Cost premium | Premium without CPU credits | Speed-up, average | Speed-up, p95 | Extra worker-min |
+|---|---|---|---|---|---|---|
+| main | Normal | -2.6% | -16.2% | 1.04× | 1.04× | -76 |
+| main | Rising | -0.3% | -2.8% | 1.00× | 1.00× | -13 |
+| main | Spike | -1.0% | -7.6% | 0.89× | 0.78× | -40 |
+| main | Mixed | -2.3% | -14.5% | 0.95× | 0.95× | -81 |
+| slow-startup | Normal | -0.9% | -3.8% | 1.05× | 1.05× | -15 |
+| slow-startup | Rising | -0.2% | -1.4% | 1.00× | 1.00× | -6 |
+| slow-startup | Spike | -0.6% | -4.8% | 0.83× | 0.70× | -24 |
+| slow-startup | Mixed | -0.5% | -4.1% | 0.93× | 0.91× | -20 |
+| scalix-target-70 | Normal | -3.8% | -23.3% | 1.04× | 1.04× | -110 |
+| scalix-target-70 | Rising | -1.4% | -12.1% | 1.00× | 1.00× | -55 |
+| scalix-target-70 | Spike | -1.4% | -11.0% | 0.65× | 0.44× | -57 |
+| scalix-target-70 | Mixed | -2.8% | -17.8% | 0.83× | 0.79× | -99 |
+| scalix-no-additions | Normal | -2.8% | -17.1% | 1.04× | 1.04× | -80 |
+| scalix-no-additions | Rising | -0.4% | -3.2% | 1.00× | 1.00× | -14 |
+| scalix-no-additions | Spike | -1.1% | -8.7% | 0.84× | 0.70× | -46 |
+| scalix-no-additions | Mixed | -2.6% | -16.2% | 0.92× | 0.89× | -90 |
+| queue-cap-0.99 | Normal | -2.6% | -16.2% | 1.10× | 1.09× | -76 |
+| queue-cap-0.99 | Rising | -0.3% | -2.8% | 1.00× | 1.00× | -13 |
+| queue-cap-0.99 | Spike | -1.0% | -7.6% | 0.90× | 0.79× | -40 |
+| queue-cap-0.99 | Mixed | -2.3% | -14.5% | 0.87× | 0.81× | -81 |
+| tuned | Normal | -2.8% | -17.0% | 1.04× | 1.04× | -80 |
+| tuned | Rising | -0.3% | -2.8% | 1.00× | 1.00× | -13 |
+| tuned | Spike | -1.2% | -9.3% | 0.89× | 0.78× | -49 |
+| tuned | Mixed | -3.2% | -20.4% | 0.94× | 0.92× | -113 |
+| cpu-signal | Normal | -2.6% | -16.2% | 1.04× | 1.04× | -76 |
+| cpu-signal | Rising | -0.3% | -2.8% | 1.00× | 1.00× | -13 |
+| cpu-signal | Spike | -1.0% | -7.6% | 0.89× | 0.78× | -40 |
+| cpu-signal | Mixed | -2.3% | -14.5% | 0.95× | 0.95× | -81 |
+| nasa | NASA 1995 | +1.4% | +9.1% | 1.58× | 1.79× | +874 |
+| nasa-tuned | NASA 1995 | +0.0% | -0.3% | 1.34× | 1.43× | -61 |
+| nasa-cpu-signal | NASA 1995 | +1.4% | +8.9% | 1.58× | 1.79× | +855 |
+| nasa-aws | NASA 1995 | -0.1% | -0.4% | 1.11× | 1.04× | -30 |
+
+## SCALIX minus AWS target tracking, paired by seed or day
+
+Both strategies saw the identical trace in each seed (or NASA day), so each one gives a paired difference. Negative = SCALIX lower (faster or cheaper). Cells: mean difference ± 95% CI; **bold** = the interval excludes 0.
+
+| Experiment | Scenario | Resp. avg (s) | Resp. p95 (s) | Cost (USD) | Cost, no credits (USD) | Worker-min |
+|---|---|---|---|---|---|---|
+| main | Normal | **-0.079 ± 0.023** | **-0.22 ± 0.07** | **-0.0080 ± 0.0028** | **-0.0207 ± 0.0072** | **-76 ± 26** |
+| main | Rising | -0.001 ± 0.002 | -0.00 ± 0.01 | **-0.0013 ± 0.0010** | **-0.0035 ± 0.0026** | **-13 ± 10** |
+| main | Spike | +0.280 ± 0.334 | +1.96 ± 2.16 | **-0.0042 ± 0.0009** | **-0.0108 ± 0.0023** | **-40 ± 9** |
+| main | Mixed | **+0.109 ± 0.088** | **+0.33 ± 0.32** | **-0.0084 ± 0.0010** | **-0.0219 ± 0.0026** | **-81 ± 10** |
+| slow-startup | Normal | **-0.098 ± 0.049** | **-0.28 ± 0.16** | **-0.0026 ± 0.0021** | -0.0042 ± 0.0046 | -15 ± 17 |
+| slow-startup | Rising | **-0.008 ± 0.004** | **-0.02 ± 0.01** | -0.0007 ± 0.0007 | -0.0018 ± 0.0018 | -6 ± 7 |
+| slow-startup | Spike | +1.063 ± 1.838 | +7.80 ± 8.84 | **-0.0025 ± 0.0006** | **-0.0065 ± 0.0015** | **-24 ± 6** |
+| slow-startup | Mixed | +0.201 ± 0.638 | +0.85 ± 2.96 | **-0.0020 ± 0.0010** | **-0.0055 ± 0.0024** | **-20 ± 9** |
+| tuned | Normal | **-0.079 ± 0.024** | **-0.22 ± 0.07** | **-0.0084 ± 0.0024** | **-0.0218 ± 0.0063** | **-80 ± 23** |
+| tuned | Rising | -0.001 ± 0.002 | -0.00 ± 0.01 | **-0.0013 ± 0.0010** | **-0.0035 ± 0.0026** | **-13 ± 10** |
+| tuned | Spike | +0.280 ± 0.334 | +1.96 ± 2.16 | **-0.0051 ± 0.0010** | **-0.0132 ± 0.0025** | **-49 ± 9** |
+| tuned | Mixed | **+0.140 ± 0.130** | +0.51 ± 0.60 | **-0.0119 ± 0.0009** | **-0.0308 ± 0.0025** | **-113 ± 9** |
+| nasa | NASA 1995 | **-1.357 ± 0.226** | **-5.57 ± 1.42** | **+0.0785 ± 0.0219** | **+0.2371 ± 0.0484** | **+874 ± 179** |
+| nasa-tuned | NASA 1995 | **-0.936 ± 0.163** | **-3.76 ± 0.76** | +0.0006 ± 0.0217 | -0.0067 ± 0.0485 | -61 ± 179 |
+| nasa-aws | NASA 1995 | -0.367 ± 0.461 | -0.52 ± 0.60 | -0.0032 ± 0.0161 | -0.0082 ± 0.0415 | -30 ± 153 |
+
 ## Response-time target: p95 ≤ 10 s
 
 Mean p95 response time over the test runs (queueing model); ✓ = at most 10 s. The tuned settings were chosen to meet this target on *training* seeds 101–110; these are the unseen test seeds and real NASA days.
 
-| Experiment | Scenario | Static | Threshold | SCALIX |
-|---|---|---|---|---|
-| main | Normal | 6.65 ✓ | 6.05 ✓ | 6.01 ✓ |
-| main | Rising | 208.16 ✗ | 6.07 ✓ | 6.00 ✓ |
-| main | Spike | 295.79 ✗ | 72.73 ✗ | 9.08 ✓ |
-| main | Mixed | 173.76 ✗ | 22.79 ✗ | 6.48 ✓ |
-| tuned | Normal | 5.99 ✓ | 6.00 ✓ | 6.01 ✓ |
-| tuned | Rising | 6.08 ✓ | 5.99 ✓ | 6.00 ✓ |
-| tuned | Spike | 7.74 ✓ | 10.70 ✗ | 9.08 ✓ |
-| tuned | Mixed | 6.89 ✓ | 6.08 ✓ | 6.66 ✓ |
-| nasa | NASA 1995 | 39.19 ✗ | 27.92 ✗ | 7.02 ✓ |
-| nasa-tuned | NASA 1995 | 6.00 ✓ | 18.27 ✗ | 8.83 ✓ |
-| nasa-aws | NASA 1995 | 39.19 ✗ | 19.70 ✗ | 11.81 ✗ |
+| Experiment | Scenario | Static | Threshold | SCALIX | AWS target tracking |
+|---|---|---|---|---|---|
+| main | Normal | 6.65 ✓ | 6.05 ✓ | 6.01 ✓ | 6.23 ✓ |
+| main | Rising | 208.16 ✗ | 6.07 ✓ | 6.00 ✓ | 6.00 ✓ |
+| main | Spike | 295.79 ✗ | 72.73 ✗ | 9.08 ✓ | 7.12 ✓ |
+| main | Mixed | 173.76 ✗ | 22.79 ✗ | 6.48 ✓ | 6.15 ✓ |
+| tuned | Normal | 5.99 ✓ | 6.00 ✓ | 6.01 ✓ | 6.23 ✓ |
+| tuned | Rising | 6.08 ✓ | 5.99 ✓ | 6.00 ✓ | 6.00 ✓ |
+| tuned | Spike | 7.74 ✓ | 10.70 ✗ | 9.08 ✓ | 7.12 ✓ |
+| tuned | Mixed | 6.89 ✓ | 6.08 ✓ | 6.66 ✓ | 6.15 ✓ |
+| nasa | NASA 1995 | 39.19 ✗ | 27.92 ✗ | 7.02 ✓ | 12.59 ✗ |
+| nasa-tuned | NASA 1995 | 6.00 ✓ | 18.27 ✗ | 8.83 ✓ | 12.59 ✗ |
+| nasa-aws | NASA 1995 | 39.19 ✗ | 19.70 ✗ | 11.81 ✗ | 12.34 ✗ |
 
 ## Tuned settings (from `results/tuning/tuned.json`)
 
@@ -162,6 +234,7 @@ Training: NORMAL, RISING, SPIKE, MIXED with seeds 101–110. Target: average p95
 | Static | worker_count=15 | yes | 8.34 | 0.3719 | 6 of 20 |
 | Threshold | cooldown_seconds=15.0, lower=0.3, upper=0.5 | yes | 9.66 | 0.3702 | 11 of 92 |
 | SCALIX | low_intervals_required=2, preemptive_upper=0.55, scale_down_cooldown_seconds=30.0, target_utilization=0.6, upper=0.7 | yes | 9.12 | 0.3702 | 30 of 126 |
+| AWS target tracking | scale_in_ratio=0.9, target_utilization=0.5, warmup_seconds=60.0 | yes | 8.34 | 0.3774 | 12 of 30 |
 
 ## Paired differences: SCALIX variant minus SCALIX in the base experiment
 
@@ -190,111 +263,115 @@ Every decision taken while utilization was at or below 30%, over all 10 seeds, c
 | Scenario | Strategy | Low-utilization decisions | Scaled down | Held: reason (count) |
 |---|---|---|---|---|
 | Mixed | SCALIX | 428 | 69 | cooldown (229), demand rising (75), not low for 2 intervals yet (50), demand just spiked (5) |
+| Mixed | AWS target tracking | 599 | 0 | not low for 15 data points yet (598), other (e.g. exactly at the threshold) (1) |
 | Mixed | Threshold | 234 | 80 | cooldown (149), other (e.g. exactly at the threshold) (5) |
 | Normal | SCALIX | 224 | 46 | not low for 2 intervals yet (102), cooldown (68), demand rising (8) |
+| Normal | AWS target tracking | 539 | 3 | not low for 15 data points yet (534), other (e.g. exactly at the threshold) (1), waiting for next data point (1) |
 | Normal | Threshold | 28 | 22 | cooldown (3), other (e.g. exactly at the threshold) (3) |
 | Rising | SCALIX | 26 | 2 | not low for 2 intervals yet (11), demand trend unknown (7), demand rising (6) |
+| Rising | AWS target tracking | 28 | 0 | not low for 15 data points yet (28) |
 | Rising | Threshold | 12 | 12 | - |
 | Spike | SCALIX | 241 | 50 | cooldown (98), not low for 2 intervals yet (82), demand rising (11) |
+| Spike | AWS target tracking | 481 | 0 | not low for 15 data points yet (481) |
 | Spike | Threshold | 78 | 41 | cooldown (28), other (e.g. exactly at the threshold) (9) |
 
 # Full tables per experiment
 
 ## Experiment `main`
 
-**Question:** How do the three strategies compare with their default settings?
+**Question:** How do the strategies compare with their default settings (including a model of AWS's own target tracking policy)?
 
 Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-width (Student t). 'clear' = the best strategy's interval does not overlap any other; 'context' = no better direction.
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.01 ± 0.02 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.008 ± 0.004 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.294 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.107 ± 0.004 | Static (clear) |
-| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.186 ± 0.004 | context |
-| Worker-minutes | 240 ± 0 | 308 ± 6 | 395 ± 13 | Static (clear) |
-| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 39.5% ± 1.2% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 4.3 ± 1.0 | context |
-| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 4.6 ± 1.2 | context |
-| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 34 ± 7 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.00 | 2.09 ± 0.02 | SCALIX (clear) |
+| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.01 ± 0.02 | 6.23 ± 0.07 | SCALIX (clear) |
+| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.008 ± 0.004 | 0.084 ± 0.023 | SCALIX (clear) |
+| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.294 ± 0.003 | 0.302 ± 0.004 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.107 ± 0.004 | 0.128 ± 0.005 | Static (clear) |
+| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.186 ± 0.004 | 0.174 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 308 ± 6 | 395 ± 13 | 472 ± 17 | Static (clear) |
+| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 39.5% ± 1.2% | 38.4% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 4.3 ± 1.0 | 4.9 ± 0.9 | context |
+| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 4.6 ± 1.2 | 4.1 ± 1.0 | context |
+| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 34 ± 7 | 182 ± 27 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | 10 ± 5 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | 4 ± 2 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.00 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.00 ± 0.00 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.004 ± 0.002 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.120 ± 0.003 | Static (clear) |
-| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 362 ± 2 | 441 ± 9 | Static (clear) |
-| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.4% ± 1.1% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.1 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | context |
-| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 49 ± 15 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | SCALIX (clear) |
-| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.00 ± 0.00 | 6.00 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.004 ± 0.002 | 0.005 ± 0.001 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | 0.422 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.120 ± 0.003 | 0.123 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | 0.299 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 362 ± 2 | 441 ± 9 | 454 ± 6 | Static (clear) |
+| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.4% ± 1.1% | 49.5% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | 86% ± 4% | context |
+| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.1 ± 0.7 | 6.4 ± 0.7 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 49 ± 15 | 57 ± 13 | SCALIX (overlapping CIs) |
+| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 2.64 ± 0.27 | SCALIX (clear) |
-| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 9.08 ± 1.98 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.121 ± 0.015 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.414 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.131 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.282 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 382 ± 5 | 484 ± 8 | Static (clear) |
-| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 45.7% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | context |
-| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 226 ± 13 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 96 ± 13 | SCALIX (clear) |
-| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 110 ± 37 | SCALIX (clear) |
-| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.52 ± 0.25 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 2.64 ± 0.27 | 2.36 ± 0.32 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 9.08 ± 1.98 | 7.12 ± 1.41 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.121 ± 0.015 | 0.138 ± 0.045 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.414 ± 0.003 | 0.418 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.131 ± 0.002 | 0.142 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.282 ± 0.003 | 0.276 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 382 ± 5 | 484 ± 8 | 524 ± 8 | Static (clear) |
+| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 45.7% ± 1.0% | 44.1% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 1% | context |
+| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.5 | 4.4 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 226 ± 13 | 270 ± 10 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 96 ± 13 | 84 ± 49 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 110 ± 37 | 40 ± 36 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.52 ± 0.25 | 2.22 ± 0.28 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.17 ± 0.09 | SCALIX (clear) |
-| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 6.48 ± 0.33 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.079 ± 0.016 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.358 ± 0.002 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.129 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.229 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 351 ± 6 | 475 ± 8 | Static (clear) |
-| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 40.1% ± 0.8% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.6 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.9 ± 0.6 | context |
-| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 144 ± 11 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 42 ± 18 | SCALIX (clear) |
-| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 33 ± 19 | SCALIX (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.09 ± 0.08 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.17 ± 0.09 | 2.06 ± 0.02 | AWS target tracking (clear) |
+| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 6.48 ± 0.33 | 6.15 ± 0.05 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.079 ± 0.016 | 0.060 ± 0.013 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.358 ± 0.002 | 0.366 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.129 ± 0.002 | 0.151 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.229 ± 0.002 | 0.215 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 351 ± 6 | 475 ± 8 | 556 ± 7 | Static (clear) |
+| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 40.1% ± 0.8% | 36.6% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.6 ± 0.5 | 2.9 ± 0.6 | context |
+| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.9 ± 0.6 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 144 ± 11 | 220 ± 16 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 42 ± 18 | 14 ± 8 | AWS target tracking (clear) |
+| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 33 ± 19 | 4 ± 2 | AWS target tracking (clear) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.09 ± 0.08 | 2.00 ± 0.00 | AWS target tracking (clear) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -306,93 +383,93 @@ Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-wid
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.26 ± 0.03 | 2.07 ± 0.02 | 2.05 ± 0.01 | SCALIX (overlapping CIs) |
-| Response time, p95 (s) | 6.65 ± 0.07 | 6.16 ± 0.05 | 6.12 ± 0.04 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.063 ± 0.014 | 0.045 ± 0.012 | SCALIX (overlapping CIs) |
-| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.286 ± 0.003 | 0.294 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.086 ± 0.001 | 0.107 ± 0.003 | Static (clear) |
-| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.199 ± 0.003 | 0.187 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 318 ± 5 | 394 ± 12 | Static (clear) |
-| Average utilization | 63.1% ± 0.6% | 50.2% ± 0.9% | 41.8% ± 0.9% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 99% ± 1% | 99% ± 1% | context |
-| Scale-ups | 0.0 ± 0.0 | 5.3 ± 0.6 | 5.9 ± 0.9 | context |
-| Scale-downs | 0.0 ± 0.0 | 2.9 ± 0.7 | 4.8 ± 0.9 | context |
-| Time above 70% (s) | 566 ± 30 | 190 ± 25 | 99 ± 8 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 30 ± 11 | 6 ± 5 | 6 ± 4 | Threshold = SCALIX (tie) |
-| Peak requests waiting | 5 ± 2 | 3 ± 2 | 3 ± 2 | Threshold = SCALIX (tie) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.26 ± 0.03 | 2.07 ± 0.02 | 2.05 ± 0.01 | 2.15 ± 0.04 | SCALIX (overlapping CIs) |
+| Response time, p95 (s) | 6.65 ± 0.07 | 6.16 ± 0.05 | 6.12 ± 0.04 | 6.40 ± 0.14 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.063 ± 0.014 | 0.045 ± 0.012 | 0.135 ± 0.035 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.286 ± 0.003 | 0.294 ± 0.003 | 0.296 ± 0.004 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.086 ± 0.001 | 0.107 ± 0.003 | 0.111 ± 0.004 | Static (clear) |
+| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.199 ± 0.003 | 0.187 ± 0.003 | 0.185 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 318 ± 5 | 394 ± 12 | 410 ± 16 | Static (clear) |
+| Average utilization | 63.1% ± 0.6% | 50.2% ± 0.9% | 41.8% ± 0.9% | 45.0% ± 1.2% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 99% ± 1% | 99% ± 1% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 5.3 ± 0.6 | 5.9 ± 0.9 | 5.1 ± 1.3 | context |
+| Scale-downs | 0.0 ± 0.0 | 2.9 ± 0.7 | 4.8 ± 0.9 | 3.1 ± 1.0 | context |
+| Time above 70% (s) | 566 ± 30 | 190 ± 25 | 99 ± 8 | 250 ± 39 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 30 ± 11 | 6 ± 5 | 6 ± 4 | 22 ± 15 | Threshold = SCALIX (tie) |
+| Peak requests waiting | 5 ± 2 | 3 ± 2 | 3 ± 2 | 5 ± 2 | Threshold = SCALIX (tie) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.01 ± 0.01 | Threshold = SCALIX (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 42.15 ± 2.15 | 2.06 ± 0.01 | 2.01 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 208.16 ± 8.52 | 6.11 ± 0.03 | 6.00 ± 0.01 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.056 ± 0.011 | 0.007 ± 0.003 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.415 ± 0.002 | 0.421 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.103 ± 0.001 | 0.120 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.312 ± 0.003 | 0.301 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 379 ± 3 | 444 ± 8 | Static (clear) |
-| Average utilization | 80.7% ± 0.4% | 62.5% ± 0.7% | 52.6% ± 1.2% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 99% ± 1% | 86% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 13.2 ± 0.3 | 7.0 ± 0.8 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | context |
-| Time above 70% (s) | 1206 ± 8 | 496 ± 54 | 92 ± 31 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 906 ± 31 | 3 ± 3 | 0 ± 0 | SCALIX (clear) |
-| Peak requests waiting | 1866 ± 77 | 2 ± 1 | 0 ± 0 | SCALIX (clear) |
-| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 42.15 ± 2.15 | 2.06 ± 0.01 | 2.01 ± 0.00 | 2.01 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| Response time, p95 (s) | 208.16 ± 8.52 | 6.11 ± 0.03 | 6.00 ± 0.01 | 6.03 ± 0.02 | SCALIX (clear) |
+| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.056 ± 0.011 | 0.007 ± 0.003 | 0.015 ± 0.005 | SCALIX (clear) |
+| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.415 ± 0.002 | 0.421 ± 0.003 | 0.422 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.103 ± 0.001 | 0.120 ± 0.002 | 0.122 ± 0.001 | Static (clear) |
+| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.312 ± 0.003 | 0.301 ± 0.003 | 0.300 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 379 ± 3 | 444 ± 8 | 450 ± 4 | Static (clear) |
+| Average utilization | 80.7% ± 0.4% | 62.5% ± 0.7% | 52.6% ± 1.2% | 52.2% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 99% ± 1% | 86% ± 5% | 95% ± 3% | context |
+| Scale-ups | 0.0 ± 0.0 | 13.2 ± 0.3 | 7.0 ± 0.8 | 7.9 ± 1.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1206 ± 8 | 496 ± 54 | 92 ± 31 | 106 ± 15 | SCALIX (overlapping CIs) |
+| Overload: time with requests waiting (s) | 906 ± 31 | 3 ± 3 | 0 ± 0 | 0 ± 1 | SCALIX = AWS target tracking (tie) |
+| Peak requests waiting | 1866 ± 77 | 2 ± 1 | 0 ± 0 | 0 ± 1 | SCALIX = AWS target tracking (tie) |
+| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 140.65 ± 4.54 | 32.57 ± 3.50 | 6.16 ± 1.23 | SCALIX (clear) |
-| Response time, p95 (s) | 295.79 ± 6.67 | 96.70 ± 9.03 | 26.35 ± 5.84 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.655 ± 0.031 | 0.275 ± 0.026 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.404 ± 0.003 | 0.413 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.107 ± 0.002 | 0.130 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.297 ± 0.002 | 0.283 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 395 ± 6 | 479 ± 6 | Static (clear) |
-| Average utilization | 87.6% ± 0.4% | 60.9% ± 0.8% | 49.3% ± 0.7% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 11.0 ± 0.0 | 5.2 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 5.0 ± 0.5 | 5.0 ± 0.5 | context |
-| Time above 70% (s) | 1346 ± 19 | 602 ± 29 | 297 ± 10 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 1201 ± 2 | 528 ± 18 | 232 ± 19 | SCALIX (clear) |
-| Peak requests waiting | 2364 ± 54 | 1168 ± 93 | 365 ± 79 | SCALIX (clear) |
-| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 31.91 ± 3.47 | 5.88 ± 1.20 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 140.65 ± 4.54 | 32.57 ± 3.50 | 6.16 ± 1.23 | 5.10 ± 1.71 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 295.79 ± 6.67 | 96.70 ± 9.03 | 26.35 ± 5.84 | 18.55 ± 8.07 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.655 ± 0.031 | 0.275 ± 0.026 | 0.313 ± 0.037 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.404 ± 0.003 | 0.413 ± 0.003 | 0.415 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.107 ± 0.002 | 0.130 ± 0.002 | 0.136 ± 0.001 | Static (clear) |
+| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.297 ± 0.002 | 0.283 ± 0.002 | 0.279 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 395 ± 6 | 479 ± 6 | 503 ± 4 | Static (clear) |
+| Average utilization | 87.6% ± 0.4% | 60.9% ± 0.8% | 49.3% ± 0.7% | 49.2% ± 0.6% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 11.0 ± 0.0 | 5.2 ± 0.5 | 3.5 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 5.0 ± 0.5 | 5.0 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1346 ± 19 | 602 ± 29 | 297 ± 10 | 360 ± 13 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 1201 ± 2 | 528 ± 18 | 232 ± 19 | 256 ± 44 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 2364 ± 54 | 1168 ± 93 | 365 ± 79 | 228 ± 123 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 31.91 ± 3.47 | 5.88 ± 1.20 | 4.78 ± 1.68 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 52.88 ± 2.30 | 8.21 ± 1.44 | 2.83 ± 0.40 | SCALIX (clear) |
-| Response time, p95 (s) | 173.76 ± 6.53 | 30.62 ± 5.22 | 9.01 ± 1.94 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.409 ± 0.032 | 0.211 ± 0.021 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.347 ± 0.002 | 0.358 ± 0.002 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.100 ± 0.002 | 0.129 ± 0.003 | Static (clear) |
-| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.247 ± 0.002 | 0.229 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 370 ± 6 | 475 ± 10 | Static (clear) |
-| Average utilization | 77.0% ± 0.5% | 54.0% ± 0.9% | 43.5% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 10.0 ± 0.5 | 7.6 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 9.0 ± 0.5 | 7.2 ± 0.7 | context |
-| Time above 70% (s) | 1106 ± 15 | 476 ± 35 | 256 ± 15 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 718 ± 18 | 278 ± 22 | 132 ± 21 | SCALIX (clear) |
-| Peak requests waiting | 1396 ± 55 | 377 ± 55 | 92 ± 41 | SCALIX (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 7.81 ± 1.41 | 2.62 ± 0.39 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 52.88 ± 2.30 | 8.21 ± 1.44 | 2.83 ± 0.40 | 2.63 ± 0.45 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 173.76 ± 6.53 | 30.62 ± 5.22 | 9.01 ± 1.94 | 8.16 ± 2.09 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.409 ± 0.032 | 0.211 ± 0.021 | 0.205 ± 0.037 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.347 ± 0.002 | 0.358 ± 0.002 | 0.360 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.100 ± 0.002 | 0.129 ± 0.003 | 0.134 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.247 ± 0.002 | 0.229 ± 0.003 | 0.226 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 370 ± 6 | 475 ± 10 | 495 ± 9 | Static (clear) |
+| Average utilization | 77.0% ± 0.5% | 54.0% ± 0.9% | 43.5% ± 1.0% | 43.6% ± 0.9% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 10.0 ± 0.5 | 7.6 ± 0.5 | 3.5 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 9.0 ± 0.5 | 7.2 ± 0.7 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1106 ± 15 | 476 ± 35 | 256 ± 15 | 330 ± 22 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 718 ± 18 | 278 ± 22 | 132 ± 21 | 108 ± 42 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 1396 ± 55 | 377 ± 55 | 92 ± 41 | 59 ± 45 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 7.81 ± 1.41 | 2.62 ± 0.39 | 2.43 ± 0.42 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -404,93 +481,93 @@ Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-wid
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.01 | SCALIX (clear) |
-| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.02 ± 0.02 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.011 ± 0.005 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.290 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.098 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.192 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 308 ± 6 | 362 ± 8 | Static (clear) |
-| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 42.8% ± 0.9% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 95% ± 4% | 90% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 3.6 ± 0.8 | context |
-| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 2.7 ± 1.0 | context |
-| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 52 ± 12 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.01 | 2.09 ± 0.02 | SCALIX (clear) |
+| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.02 ± 0.02 | 6.23 ± 0.07 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.011 ± 0.005 | 0.084 ± 0.023 | SCALIX (clear) |
+| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.290 ± 0.003 | 0.302 ± 0.004 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.098 ± 0.002 | 0.128 ± 0.005 | Static (clear) |
+| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.192 ± 0.003 | 0.174 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 308 ± 6 | 362 ± 8 | 472 ± 17 | Static (clear) |
+| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 42.8% ± 0.9% | 38.4% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 95% ± 4% | 90% ± 5% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 3.6 ± 0.8 | 4.9 ± 0.9 | context |
+| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 2.7 ± 1.0 | 4.1 ± 1.0 | context |
+| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 52 ± 12 | 182 ± 27 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | 10 ± 5 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | 4 ± 2 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.01 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.01 ± 0.01 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.013 ± 0.003 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.416 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.108 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.308 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 362 ± 2 | 399 ± 8 | Static (clear) |
-| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 55.8% ± 1.1% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 98% ± 2% | 92% ± 4% | context |
-| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 8.5 ± 1.0 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | context |
-| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 200 ± 27 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 1 ± 2 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 1 ± 1 | Threshold = SCALIX (tie) |
-| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.01 ± 0.00 | 2.00 ± 0.00 | AWS target tracking (clear) |
+| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.01 ± 0.01 | 6.00 ± 0.00 | AWS target tracking (clear) |
+| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.013 ± 0.003 | 0.005 ± 0.001 | AWS target tracking (clear) |
+| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.416 ± 0.003 | 0.422 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.108 ± 0.002 | 0.123 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.308 ± 0.002 | 0.299 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 362 ± 2 | 399 ± 8 | 454 ± 6 | Static (clear) |
+| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 55.8% ± 1.1% | 49.5% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 98% ± 2% | 92% ± 4% | 86% ± 4% | context |
+| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 8.5 ± 1.0 | 6.4 ± 0.7 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 200 ± 27 | 57 ± 13 | AWS target tracking (clear) |
+| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 1 ± 2 | 0 ± 0 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 1 ± 1 | 0 ± 0 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 3.65 ± 0.53 | SCALIX (clear) |
-| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 16.14 ± 3.33 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.170 ± 0.019 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.412 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.127 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.285 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 382 ± 5 | 467 ± 7 | Static (clear) |
-| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 48.1% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.2 | context |
-| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | context |
-| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 246 ± 14 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 137 ± 15 | SCALIX (clear) |
-| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 228 ± 42 | SCALIX (clear) |
-| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 3.48 ± 0.51 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 3.65 ± 0.53 | 2.36 ± 0.32 | AWS target tracking (clear) |
+| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 16.14 ± 3.33 | 7.12 ± 1.41 | AWS target tracking (clear) |
+| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.170 ± 0.019 | 0.138 ± 0.045 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.412 ± 0.003 | 0.418 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.127 ± 0.002 | 0.142 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.285 ± 0.002 | 0.276 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 382 ± 5 | 467 ± 7 | 524 ± 8 | Static (clear) |
+| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 48.1% ± 1.0% | 44.1% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 1% | context |
+| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.2 | 4.4 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 246 ± 14 | 270 ± 10 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 137 ± 15 | 84 ± 49 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 228 ± 42 | 40 ± 36 | AWS target tracking (clear) |
+| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 3.48 ± 0.51 | 2.22 ± 0.28 | AWS target tracking (clear) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.48 ± 0.13 | SCALIX (clear) |
-| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 7.79 ± 0.76 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.121 ± 0.008 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.356 ± 0.002 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.124 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.232 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 351 ± 6 | 457 ± 8 | Static (clear) |
-| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 42.3% ± 0.9% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.7 ± 0.6 | context |
-| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.4 ± 0.7 | context |
-| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 174 ± 13 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 81 ± 7 | SCALIX (clear) |
-| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 82 ± 21 | SCALIX (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.36 ± 0.13 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.48 ± 0.13 | 2.06 ± 0.02 | AWS target tracking (clear) |
+| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 7.79 ± 0.76 | 6.15 ± 0.05 | AWS target tracking (clear) |
+| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.121 ± 0.008 | 0.060 ± 0.013 | AWS target tracking (clear) |
+| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.356 ± 0.002 | 0.366 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.124 ± 0.002 | 0.151 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.232 ± 0.002 | 0.215 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 351 ± 6 | 457 ± 8 | 556 ± 7 | Static (clear) |
+| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 42.3% ± 0.9% | 36.6% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.7 ± 0.6 | 2.9 ± 0.6 | context |
+| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.4 ± 0.7 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 174 ± 13 | 220 ± 16 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 81 ± 7 | 14 ± 8 | AWS target tracking (clear) |
+| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 82 ± 21 | 4 ± 2 | AWS target tracking (clear) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.36 ± 0.13 | 2.00 ± 0.00 | AWS target tracking (clear) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -502,93 +579,93 @@ Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-wid
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.01 ± 0.02 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.009 ± 0.004 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.293 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.106 ± 0.004 | Static (clear) |
-| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.187 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 308 ± 6 | 391 ± 13 | Static (clear) |
-| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 40.1% ± 1.2% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 5.7 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 7.3 ± 1.4 | context |
-| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 38 ± 8 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.00 | 2.09 ± 0.02 | SCALIX (clear) |
+| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.01 ± 0.02 | 6.23 ± 0.07 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.009 ± 0.004 | 0.084 ± 0.023 | SCALIX (clear) |
+| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.293 ± 0.003 | 0.302 ± 0.004 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.106 ± 0.004 | 0.128 ± 0.005 | Static (clear) |
+| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.187 ± 0.003 | 0.174 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 308 ± 6 | 391 ± 13 | 472 ± 17 | Static (clear) |
+| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 40.1% ± 1.2% | 38.4% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 5.7 ± 0.7 | 4.9 ± 0.9 | context |
+| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 7.3 ± 1.4 | 4.1 ± 1.0 | context |
+| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 38 ± 8 | 182 ± 27 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | 10 ± 5 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | 4 ± 2 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.00 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.00 ± 0.00 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.004 ± 0.002 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.119 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 362 ± 2 | 439 ± 6 | Static (clear) |
-| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.7% ± 0.8% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.4 ± 0.6 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.7 ± 0.5 | context |
-| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 54 ± 17 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | SCALIX (clear) |
-| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.00 ± 0.00 | 6.00 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.004 ± 0.002 | 0.005 ± 0.001 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | 0.422 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.119 ± 0.002 | 0.123 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | 0.299 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 362 ± 2 | 439 ± 6 | 454 ± 6 | Static (clear) |
+| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.7% ± 0.8% | 49.5% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | 86% ± 4% | context |
+| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.4 ± 0.6 | 6.4 ± 0.7 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.7 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 54 ± 17 | 57 ± 13 | SCALIX (overlapping CIs) |
+| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 2.80 ± 0.24 | SCALIX (clear) |
-| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 10.16 ± 1.75 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.130 ± 0.014 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.413 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.130 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.283 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 382 ± 5 | 478 ± 9 | Static (clear) |
-| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 46.2% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 5.0 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.9 ± 0.5 | context |
-| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 228 ± 14 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 104 ± 12 | SCALIX (clear) |
-| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 134 ± 31 | SCALIX (clear) |
-| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.67 ± 0.23 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 2.80 ± 0.24 | 2.36 ± 0.32 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 10.16 ± 1.75 | 7.12 ± 1.41 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.130 ± 0.014 | 0.138 ± 0.045 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.413 ± 0.003 | 0.418 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.130 ± 0.002 | 0.142 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.283 ± 0.003 | 0.276 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 382 ± 5 | 478 ± 9 | 524 ± 8 | Static (clear) |
+| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 46.2% ± 1.0% | 44.1% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 1% | context |
+| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 5.0 ± 0.5 | 4.4 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.9 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 228 ± 14 | 270 ± 10 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 104 ± 12 | 84 ± 49 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 134 ± 31 | 40 ± 36 | AWS target tracking (clear) |
+| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.67 ± 0.23 | 2.22 ± 0.28 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.24 ± 0.19 | SCALIX (clear) |
-| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 6.88 ± 0.90 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.085 ± 0.023 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.357 ± 0.002 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.126 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.230 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 351 ± 6 | 466 ± 8 | Static (clear) |
-| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 41.0% ± 0.7% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 6.3 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 8.0 ± 0.7 | context |
-| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 150 ± 12 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 46 ± 23 | SCALIX (clear) |
-| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 41 ± 29 | SCALIX (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.16 ± 0.17 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.24 ± 0.19 | 2.06 ± 0.02 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 6.88 ± 0.90 | 6.15 ± 0.05 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.085 ± 0.023 | 0.060 ± 0.013 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.357 ± 0.002 | 0.366 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.126 ± 0.002 | 0.151 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.230 ± 0.002 | 0.215 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 351 ± 6 | 466 ± 8 | 556 ± 7 | Static (clear) |
+| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 41.0% ± 0.7% | 36.6% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 6.3 ± 0.7 | 2.9 ± 0.6 | context |
+| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 8.0 ± 0.7 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 150 ± 12 | 220 ± 16 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 46 ± 23 | 14 ± 8 | AWS target tracking (clear) |
+| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 41 ± 29 | 4 ± 2 | AWS target tracking (clear) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.16 ± 0.17 | 2.00 ± 0.00 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -600,93 +677,93 @@ Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-wid
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.67 ± 0.12 | 2.06 ± 0.03 | 2.02 ± 0.02 | SCALIX (overlapping CIs) |
-| Response time, p95 (s) | 7.93 ± 0.45 | 6.12 ± 0.08 | 6.04 ± 0.06 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.662 ± 0.114 | 0.059 ± 0.033 | 0.020 ± 0.024 | SCALIX (overlapping CIs) |
-| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.294 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.107 ± 0.004 | Static (clear) |
-| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.186 ± 0.004 | context |
-| Worker-minutes | 240 ± 0 | 308 ± 6 | 395 ± 13 | Static (clear) |
-| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 39.5% ± 1.2% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 4.3 ± 1.0 | context |
-| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 4.6 ± 1.2 | context |
-| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 34 ± 7 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.67 ± 0.12 | 2.06 ± 0.03 | 2.02 ± 0.02 | 2.23 ± 0.06 | SCALIX (overlapping CIs) |
+| Response time, p95 (s) | 7.93 ± 0.45 | 6.12 ± 0.08 | 6.04 ± 0.06 | 6.56 ± 0.17 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.662 ± 0.114 | 0.059 ± 0.033 | 0.020 ± 0.024 | 0.223 ± 0.062 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.294 ± 0.003 | 0.302 ± 0.004 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.107 ± 0.004 | 0.128 ± 0.005 | Static (clear) |
+| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.186 ± 0.004 | 0.174 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 308 ± 6 | 395 ± 13 | 472 ± 17 | Static (clear) |
+| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 39.5% ± 1.2% | 38.4% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 4.3 ± 1.0 | 4.9 ± 0.9 | context |
+| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 4.6 ± 1.2 | 4.1 ± 1.0 | context |
+| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 34 ± 7 | 182 ± 27 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | 10 ± 5 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | 4 ± 2 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 49.02 ± 2.19 | 2.07 ± 0.02 | 2.01 ± 0.01 | SCALIX (clear) |
-| Response time, p95 (s) | 218.45 ± 8.58 | 6.12 ± 0.04 | 6.00 ± 0.02 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 8.300 ± 0.163 | 0.067 ± 0.019 | 0.007 ± 0.008 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.120 ± 0.003 | Static (clear) |
-| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 362 ± 2 | 441 ± 9 | Static (clear) |
-| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.4% ± 1.1% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.1 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | context |
-| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 49 ± 15 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | SCALIX (clear) |
-| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 49.02 ± 2.19 | 2.07 ± 0.02 | 2.01 ± 0.01 | 2.01 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| Response time, p95 (s) | 218.45 ± 8.58 | 6.12 ± 0.04 | 6.00 ± 0.02 | 6.00 ± 0.01 | SCALIX = AWS target tracking (tie) |
+| of which: waiting for a free worker, average (s) | 8.300 ± 0.163 | 0.067 ± 0.019 | 0.007 ± 0.008 | 0.005 ± 0.003 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | 0.422 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.120 ± 0.003 | 0.123 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | 0.299 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 362 ± 2 | 441 ± 9 | 454 ± 6 | Static (clear) |
+| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.4% ± 1.1% | 49.5% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | 86% ± 4% | context |
+| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.1 ± 0.7 | 6.4 ± 0.7 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 49 ± 15 | 57 ± 13 | SCALIX (overlapping CIs) |
+| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 148.32 ± 4.57 | 27.18 ± 3.14 | 3.25 ± 0.35 | SCALIX (clear) |
-| Response time, p95 (s) | 305.72 ± 6.71 | 80.84 ± 7.95 | 12.59 ± 2.52 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 9.197 ± 0.041 | 3.621 ± 0.178 | 0.732 ± 0.100 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.414 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.131 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.282 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 382 ± 5 | 484 ± 8 | Static (clear) |
-| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 45.7% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | context |
-| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 226 ± 13 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 96 ± 13 | SCALIX (clear) |
-| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 110 ± 37 | SCALIX (clear) |
-| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.52 ± 0.25 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 148.32 ± 4.57 | 27.18 ± 3.14 | 3.25 ± 0.35 | 2.91 ± 0.58 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 305.72 ± 6.71 | 80.84 ± 7.95 | 12.59 ± 2.52 | 9.92 ± 2.84 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 9.197 ± 0.041 | 3.621 ± 0.178 | 0.732 ± 0.100 | 0.693 ± 0.336 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.414 ± 0.003 | 0.418 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.131 ± 0.002 | 0.142 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.282 ± 0.003 | 0.276 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 382 ± 5 | 484 ± 8 | 524 ± 8 | Static (clear) |
+| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 45.7% ± 1.0% | 44.1% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 1% | context |
+| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.5 | 4.4 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 226 ± 13 | 270 ± 10 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 96 ± 13 | 84 ± 49 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 110 ± 37 | 40 ± 36 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.52 ± 0.25 | 2.22 ± 0.28 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 58.19 ± 2.37 | 7.88 ± 0.64 | 2.50 ± 0.21 | SCALIX (clear) |
-| Response time, p95 (s) | 183.15 ± 6.39 | 30.61 ± 2.37 | 7.99 ± 1.04 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 6.471 ± 0.116 | 2.078 ± 0.095 | 0.402 ± 0.141 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.358 ± 0.002 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.129 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.229 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 351 ± 6 | 475 ± 8 | Static (clear) |
-| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 40.1% ± 0.8% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.6 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.9 ± 0.6 | context |
-| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 144 ± 11 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 42 ± 18 | SCALIX (clear) |
-| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 33 ± 19 | SCALIX (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.09 ± 0.08 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 58.19 ± 2.37 | 7.88 ± 0.64 | 2.50 ± 0.21 | 2.18 ± 0.08 | AWS target tracking (clear) |
+| Response time, p95 (s) | 183.15 ± 6.39 | 30.61 ± 2.37 | 7.99 ± 1.04 | 6.44 ± 0.23 | AWS target tracking (clear) |
+| of which: waiting for a free worker, average (s) | 6.471 ± 0.116 | 2.078 ± 0.095 | 0.402 ± 0.141 | 0.178 ± 0.076 | AWS target tracking (clear) |
+| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.358 ± 0.002 | 0.366 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.129 ± 0.002 | 0.151 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.229 ± 0.002 | 0.215 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 351 ± 6 | 475 ± 8 | 556 ± 7 | Static (clear) |
+| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 40.1% ± 0.8% | 36.6% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.6 ± 0.5 | 2.9 ± 0.6 | context |
+| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.9 ± 0.6 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 144 ± 11 | 220 ± 16 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 42 ± 18 | 14 ± 8 | AWS target tracking (clear) |
+| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 33 ± 19 | 4 ± 2 | AWS target tracking (clear) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.09 ± 0.08 | 2.00 ± 0.00 | AWS target tracking (clear) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -698,93 +775,93 @@ Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-wid
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.00 ± 0.00 | 2.01 ± 0.00 | 2.01 ± 0.00 | Static (clear) |
-| Response time, p95 (s) | 5.99 ± 0.00 | 6.00 ± 0.01 | 6.01 ± 0.02 | Static (clear) |
-| of which: waiting for a free worker, average (s) | 0.000 ± 0.000 | 0.006 ± 0.003 | 0.009 ± 0.004 | Static (clear) |
-| Estimated cost, AWS list prices (USD) | 0.299 ± 0.002 | 0.293 ± 0.003 | 0.293 ± 0.003 | Threshold = SCALIX (tie) |
-| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.106 ± 0.002 | 0.106 ± 0.003 | Threshold = SCALIX (tie) |
-| T3 CPU credits (USD) | 0.177 ± 0.002 | 0.187 ± 0.002 | 0.187 ± 0.003 | context |
-| Worker-minutes | 450 ± 0 | 391 ± 6 | 391 ± 11 | Threshold = SCALIX (tie) |
-| Average utilization | 33.6% ± 0.3% | 40.5% ± 0.3% | 40.1% ± 0.9% | Threshold* (overlapping CIs) |
-| Peak utilization | 60% ± 2% | 88% ± 5% | 89% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 20.2 ± 1.5 | 5.5 ± 1.2 | context |
-| Scale-downs | 0.0 ± 0.0 | 16.2 ± 1.7 | 7.3 ± 2.3 | context |
-| Time above 70% (s) | 0 ± 0 | 31 ± 6 | 37 ± 7 | Static (clear) |
-| Overload: time with requests waiting (s) | 0 ± 0 | 0 ± 1 | 1 ± 2 | Static = Threshold (tie) |
-| Peak requests waiting | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Static = Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.00 ± 0.00 | 2.01 ± 0.00 | 2.01 ± 0.00 | 2.09 ± 0.02 | Static (clear) |
+| Response time, p95 (s) | 5.99 ± 0.00 | 6.00 ± 0.01 | 6.01 ± 0.02 | 6.23 ± 0.07 | Static (clear) |
+| of which: waiting for a free worker, average (s) | 0.000 ± 0.000 | 0.006 ± 0.003 | 0.009 ± 0.004 | 0.084 ± 0.023 | Static (clear) |
+| Estimated cost, AWS list prices (USD) | 0.299 ± 0.002 | 0.293 ± 0.003 | 0.293 ± 0.003 | 0.302 ± 0.004 | Threshold = SCALIX (tie) |
+| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.106 ± 0.002 | 0.106 ± 0.003 | 0.128 ± 0.005 | Threshold = SCALIX (tie) |
+| T3 CPU credits (USD) | 0.177 ± 0.002 | 0.187 ± 0.002 | 0.187 ± 0.003 | 0.174 ± 0.003 | context |
+| Worker-minutes | 450 ± 0 | 391 ± 6 | 391 ± 11 | 472 ± 17 | Threshold = SCALIX (tie) |
+| Average utilization | 33.6% ± 0.3% | 40.5% ± 0.3% | 40.1% ± 0.9% | 38.4% ± 0.7% | Threshold* (overlapping CIs) |
+| Peak utilization | 60% ± 2% | 88% ± 5% | 89% ± 5% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 20.2 ± 1.5 | 5.5 ± 1.2 | 4.9 ± 0.9 | context |
+| Scale-downs | 0.0 ± 0.0 | 16.2 ± 1.7 | 7.3 ± 2.3 | 4.1 ± 1.0 | context |
+| Time above 70% (s) | 0 ± 0 | 31 ± 6 | 37 ± 7 | 182 ± 27 | Static (clear) |
+| Overload: time with requests waiting (s) | 0 ± 0 | 0 ± 1 | 1 ± 2 | 10 ± 5 | Static = Threshold (tie) |
+| Peak requests waiting | 0 ± 0 | 0 ± 0 | 0 ± 0 | 4 ± 2 | Static = Threshold = SCALIX (tie) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Static = Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.05 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
-| Response time, p95 (s) | 6.08 ± 0.02 | 5.99 ± 0.00 | 6.00 ± 0.00 | Threshold (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.050 ± 0.008 | 0.002 ± 0.001 | 0.004 ± 0.002 | Threshold (overlapping CIs) |
-| Estimated cost, AWS list prices (USD) | 0.422 ± 0.002 | 0.424 ± 0.002 | 0.421 ± 0.003 | SCALIX (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.127 ± 0.001 | 0.120 ± 0.003 | SCALIX (overlapping CIs) |
-| T3 CPU credits (USD) | 0.300 ± 0.002 | 0.297 ± 0.002 | 0.301 ± 0.002 | context |
-| Worker-minutes | 450 ± 0 | 466 ± 3 | 441 ± 9 | SCALIX (overlapping CIs) |
-| Average utilization | 49.9% ± 0.3% | 47.7% ± 0.4% | 50.4% ± 1.1% | SCALIX* (overlapping CIs) |
-| Peak utilization | 99% ± 1% | 82% ± 5% | 86% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 13.4 ± 0.4 | 7.1 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.4 ± 0.4 | 0.2 ± 0.3 | context |
-| Time above 70% (s) | 354 ± 19 | 27 ± 5 | 49 ± 15 | Threshold (clear) |
-| Overload: time with requests waiting (s) | 5 ± 3 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Peak requests waiting | 4 ± 4 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Requests unserved at end | 0 ± 1 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Static = Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.05 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
+| Response time, p95 (s) | 6.08 ± 0.02 | 5.99 ± 0.00 | 6.00 ± 0.00 | 6.00 ± 0.00 | Threshold (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.050 ± 0.008 | 0.002 ± 0.001 | 0.004 ± 0.002 | 0.005 ± 0.001 | Threshold (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.422 ± 0.002 | 0.424 ± 0.002 | 0.421 ± 0.003 | 0.422 ± 0.003 | SCALIX (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.127 ± 0.001 | 0.120 ± 0.003 | 0.123 ± 0.002 | SCALIX (overlapping CIs) |
+| T3 CPU credits (USD) | 0.300 ± 0.002 | 0.297 ± 0.002 | 0.301 ± 0.002 | 0.299 ± 0.002 | context |
+| Worker-minutes | 450 ± 0 | 466 ± 3 | 441 ± 9 | 454 ± 6 | SCALIX (overlapping CIs) |
+| Average utilization | 49.9% ± 0.3% | 47.7% ± 0.4% | 50.4% ± 1.1% | 49.5% ± 0.5% | SCALIX* (overlapping CIs) |
+| Peak utilization | 99% ± 1% | 82% ± 5% | 86% ± 5% | 86% ± 4% | context |
+| Scale-ups | 0.0 ± 0.0 | 13.4 ± 0.4 | 7.1 ± 0.7 | 6.4 ± 0.7 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.4 ± 0.4 | 0.2 ± 0.3 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 354 ± 19 | 27 ± 5 | 49 ± 15 | 57 ± 13 | Threshold (clear) |
+| Overload: time with requests waiting (s) | 5 ± 3 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Peak requests waiting | 4 ± 4 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Requests unserved at end | 0 ± 1 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Static = Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.74 ± 0.30 | 2.96 ± 0.39 | 2.64 ± 0.27 | SCALIX (overlapping CIs) |
-| Response time, p95 (s) | 7.74 ± 0.94 | 10.70 ± 2.15 | 9.08 ± 1.98 | Static (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.280 ± 0.015 | 0.147 ± 0.023 | 0.121 ± 0.015 | SCALIX (overlapping CIs) |
-| Estimated cost, AWS list prices (USD) | 0.410 ± 0.002 | 0.411 ± 0.003 | 0.413 ± 0.003 | Static (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.125 ± 0.001 | 0.129 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.288 ± 0.002 | 0.286 ± 0.003 | 0.284 ± 0.002 | context |
-| Worker-minutes | 450 ± 0 | 460 ± 5 | 475 ± 8 | Static (clear) |
-| Average utilization | 48.4% ± 0.3% | 47.2% ± 0.5% | 46.3% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 4.9 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 7.0 ± 0.6 | 5.3 ± 0.5 | context |
-| Time above 70% (s) | 376 ± 9 | 228 ± 10 | 226 ± 13 | SCALIX (overlapping CIs) |
-| Overload: time with requests waiting (s) | 214 ± 27 | 120 ± 26 | 96 ± 13 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 53 ± 23 | 136 ± 46 | 110 ± 37 | Static (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.46 ± 0.29 | 2.82 ± 0.37 | 2.52 ± 0.25 | Static (overlapping CIs) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.74 ± 0.30 | 2.96 ± 0.39 | 2.64 ± 0.27 | 2.36 ± 0.32 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 7.74 ± 0.94 | 10.70 ± 2.15 | 9.08 ± 1.98 | 7.12 ± 1.41 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.280 ± 0.015 | 0.147 ± 0.023 | 0.121 ± 0.015 | 0.138 ± 0.045 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.410 ± 0.002 | 0.411 ± 0.003 | 0.413 ± 0.003 | 0.418 ± 0.003 | Static (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.125 ± 0.001 | 0.129 ± 0.002 | 0.142 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.288 ± 0.002 | 0.286 ± 0.003 | 0.284 ± 0.002 | 0.276 ± 0.003 | context |
+| Worker-minutes | 450 ± 0 | 460 ± 5 | 475 ± 8 | 524 ± 8 | Static (clear) |
+| Average utilization | 48.4% ± 0.3% | 47.2% ± 0.5% | 46.3% ± 1.0% | 44.1% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 1% | context |
+| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 4.9 ± 0.5 | 4.4 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 7.0 ± 0.6 | 5.3 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 376 ± 9 | 228 ± 10 | 226 ± 13 | 270 ± 10 | SCALIX (overlapping CIs) |
+| Overload: time with requests waiting (s) | 214 ± 27 | 120 ± 26 | 96 ± 13 | 84 ± 49 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 53 ± 23 | 136 ± 46 | 110 ± 37 | 40 ± 36 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.46 ± 0.29 | 2.82 ± 0.37 | 2.52 ± 0.25 | 2.22 ± 0.28 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.39 ± 0.11 | 2.05 ± 0.02 | 2.20 ± 0.14 | Threshold (overlapping CIs) |
-| Response time, p95 (s) | 6.89 ± 0.28 | 6.08 ± 0.04 | 6.66 ± 0.63 | Threshold (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.180 ± 0.015 | 0.040 ± 0.013 | 0.081 ± 0.019 | Threshold (clear) |
-| Estimated cost, AWS list prices (USD) | 0.355 ± 0.002 | 0.352 ± 0.002 | 0.354 ± 0.002 | Threshold (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.114 ± 0.001 | 0.120 ± 0.002 | Threshold (clear) |
-| T3 CPU credits (USD) | 0.233 ± 0.002 | 0.238 ± 0.002 | 0.234 ± 0.002 | context |
-| Worker-minutes | 450 ± 0 | 419 ± 4 | 442 ± 8 | Threshold (clear) |
-| Average utilization | 41.1% ± 0.2% | 43.9% ± 0.5% | 42.1% ± 0.7% | Threshold* (clear) |
-| Peak utilization | 100% ± 0% | 99% ± 2% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 18.3 ± 0.9 | 6.3 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 19.8 ± 1.3 | 13.6 ± 0.7 | context |
-| Time above 70% (s) | 230 ± 7 | 136 ± 8 | 147 ± 9 | Threshold (overlapping CIs) |
-| Overload: time with requests waiting (s) | 111 ± 19 | 10 ± 10 | 43 ± 20 | Threshold (clear) |
-| Peak requests waiting | 40 ± 9 | 6 ± 5 | 37 ± 25 | Threshold (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.21 ± 0.10 | 2.01 ± 0.01 | 2.12 ± 0.12 | Threshold (overlapping CIs) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.39 ± 0.11 | 2.05 ± 0.02 | 2.20 ± 0.14 | 2.06 ± 0.02 | Threshold (overlapping CIs) |
+| Response time, p95 (s) | 6.89 ± 0.28 | 6.08 ± 0.04 | 6.66 ± 0.63 | 6.15 ± 0.05 | Threshold (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.180 ± 0.015 | 0.040 ± 0.013 | 0.081 ± 0.019 | 0.060 ± 0.013 | Threshold (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.355 ± 0.002 | 0.352 ± 0.002 | 0.354 ± 0.002 | 0.366 ± 0.002 | Threshold (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 0.122 ± 0.000 | 0.114 ± 0.001 | 0.120 ± 0.002 | 0.151 ± 0.002 | Threshold (clear) |
+| T3 CPU credits (USD) | 0.233 ± 0.002 | 0.238 ± 0.002 | 0.234 ± 0.002 | 0.215 ± 0.002 | context |
+| Worker-minutes | 450 ± 0 | 419 ± 4 | 442 ± 8 | 556 ± 7 | Threshold (clear) |
+| Average utilization | 41.1% ± 0.2% | 43.9% ± 0.5% | 42.1% ± 0.7% | 36.6% ± 0.5% | Threshold* (clear) |
+| Peak utilization | 100% ± 0% | 99% ± 2% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 18.3 ± 0.9 | 6.3 ± 0.7 | 2.9 ± 0.6 | context |
+| Scale-downs | 0.0 ± 0.0 | 19.8 ± 1.3 | 13.6 ± 0.7 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 230 ± 7 | 136 ± 8 | 147 ± 9 | 220 ± 16 | Threshold (overlapping CIs) |
+| Overload: time with requests waiting (s) | 111 ± 19 | 10 ± 10 | 43 ± 20 | 14 ± 8 | Threshold (overlapping CIs) |
+| Peak requests waiting | 40 ± 9 | 6 ± 5 | 37 ± 25 | 4 ± 2 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.21 ± 0.10 | 2.01 ± 0.01 | 2.12 ± 0.12 | 2.00 ± 0.00 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -796,93 +873,93 @@ Seeds 1–10 (10 runs per scenario and strategy). Cells: mean ± 95% CI half-wid
 
 ### Normal (NORMAL)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.01 ± 0.02 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.008 ± 0.004 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.294 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.107 ± 0.004 | Static (clear) |
-| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.186 ± 0.004 | context |
-| Worker-minutes | 240 ± 0 | 308 ± 6 | 395 ± 13 | Static (clear) |
-| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 39.5% ± 1.2% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 4.3 ± 1.0 | context |
-| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 4.6 ± 1.2 | context |
-| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 34 ± 7 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.26 ± 0.03 | 2.03 ± 0.01 | 2.01 ± 0.00 | 2.09 ± 0.02 | SCALIX (clear) |
+| Response time, p95 (s) | 6.65 ± 0.07 | 6.05 ± 0.03 | 6.01 ± 0.02 | 6.23 ± 0.07 | SCALIX (clear) |
+| of which: waiting for a free worker, average (s) | 0.248 ± 0.021 | 0.031 ± 0.009 | 0.008 ± 0.004 | 0.084 ± 0.023 | SCALIX (clear) |
+| Estimated cost, AWS list prices (USD) | 0.277 ± 0.002 | 0.285 ± 0.003 | 0.294 ± 0.003 | 0.302 ± 0.004 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.084 ± 0.002 | 0.107 ± 0.004 | 0.128 ± 0.005 | Static (clear) |
+| T3 CPU credits (USD) | 0.212 ± 0.002 | 0.201 ± 0.002 | 0.186 ± 0.004 | 0.174 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 308 ± 6 | 395 ± 13 | 472 ± 17 | Static (clear) |
+| Average utilization | 63.1% ± 0.6% | 49.9% ± 0.9% | 39.5% ± 1.2% | 38.4% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 95% ± 4% | 89% ± 5% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 4.6 ± 0.5 | 4.3 ± 1.0 | 4.9 ± 0.9 | context |
+| Scale-downs | 0.0 ± 0.0 | 2.2 ± 0.6 | 4.6 ± 1.2 | 4.1 ± 1.0 | context |
+| Time above 70% (s) | 566 ± 30 | 162 ± 23 | 34 ± 7 | 182 ± 27 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 30 ± 11 | 2 ± 3 | 1 ± 2 | 10 ± 5 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 5 ± 2 | 1 ± 1 | 0 ± 0 | 4 ± 2 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.01 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Rising (RISING)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.00 ± 0.00 | SCALIX (clear) |
-| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.00 ± 0.00 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.004 ± 0.002 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.120 ± 0.003 | Static (clear) |
-| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 362 ± 2 | 441 ± 9 | Static (clear) |
-| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.4% ± 1.1% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | context |
-| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.1 ± 0.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | context |
-| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 49 ± 15 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | SCALIX (clear) |
-| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX (tie) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 42.15 ± 2.15 | 2.04 ± 0.01 | 2.00 ± 0.00 | 2.00 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| Response time, p95 (s) | 208.16 ± 8.52 | 6.07 ± 0.01 | 6.00 ± 0.00 | 6.00 ± 0.00 | SCALIX = AWS target tracking (tie) |
+| of which: waiting for a free worker, average (s) | 1.430 ± 0.021 | 0.043 ± 0.006 | 0.004 ± 0.002 | 0.005 ± 0.001 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.348 ± 0.001 | 0.413 ± 0.002 | 0.421 ± 0.003 | 0.422 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.098 ± 0.001 | 0.120 ± 0.003 | 0.123 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.283 ± 0.001 | 0.314 ± 0.002 | 0.301 ± 0.002 | 0.299 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 362 ± 2 | 441 ± 9 | 454 ± 6 | Static (clear) |
+| Average utilization | 80.7% ± 0.4% | 61.8% ± 0.6% | 50.4% ± 1.1% | 49.5% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 98% ± 2% | 86% ± 5% | 86% ± 4% | context |
+| Scale-ups | 0.0 ± 0.0 | 12.2 ± 0.3 | 7.1 ± 0.7 | 6.4 ± 0.7 | context |
+| Scale-downs | 0.0 ± 0.0 | 1.2 ± 0.3 | 0.2 ± 0.3 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1206 ± 8 | 464 ± 53 | 49 ± 15 | 57 ± 13 | SCALIX (overlapping CIs) |
+| Overload: time with requests waiting (s) | 906 ± 31 | 2 ± 2 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Peak requests waiting | 1866 ± 77 | 1 ± 1 | 0 ± 0 | 0 ± 0 | SCALIX = AWS target tracking (tie) |
+| Requests unserved at end | 1866 ± 77 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 40.72 ± 2.14 | 2.00 ± 0.00 | 2.00 ± 0.00 | 2.00 ± 0.00 | Threshold = SCALIX = AWS target tracking (tie) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Spike (SPIKE)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 2.64 ± 0.27 | SCALIX (clear) |
-| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 9.08 ± 1.98 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.121 ± 0.015 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.414 ± 0.003 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.131 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.282 ± 0.003 | context |
-| Worker-minutes | 240 ± 0 | 382 ± 5 | 484 ± 8 | Static (clear) |
-| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 45.7% ± 1.0% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | context |
-| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 226 ± 13 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 96 ± 13 | SCALIX (clear) |
-| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 110 ± 37 | SCALIX (clear) |
-| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.52 ± 0.25 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 140.65 ± 4.54 | 24.13 ± 3.00 | 2.64 ± 0.27 | 2.36 ± 0.32 | AWS target tracking (overlapping CIs) |
+| Response time, p95 (s) | 295.79 ± 6.67 | 72.73 ± 7.85 | 9.08 ± 1.98 | 7.12 ± 1.41 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.523 ± 0.005 | 0.571 ± 0.029 | 0.121 ± 0.015 | 0.138 ± 0.045 | SCALIX (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.376 ± 0.002 | 0.403 ± 0.003 | 0.414 ± 0.003 | 0.418 ± 0.003 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.104 ± 0.001 | 0.131 ± 0.002 | 0.142 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.310 ± 0.002 | 0.299 ± 0.003 | 0.282 ± 0.003 | 0.276 ± 0.003 | context |
+| Worker-minutes | 240 ± 0 | 382 ± 5 | 484 ± 8 | 524 ± 8 | Static (clear) |
+| Average utilization | 87.6% ± 0.4% | 59.4% ± 0.8% | 45.7% ± 1.0% | 44.1% ± 0.7% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 1% | context |
+| Scale-ups | 0.0 ± 0.0 | 9.7 ± 0.3 | 4.9 ± 0.5 | 4.4 ± 0.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 4.1 ± 0.6 | 5.0 ± 0.5 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1346 ± 19 | 542 ± 31 | 226 ± 13 | 270 ± 10 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 1201 ± 2 | 470 ± 20 | 96 ± 13 | 84 ± 49 | AWS target tracking (overlapping CIs) |
+| Peak requests waiting | 2364 ± 54 | 922 ± 91 | 110 ± 37 | 40 ± 36 | AWS target tracking (overlapping CIs) |
+| Requests unserved at end | 446 ± 78 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 139.12 ± 4.54 | 23.56 ± 2.97 | 2.52 ± 0.25 | 2.22 ± 0.28 | AWS target tracking (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
 ### Mixed (MIXED)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.17 ± 0.09 | SCALIX (clear) |
-| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 6.48 ± 0.33 | SCALIX (clear) |
-| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.079 ± 0.016 | SCALIX (clear) |
-| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.358 ± 0.002 | Static (clear) |
-| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.129 ± 0.002 | Static (clear) |
-| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.229 ± 0.002 | context |
-| Worker-minutes | 240 ± 0 | 351 ± 6 | 475 ± 8 | Static (clear) |
-| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 40.1% ± 0.8% | Static* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.6 ± 0.5 | context |
-| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.9 ± 0.6 | context |
-| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 144 ± 11 | SCALIX (clear) |
-| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 42 ± 18 | SCALIX (clear) |
-| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 33 ± 19 | SCALIX (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.09 ± 0.08 | SCALIX (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 52.88 ± 2.30 | 6.14 ± 0.58 | 2.17 ± 0.09 | 2.06 ± 0.02 | AWS target tracking (clear) |
+| Response time, p95 (s) | 173.76 ± 6.53 | 22.79 ± 2.32 | 6.48 ± 0.33 | 6.15 ± 0.05 | AWS target tracking (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 1.154 ± 0.018 | 0.340 ± 0.016 | 0.079 ± 0.016 | 0.060 ± 0.013 | AWS target tracking (overlapping CIs) |
+| Estimated cost, AWS list prices (USD) | 0.333 ± 0.002 | 0.345 ± 0.002 | 0.358 ± 0.002 | 0.366 ± 0.002 | Static (clear) |
+| Cost without T3 CPU credits (USD) | 0.065 ± 0.000 | 0.095 ± 0.002 | 0.129 ± 0.002 | 0.151 ± 0.002 | Static (clear) |
+| T3 CPU credits (USD) | 0.268 ± 0.002 | 0.250 ± 0.001 | 0.229 ± 0.002 | 0.215 ± 0.002 | context |
+| Worker-minutes | 240 ± 0 | 351 ± 6 | 475 ± 8 | 556 ± 7 | Static (clear) |
+| Average utilization | 77.0% ± 0.5% | 53.3% ± 0.7% | 40.1% ± 0.8% | 36.6% ± 0.5% | Static* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 8.4 ± 0.5 | 5.6 ± 0.5 | 2.9 ± 0.6 | context |
+| Scale-downs | 0.0 ± 0.0 | 8.0 ± 0.7 | 6.9 ± 0.6 | 0.0 ± 0.0 | context |
+| Time above 70% (s) | 1106 ± 15 | 406 ± 28 | 144 ± 11 | 220 ± 16 | SCALIX (clear) |
+| Overload: time with requests waiting (s) | 718 ± 18 | 236 ± 10 | 42 ± 18 | 14 ± 8 | AWS target tracking (clear) |
+| Peak requests waiting | 1396 ± 55 | 288 ± 28 | 33 ± 19 | 4 ± 2 | AWS target tracking (clear) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 51.72 ± 2.29 | 5.80 ± 0.56 | 2.09 ± 0.08 | 2.00 ± 0.00 | AWS target tracking (clear) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -894,24 +971,24 @@ NASA days 1–27 July 1995 (27 days of 24 h). Cells: mean ± 95% CI half-width (
 
 ### NASA 1995 (NASA)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 7.63 ± 11.33 | 6.75 ± 0.94 | 2.33 ± 0.09 | SCALIX (overlapping CIs) |
-| Response time, p95 (s) | 39.19 ± 67.53 | 27.92 ± 4.28 | 7.02 ± 0.33 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.124 ± 0.066 | 3.070 ± 0.647 | 0.276 ± 0.078 | Static (clear) |
-| Estimated cost, AWS list prices (USD) | 5.752 ± 0.585 | 5.144 ± 0.656 | 5.648 ± 0.677 | Threshold (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 3.125 ± 0.000 | 1.542 ± 0.188 | 2.837 ± 0.246 | Threshold (clear) |
-| T3 CPU credits (USD) | 2.626 ± 0.585 | 3.602 ± 0.469 | 2.811 ± 0.434 | context |
-| Worker-minutes | 11520 ± 0 | 5683 ± 693 | 10457 ± 905 | Threshold (clear) |
-| Average utilization | 23.7% ± 3.0% | 52.7% ± 0.5% | 26.6% ± 0.9% | Threshold* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 508.1 ± 12.1 | 242.3 ± 7.7 | context |
-| Scale-downs | 0.0 ± 0.0 | 513.0 ± 12.1 | 543.3 ± 11.2 | context |
-| Time above 70% (s) | 4187 ± 1883 | 30170 ± 1112 | 4312 ± 254 | Static (overlapping CIs) |
-| Overload: time with requests waiting (s) | 1188 ± 1214 | 16980 ± 1261 | 1075 ± 159 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 350 ± 658 | 168 ± 42 | 43 ± 12 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 2 ± 3 | 0 ± 0 | Static = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 7.50 ± 11.27 | 3.68 ± 0.30 | 2.05 ± 0.01 | SCALIX (overlapping CIs) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 7.63 ± 11.33 | 6.75 ± 0.94 | 2.33 ± 0.09 | 3.68 ± 0.30 | SCALIX (overlapping CIs) |
+| Response time, p95 (s) | 39.19 ± 67.53 | 27.92 ± 4.28 | 7.02 ± 0.33 | 12.59 ± 1.74 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.124 ± 0.066 | 3.070 ± 0.647 | 0.276 ± 0.078 | 1.049 ± 0.226 | Static (clear) |
+| Estimated cost, AWS list prices (USD) | 5.752 ± 0.585 | 5.144 ± 0.656 | 5.648 ± 0.677 | 5.570 ± 0.672 | Threshold (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 3.125 ± 0.000 | 1.542 ± 0.188 | 2.837 ± 0.246 | 2.600 ± 0.241 | Threshold (clear) |
+| T3 CPU credits (USD) | 2.626 ± 0.585 | 3.602 ± 0.469 | 2.811 ± 0.434 | 2.970 ± 0.437 | context |
+| Worker-minutes | 11520 ± 0 | 5683 ± 693 | 10457 ± 905 | 9584 ± 887 | Threshold (clear) |
+| Average utilization | 23.7% ± 3.0% | 52.7% ± 0.5% | 26.6% ± 0.9% | 33.9% ± 0.6% | Threshold* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 508.1 ± 12.1 | 242.3 ± 7.7 | 128.6 ± 5.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 513.0 ± 12.1 | 543.3 ± 11.2 | 77.3 ± 3.0 | context |
+| Time above 70% (s) | 4187 ± 1883 | 30170 ± 1112 | 4312 ± 254 | 12126 ± 505 | Static (overlapping CIs) |
+| Overload: time with requests waiting (s) | 1188 ± 1214 | 16980 ± 1261 | 1075 ± 159 | 5433 ± 438 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 350 ± 658 | 168 ± 42 | 43 ± 12 | 196 ± 65 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 2 ± 3 | 0 ± 0 | 1 ± 2 | Static = SCALIX (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 7.50 ± 11.27 | 3.68 ± 0.30 | 2.05 ± 0.01 | 2.63 ± 0.15 | SCALIX (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -923,24 +1000,24 @@ NASA days 1–27 July 1995 (27 days of 24 h). Cells: mean ± 95% CI half-width (
 
 ### NASA 1995 (NASA)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 2.00 ± 0.01 | 4.51 ± 0.57 | 2.75 ± 0.20 | Static (clear) |
-| Response time, p95 (s) | 6.00 ± 0.02 | 18.27 ± 3.25 | 8.83 ± 1.06 | Static (clear) |
-| of which: waiting for a free worker, average (s) | 0.002 ± 0.004 | 1.828 ± 0.444 | 0.606 ± 0.167 | Static (clear) |
-| Estimated cost, AWS list prices (USD) | 7.016 ± 0.484 | 5.513 ± 0.663 | 5.570 ± 0.674 | Threshold (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 5.860 ± 0.000 | 2.207 ± 0.219 | 2.593 ± 0.243 | Threshold (overlapping CIs) |
-| T3 CPU credits (USD) | 1.156 ± 0.484 | 3.306 ± 0.444 | 2.977 ± 0.433 | context |
-| Worker-minutes | 21600 ± 0 | 7718 ± 826 | 9523 ± 897 | Threshold (clear) |
-| Average utilization | 12.6% ± 1.6% | 42.2% ± 0.3% | 30.9% ± 0.6% | Threshold* (clear) |
-| Peak utilization | 84% ± 6% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 1763.4 ± 39.8 | 425.7 ± 19.4 | context |
-| Scale-downs | 0.0 ± 0.0 | 1767.2 ± 39.7 | 927.9 ± 30.9 | context |
-| Time above 70% (s) | 163 ± 241 | 18336 ± 1133 | 7613 ± 536 | Static (clear) |
-| Overload: time with requests waiting (s) | 21 ± 41 | 8960 ± 894 | 2599 ± 357 | Static (clear) |
-| Peak requests waiting | 5 ± 8 | 131 ± 32 | 61 ± 13 | Static (clear) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 2.00 ± 0.00 | 2.68 ± 0.13 | 2.14 ± 0.04 | Static (clear) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 2.00 ± 0.01 | 4.51 ± 0.57 | 2.75 ± 0.20 | 3.68 ± 0.30 | Static (clear) |
+| Response time, p95 (s) | 6.00 ± 0.02 | 18.27 ± 3.25 | 8.83 ± 1.06 | 12.59 ± 1.74 | Static (clear) |
+| of which: waiting for a free worker, average (s) | 0.002 ± 0.004 | 1.828 ± 0.444 | 0.606 ± 0.167 | 1.049 ± 0.226 | Static (clear) |
+| Estimated cost, AWS list prices (USD) | 7.016 ± 0.484 | 5.513 ± 0.663 | 5.570 ± 0.674 | 5.570 ± 0.672 | Threshold (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 5.860 ± 0.000 | 2.207 ± 0.219 | 2.593 ± 0.243 | 2.600 ± 0.241 | Threshold (overlapping CIs) |
+| T3 CPU credits (USD) | 1.156 ± 0.484 | 3.306 ± 0.444 | 2.977 ± 0.433 | 2.970 ± 0.437 | context |
+| Worker-minutes | 21600 ± 0 | 7718 ± 826 | 9523 ± 897 | 9584 ± 887 | Threshold (clear) |
+| Average utilization | 12.6% ± 1.6% | 42.2% ± 0.3% | 30.9% ± 0.6% | 33.9% ± 0.6% | Threshold* (clear) |
+| Peak utilization | 84% ± 6% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 1763.4 ± 39.8 | 425.7 ± 19.4 | 128.6 ± 5.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 1767.2 ± 39.7 | 927.9 ± 30.9 | 77.3 ± 3.0 | context |
+| Time above 70% (s) | 163 ± 241 | 18336 ± 1133 | 7613 ± 536 | 12126 ± 505 | Static (clear) |
+| Overload: time with requests waiting (s) | 21 ± 41 | 8960 ± 894 | 2599 ± 357 | 5433 ± 438 | Static (clear) |
+| Peak requests waiting | 5 ± 8 | 131 ± 32 | 61 ± 13 | 196 ± 65 | Static (clear) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 1 ± 2 | Static = Threshold = SCALIX (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 2.00 ± 0.00 | 2.68 ± 0.13 | 2.14 ± 0.04 | 2.63 ± 0.15 | Static (clear) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -952,24 +1029,24 @@ NASA days 1–27 July 1995 (27 days of 24 h). Cells: mean ± 95% CI half-width (
 
 ### NASA 1995 (NASA)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 7.63 ± 11.33 | 6.75 ± 0.94 | 2.33 ± 0.09 | SCALIX (overlapping CIs) |
-| Response time, p95 (s) | 39.19 ± 67.53 | 27.92 ± 4.28 | 7.03 ± 0.34 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.124 ± 0.066 | 3.070 ± 0.647 | 0.279 ± 0.080 | Static (clear) |
-| Estimated cost, AWS list prices (USD) | 5.752 ± 0.585 | 5.144 ± 0.656 | 5.646 ± 0.677 | Threshold (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 3.125 ± 0.000 | 1.542 ± 0.188 | 2.832 ± 0.247 | Threshold (clear) |
-| T3 CPU credits (USD) | 2.626 ± 0.585 | 3.602 ± 0.469 | 2.814 ± 0.433 | context |
-| Worker-minutes | 11520 ± 0 | 5683 ± 693 | 10439 ± 909 | Threshold (clear) |
-| Average utilization | 23.7% ± 3.0% | 52.7% ± 0.5% | 26.7% ± 0.8% | Threshold* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 508.1 ± 12.1 | 244.0 ± 8.2 | context |
-| Scale-downs | 0.0 ± 0.0 | 513.0 ± 12.1 | 542.7 ± 11.2 | context |
-| Time above 70% (s) | 4187 ± 1883 | 30170 ± 1112 | 4345 ± 261 | Static (overlapping CIs) |
-| Overload: time with requests waiting (s) | 1188 ± 1214 | 16980 ± 1261 | 1085 ± 163 | SCALIX (overlapping CIs) |
-| Peak requests waiting | 350 ± 658 | 168 ± 42 | 43 ± 12 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 2 ± 3 | 0 ± 0 | Static = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 7.50 ± 11.27 | 3.68 ± 0.30 | 2.05 ± 0.01 | SCALIX (overlapping CIs) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 7.63 ± 11.33 | 6.75 ± 0.94 | 2.33 ± 0.09 | 3.68 ± 0.30 | SCALIX (overlapping CIs) |
+| Response time, p95 (s) | 39.19 ± 67.53 | 27.92 ± 4.28 | 7.03 ± 0.34 | 12.59 ± 1.74 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.124 ± 0.066 | 3.070 ± 0.647 | 0.279 ± 0.080 | 1.049 ± 0.226 | Static (clear) |
+| Estimated cost, AWS list prices (USD) | 5.752 ± 0.585 | 5.144 ± 0.656 | 5.646 ± 0.677 | 5.570 ± 0.672 | Threshold (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 3.125 ± 0.000 | 1.542 ± 0.188 | 2.832 ± 0.247 | 2.600 ± 0.241 | Threshold (clear) |
+| T3 CPU credits (USD) | 2.626 ± 0.585 | 3.602 ± 0.469 | 2.814 ± 0.433 | 2.970 ± 0.437 | context |
+| Worker-minutes | 11520 ± 0 | 5683 ± 693 | 10439 ± 909 | 9584 ± 887 | Threshold (clear) |
+| Average utilization | 23.7% ± 3.0% | 52.7% ± 0.5% | 26.7% ± 0.8% | 33.9% ± 0.6% | Threshold* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 508.1 ± 12.1 | 244.0 ± 8.2 | 128.6 ± 5.5 | context |
+| Scale-downs | 0.0 ± 0.0 | 513.0 ± 12.1 | 542.7 ± 11.2 | 77.3 ± 3.0 | context |
+| Time above 70% (s) | 4187 ± 1883 | 30170 ± 1112 | 4345 ± 261 | 12126 ± 505 | Static (overlapping CIs) |
+| Overload: time with requests waiting (s) | 1188 ± 1214 | 16980 ± 1261 | 1085 ± 163 | 5433 ± 438 | SCALIX (overlapping CIs) |
+| Peak requests waiting | 350 ± 658 | 168 ± 42 | 43 ± 12 | 196 ± 65 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 2 ± 3 | 0 ± 0 | 1 ± 2 | Static = SCALIX (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 7.50 ± 11.27 | 3.68 ± 0.30 | 2.05 ± 0.01 | 2.63 ± 0.15 | SCALIX (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.
 
@@ -981,23 +1058,23 @@ NASA days 1–27 July 1995 (27 days of 24 h). Cells: mean ± 95% CI half-width (
 
 ### NASA 1995 (NASA)
 
-| Metric | Static | Threshold | SCALIX | Best |
-|---|---|---|---|---|
-| Response time, average (s) | 7.63 ± 11.33 | 5.40 ± 0.77 | 3.41 ± 0.40 | SCALIX (overlapping CIs) |
-| Response time, p95 (s) | 39.19 ± 67.53 | 19.70 ± 3.57 | 11.81 ± 1.98 | SCALIX (overlapping CIs) |
-| of which: waiting for a free worker, average (s) | 0.124 ± 0.066 | 2.182 ± 0.485 | 1.096 ± 0.303 | Static (clear) |
-| Estimated cost, AWS list prices (USD) | 5.752 ± 0.585 | 5.158 ± 0.658 | 5.314 ± 0.678 | Threshold (overlapping CIs) |
-| Cost without T3 CPU credits (USD) | 3.125 ± 0.000 | 1.586 ± 0.192 | 1.990 ± 0.243 | Threshold (overlapping CIs) |
-| T3 CPU credits (USD) | 2.626 ± 0.585 | 3.572 ± 0.467 | 3.324 ± 0.436 | context |
-| Worker-minutes | 11520 ± 0 | 5847 ± 709 | 7336 ± 896 | Threshold (overlapping CIs) |
-| Average utilization | 23.7% ± 3.0% | 47.7% ± 0.5% | 38.0% ± 0.3% | Threshold* (clear) |
-| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
-| Scale-ups | 0.0 ± 0.0 | 18.0 ± 2.3 | 15.3 ± 2.2 | context |
-| Scale-downs | 0.0 ± 0.0 | 22.4 ± 2.6 | 23.1 ± 2.9 | context |
-| Time above 70% (s) | 4187 ± 1883 | 24684 ± 966 | 13871 ± 1033 | Static (clear) |
-| Overload: time with requests waiting (s) | 1188 ± 1214 | 11846 ± 1099 | 5090 ± 778 | Static (clear) |
-| Peak requests waiting | 350 ± 658 | 166 ± 52 | 68 ± 12 | SCALIX (overlapping CIs) |
-| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX (tie) |
-| Original proxy, average (s) (Phase 6 metric) | 7.50 ± 11.27 | 3.22 ± 0.34 | 2.31 ± 0.10 | SCALIX (overlapping CIs) |
+| Metric | Static | Threshold | SCALIX | AWS target tracking | Best |
+|---|---|---|---|---|---|
+| Response time, average (s) | 7.63 ± 11.33 | 5.40 ± 0.77 | 3.41 ± 0.40 | 3.77 ± 0.52 | SCALIX (overlapping CIs) |
+| Response time, p95 (s) | 39.19 ± 67.53 | 19.70 ± 3.57 | 11.81 ± 1.98 | 12.34 ± 1.77 | SCALIX (overlapping CIs) |
+| of which: waiting for a free worker, average (s) | 0.124 ± 0.066 | 2.182 ± 0.485 | 1.096 ± 0.303 | 1.134 ± 0.267 | Static (clear) |
+| Estimated cost, AWS list prices (USD) | 5.752 ± 0.585 | 5.158 ± 0.658 | 5.314 ± 0.678 | 5.317 ± 0.669 | Threshold (overlapping CIs) |
+| Cost without T3 CPU credits (USD) | 3.125 ± 0.000 | 1.586 ± 0.192 | 1.990 ± 0.243 | 1.998 ± 0.222 | Threshold (overlapping CIs) |
+| T3 CPU credits (USD) | 2.626 ± 0.585 | 3.572 ± 0.467 | 3.324 ± 0.436 | 3.319 ± 0.450 | context |
+| Worker-minutes | 11520 ± 0 | 5847 ± 709 | 7336 ± 896 | 7366 ± 818 | Threshold (overlapping CIs) |
+| Average utilization | 23.7% ± 3.0% | 47.7% ± 0.5% | 38.0% ± 0.3% | 38.3% ± 0.7% | Threshold* (clear) |
+| Peak utilization | 100% ± 0% | 100% ± 0% | 100% ± 0% | 100% ± 0% | context |
+| Scale-ups | 0.0 ± 0.0 | 18.0 ± 2.3 | 15.3 ± 2.2 | 9.9 ± 1.1 | context |
+| Scale-downs | 0.0 ± 0.0 | 22.4 ± 2.6 | 23.1 ± 2.9 | 8.0 ± 0.8 | context |
+| Time above 70% (s) | 4187 ± 1883 | 24684 ± 966 | 13871 ± 1033 | 14661 ± 776 | Static (clear) |
+| Overload: time with requests waiting (s) | 1188 ± 1214 | 11846 ± 1099 | 5090 ± 778 | 5637 ± 647 | Static (clear) |
+| Peak requests waiting | 350 ± 658 | 166 ± 52 | 68 ± 12 | 144 ± 116 | SCALIX (overlapping CIs) |
+| Requests unserved at end | 0 ± 0 | 0 ± 0 | 0 ± 0 | 0 ± 0 | Static = Threshold = SCALIX = AWS target tracking (tie) |
+| Original proxy, average (s) (Phase 6 metric) | 7.50 ± 11.27 | 3.22 ± 0.34 | 2.31 ± 0.10 | 2.64 ± 0.42 | SCALIX (overlapping CIs) |
 
 \* Higher utilization means less idle capacity, but near 100% it also means requests are waiting: read it together with the overload and response rows.

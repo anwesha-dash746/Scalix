@@ -22,9 +22,9 @@ def result():
 
 def test_every_combination_runs(result):
     s = result.summary
-    assert len(s) == 4 * 3 * 3
+    assert len(s) == 4 * 4 * 3
     assert set(s["scenario"]) == {sc.value for sc in SYNTHETIC_SCENARIOS}
-    assert set(s["policy"]) == {"STATIC", "THRESHOLD", "SCALIX"}
+    assert set(s["policy"]) == {"STATIC", "THRESHOLD", "SCALIX", "TARGET_TRACKING"}
     assert sorted(s["seed"].unique()) == [10, 11, 12]
 
 
@@ -94,7 +94,7 @@ def test_cli_runs_and_saves(tmp_path, capsys):
     assert code == 0
     printed = capsys.readouterr().out
     assert "SIMULATED" in printed and "SCALIX" in printed
-    assert len(pd.read_csv(out / "summary.csv")) == 2 * 2 * 3
+    assert len(pd.read_csv(out / "summary.csv")) == 2 * 2 * 4
 
 
 @pytest.mark.parametrize("args", [

@@ -407,7 +407,7 @@ class TestScalixParameters:
 
 class TestFactory:
     def test_names(self):
-        assert POLICY_NAMES == ("STATIC", "THRESHOLD", "SCALIX")
+        assert POLICY_NAMES == ("STATIC", "THRESHOLD", "SCALIX", "TARGET_TRACKING")
         assert isinstance(create_policy(" scalix "), ScalixPolicy)
 
     def test_flat_capacity_keys(self):
@@ -467,3 +467,68 @@ def test_examples_script_runs(capsys):
     assert len(rows) == 8
     assert "scale up +2" in rows["3. Demand rising steadily: 58% busy"]
     assert rows["3. Demand rising steadily: 58% busy"].count("hold") == 2  # STATIC and THRESHOLD hold
+
+
+# --------------------------------------------------------------------------- AWS target tracking model
+
+from scalix.algorithms import TargetTrackingPolicy  # noqa: E402
+
+
+def _tt_ctx(history, active=4, booting=0, time=1000.0, up=-math.inf, down=-math.inf):
+    return ScalingContext(time=time, provisioned=active + booting, active=active, booting=booting,
+                          utilization=history[-1], utilization_history=tuple(history),
+                          last_scale_up_time=up, last_scale_down_time=down)
+
+
+class TestTargetTracking:
+    p = TargetTrackingPolicy(capacity=CapacityLimits(1, 4, 20))   # 15 s decisions, 1-minute data points
+
+    def test_scale_out_needs_three_one_minute_points_above_target(self):
+        assert self.p.samples_per_datapoint == 4
+        assert self.p.decide(_tt_ctx([0.9] * 11)).action is Action.NONE          # under 3 data points of history
+        d = self.p.decide(_tt_ctx([0.9] * 12))
+        assert d.action is Action.SCALE_UP and d.delta == math.ceil(4 * 0.9 / 0.5) - 4   # ceil(7.2) = 8 -> +4
+        dip = [0.9] * 4 + [0.4] * 4 + [0.9] * 4          # middle minute averages 0.4: no alarm
+        assert self.p.decide(_tt_ctx(dip)).action is Action.NONE
+
+    def test_rounds_up_and_counts_warming_instances(self):
+        d = self.p.decide(_tt_ctx([0.6] * 12, active=5))                      # 5 x 0.6 / 0.5 = 6 -> +1
+        assert d.action is Action.SCALE_UP and d.delta == 1
+        covered = self.p.decide(_tt_ctx([0.6] * 12, active=5, booting=1))     # the warming VM already covers it
+        assert covered.action is Action.NONE and "warming" in covered.reason
+        top = self.p.decide(_tt_ctx([1.0] * 12, active=19))
+        assert top.delta == 1                                                 # capped at the maximum of 20
+
+    def test_scale_in_is_slow_and_gradual(self):
+        low = [0.2] * 60                                                      # 15 one-minute points below 0.45
+        assert self.p.decide(_tt_ctx([0.2] * 59)).action is Action.NONE       # needs 15 full data points
+        d = self.p.decide(_tt_ctx(low, active=8))
+        assert d.action is Action.SCALE_DOWN and d.delta == -(8 - math.ceil(8 * 0.2 / 0.5))   # down to ceil(3.2) = 4
+        # Below the target but above 0.9 x target: no scale-in, even where removing one VM would still fit.
+        assert self.p.decide(_tt_ctx([0.47] * 60, active=20)).action is Action.NONE
+        assert self.p.decide(_tt_ctx([0.44] * 60, active=20)).action is Action.SCALE_DOWN
+
+    def test_scale_in_waits_for_warmup_and_a_fresh_data_point(self):
+        low = [0.2] * 60
+        assert self.p.decide(_tt_ctx(low, booting=1)).cooldown_blocked
+        assert self.p.decide(_tt_ctx(low, time=1000, up=800)).cooldown_blocked     # 200 s < 300 s warm-up
+        assert self.p.decide(_tt_ctx(low, time=1000, up=600)).action is Action.SCALE_DOWN
+        assert self.p.decide(_tt_ctx(low, time=1000, down=970)).cooldown_blocked   # under one data point ago
+        assert self.p.decide(_tt_ctx(low, active=1)).action is Action.NONE         # at the minimum
+
+    def test_five_minute_data_points_and_validation(self):
+        slow = TargetTrackingPolicy(capacity=CapacityLimits(1, 4, 20), interval_seconds=300, datapoint_seconds=300)
+        assert slow.samples_per_datapoint == 1
+        assert slow.decide(_tt_ctx([0.9, 0.9, 0.9])).action is Action.SCALE_UP
+        for bad in (dict(target_utilization=0), dict(target_utilization=1), dict(scale_in_ratio=0),
+                    dict(datapoint_seconds=10), dict(scale_out_datapoints=0), dict(warmup_seconds=-1)):
+            with pytest.raises(ValueError):
+                TargetTrackingPolicy(**bad)
+        assert create_policy("target_tracking", target_utilization=0.6).parameters()["target_utilization"] == 0.6
+
+    def test_simulator_rejects_a_mismatched_interval(self):
+        from scalix.simulation import SimulationConfig, WorkloadSpec, generate, simulate
+
+        tr = generate(WorkloadSpec(duration_seconds=300, seed=1))
+        with pytest.raises(ValueError, match="interval_seconds"):
+            simulate(TargetTrackingPolicy(), tr, SimulationConfig(decision_interval_seconds=30))

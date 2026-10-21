@@ -1,12 +1,13 @@
 # SCALIX: Workload-Aware Auto-Scaling for Cost-Efficient Cloud Resource Management
 
-SCALIX is a student research project. It compares three ways of deciding how many cloud worker servers to run as demand changes:
+SCALIX is a student research project. It compares four ways of deciding how many cloud worker servers to run as demand changes:
 
 | Strategy | Rule, in one line |
 |---|---|
 | **Static** | Always the same number of workers (the baseline). |
 | **Threshold** | Add 1 worker above 70% CPU, remove 1 below 30%, with a cooldown. |
 | **SCALIX** | Also watches the *demand trend* and *sudden spikes*, scales up early and by the right amount, and scales down cautiously. |
+| **AWS target tracking** (model) | AWS's own recommended policy: keep average CPU near 50%. Modelled from AWS's documentation so SCALIX can be compared with what AWS offers. |
 
 **The question:** can a workload-aware strategy balance responsiveness and resource use better than the simpler ones? The project doesn't assume it can; the experiments decide.
 
@@ -20,7 +21,7 @@ SCALIX is a student research project. It compares three ways of deciding how man
 | Cost | **Estimated** from AWS list prices: a t3.micro in us-east-1, plus IPv4, storage and T3 CPU credits. Not an AWS bill. |
 | Read-only AWS monitoring (CloudWatch, Auto Scaling) | **Implemented and tested with mocks.** The read-only access check **ran successfully on a real AWS Academy account** on 21 October 2026, making 4 reads and changing nothing. No group exists yet, so no real group or CPU has been read. |
 | AWS scaling controller | **Implemented, tested with mocks only.** It's dry-run by default, and **no real scaling action has ever been made.** |
-| CloudFormation deployment template | **Not built yet.** No AWS infrastructure exists for this project. |
+| CloudFormation deployment template | **Written and checked offline** (`aws/cloudformation/scalix-workers.yaml`, lint-clean, max 2 t3.micro workers). **Not deployed yet**: no AWS infrastructure exists for this project. Plan and cost: [PHASE8_AWS_PLAN.md](docs/PHASE8_AWS_PLAN.md), about USD 0.09 for the live test. |
 
 **No result here is an AWS measurement. Strict AWS budget: USD 20 only.**
 
@@ -31,10 +32,11 @@ From [`docs/EVALUATION.md`](docs/EVALUATION.md). Synthetic results use 10 test s
 * **Sudden spike:** SCALIX's p95 response time was **9.08 s** against Threshold's **72.73 s** and Static's 295.79 s, with non-overlapping 95% intervals.
 * **Real traffic (NASA 1995):** SCALIX's p95 was **7.02 s** against Threshold's 27.92 s, but it used 1.84× Threshold's worker-time.
 * **Cost:** at t3.micro list prices SCALIX cost only **2–4% more** than Threshold on synthetic traffic and **10% more** on real traffic, because T3 CPU credits make extra headroom cheap. Without credits, i.e. on a non-burstable instance, the premium would be 22–36% and 84%.
-* **Tuned on separate training seeds,** all three strategies became almost equal on synthetic traffic. On real traffic, which tuning never saw, only SCALIX still met the 10 s p95 target at a normal cost.
+* **Against AWS's own policy (target tracking, modelled):** on synthetic bursts AWS's policy was a little faster (Spike p95 7.12 s against SCALIX's 9.08 s) and slightly dearer. On real traffic SCALIX was clearly faster (p95 7.02 s against 12.59 s) for 1.4% more cost. With AWS-like 5-minute timing the two were level.
+* **Tuned on separate training seeds,** the strategies became almost equal on synthetic traffic. On real traffic, which tuning never saw, only SCALIX still met the 10 s p95 target at a normal cost.
 * **Without a load balancer,** SCALIX using a CPU-only demand signal made the same decisions in every synthetic run and lost nothing measurable on real traffic.
 
-SCALIX gave the best balance at default settings, at a small extra cost. The evaluation explains where it doesn't win and why, using the decision logs.
+SCALIX gave the best balance on real traffic, at a small extra cost, and is competitive with AWS's own policy rather than simply better. The evaluation explains where it doesn't win and why, using the decision logs.
 
 ## Quick start (local, costs nothing, no AWS account needed)
 
@@ -88,8 +90,8 @@ AWS features are optional. Install them with `.venv/bin/pip install -r requireme
 | 5 | [Evaluation](docs/EVALUATION.md) · [generated tables](docs/results/RESULTS_TABLES.md) | Methodology, results, where SCALIX doesn't win, and why |
 | 6 | [Testing summary](docs/TESTING.md) | What is tested, actual results, planted-bug checks |
 | 7 | [Limitations and future work](docs/LIMITATIONS.md) | Everything this project does not show |
-| 8 | [AWS integration guide](docs/AWS_INTEGRATION.md) · [setup](docs/AWS_SETUP.md) · [controller](docs/CONTROLLER.md) | Status, permissions, restrictions, approved-action procedure |
-| 9 | [Local demo script](docs/DEMO.md) · [dashboard guide](docs/DASHBOARD.md) | A 10-minute walkthrough for the viva |
+| 8 | [AWS integration guide](docs/AWS_INTEGRATION.md) · [setup](docs/AWS_SETUP.md) · [controller](docs/CONTROLLER.md) · [Phase 8 live-test plan](docs/PHASE8_AWS_PLAN.md) | Status, permissions, restrictions, the CloudFormation stack, cost and the approved-action procedure |
+| 9 | [Local demo script](docs/DEMO.md) · [dashboard guide](docs/DASHBOARD.md) | A 10-minute walkthrough for the viva, including the app's real-traffic demo and results pages |
 | 10 | [Viva questions and answers](docs/VIVA.md) | Beginner-friendly Q&A |
 
 Background: [AWS edition plan and phases](docs/AWS_EDITION.md) · [Part 1 Java/CloudSim Plus engine](docs/PART1_JAVA_ENGINE.md).
@@ -98,7 +100,7 @@ Background: [AWS edition plan and phases](docs/AWS_EDITION.md) · [Part 1 Java/C
 
 ```
 scalix/                    Python package (no Streamlit, no AWS needed)
-  algorithms/              Static, Threshold, SCALIX policies + trend/spike detection
+  algorithms/              Static, Threshold, SCALIX and the AWS target tracking model, plus trend/spike detection
   simulation/              workload generator, discrete-time simulator, experiment runner
   metrics/                 per-run metrics, statistics across seeds
   aws/                     optional: read-only monitor, access check, controller, writer, audit log
@@ -111,6 +113,7 @@ tests/                     pytest suite for scalix/ and ui/
 results/experiments/       evaluation outputs (summaries committed; large files regenerated)
 results/tuning/            tuning results (grid and chosen settings)
 data/traces/               the NASA July 1995 trace as request counts per 5 s
+aws/cloudformation/        the Phase 8 stack template (written and checked offline, not deployed)
 docs/                      documentation (see the table above), figures, generated tables
 config/                    scalix.yaml (safe defaults); scalix.local.yaml is yours, git-ignored
 src/, pom.xml, dashboard/  Part 1: the original Java engine and its dashboard (kept as reference)
@@ -119,5 +122,5 @@ src/, pom.xml, dashboard/  Part 1: the original Java engine and its dashboard (k
 ## Safety and cost rules
 
 * **SIMULATION is the default.** The simulator, dashboard and tests need no AWS account and no AWS library.
-* **Nothing in this repository creates, changes or deletes AWS resources** without an explicitly approved, individual action. None has been approved or performed.
+* **Nothing in this repository creates, changes or deletes AWS resources by itself.** The Phase 8 stack is created and deleted by you in the AWS Console, and the one live scaling action needs your explicit approval and `--confirm`. None has been performed yet.
 * **Credentials are never stored in the repository.** SCALIX only uses a named AWS CLI profile from your own computer.

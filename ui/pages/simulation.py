@@ -5,7 +5,7 @@ import streamlit as st
 from scalix.sources import DataSource
 from ui import charts, common, live_chart
 
-common.page_header("Workload simulation", "Choose a demand pattern and settings, then run all three strategies "
+common.page_header("Workload simulation", "Choose a demand pattern and settings, then run all four strategies "
                    "on the identical workload. Runs on this computer in a second or two; nothing touches AWS.")
 
 form_values = dict(st.session_state.get("form", common.DEFAULT_FORM))
@@ -69,6 +69,15 @@ with st.form("simulation_form"):
         sx_spike = c[1].number_input("Spike factor (≤1 turns it off)", 1.0, 5.0, float(form_values["sx_spike"]),
                                      step=0.1, format="%.1f")
         sx_low = c[2].number_input("Low intervals before scale-down", 1, 10, int(form_values["sx_low"]))
+        c = st.columns(3)
+        tt_target = c[0].slider("AWS target tracking: target CPU", 0.20, 0.90,
+                                float(form_values.get("tt_target", 0.50)), 0.05,
+                                help="A model of AWS's own policy: keeps average CPU near this value. Scales out after "
+                                     "3 one-minute data points above it, in after 15 below 90% of it.")
+        tt_warmup = c[1].number_input("AWS target tracking: warm-up (s)", 0, 900,
+                                      int(form_values.get("tt_warmup", 300)), step=30,
+                                      help="New instances don't count towards the metric, and block scale-in, "
+                                           "until warmed up (AWS default 300 s).")
 
     submitted = st.form_submit_button("Run simulation", type="primary", icon=":material/play_arrow:")
 
@@ -77,7 +86,8 @@ if submitted:
         "scenarios": scenarios or [], "duration_min": duration, "step_s": step, "base_rate": rate, "seed": seed,
         "repetitions": reps, "startup_delay_s": delay, "capacity_rps": cap, "min_workers": min_w,
         "initial_workers": init_w, "max_workers": max_w, "price": price, "cpu_credits": credits, "currency": currency.strip() or "USD",
-        "th_upper": th_upper, "th_lower": th_lower, "th_cooldown": th_cd, "sx_preemptive": sx_pre,
+        "th_upper": th_upper, "th_lower": th_lower, "th_cooldown": th_cd, "tt_target": tt_target, "tt_warmup": tt_warmup,
+        "sx_preemptive": sx_pre,
         "sx_target": sx_target, "sx_window": sx_window, "sx_trend": sx_trend, "sx_up_cd": sx_up,
         "sx_down_cd": sx_down, "sx_step": sx_step, "sx_spike": sx_spike, "sx_low": sx_low,
     }
