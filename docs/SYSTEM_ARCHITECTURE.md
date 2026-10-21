@@ -79,7 +79,7 @@ If Mermaid doesn't render where you're reading, here's the same picture in text:
 | `scalix/aws/controller.py` | One decision per run: data checks → policy → action checks → dry run, or one gated write. | monitoring, algorithms, audit |
 | `scalix/aws/writer.py` | The only code that can change AWS: `SetDesiredCapacity`, LIVE mode only, re-checked at the moment of use. | session |
 | `scalix/aws/audit.py` | Append-only JSON-lines log. It's the controller's memory for cooldowns and duplicates. | – |
-| `ui/` | Local Streamlit dashboard. Reads AWS only on a button press, and has no write path. | everything above except the writer |
+| `ui/` | Local Streamlit dashboard. Reads AWS only on a button press. When the config file enables LIVE, it can approve one change through `scalix/aws/approval.py` (typed confirmation, same gates, kill switch on afterwards). | everything above; the writer only through `approval.py` |
 
 ## Why it's built this way
 

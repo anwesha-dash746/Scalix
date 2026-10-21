@@ -75,8 +75,8 @@ def sidebar(config: ScalixConfig, config_error: str | None) -> None:
             st.info("**Mode: READ_ONLY.** The AWS page can *read* your group when you press its button. "
                     "Nothing can be changed from here.")
         else:
-            st.warning("**Mode: LIVE in config.** This dashboard still cannot change AWS. Capacity changes "
-                       "are only possible from the command line, with explicit confirmation.")
+            st.warning("**Mode: LIVE in config.** One capacity change at a time can be approved on the AWS "
+                       "monitoring page (typed group name and a tick box) or from the command line.")
         if config_error:
             st.error(f"Config problem, using safe defaults: {config_error}")
         st.markdown("**Where numbers come from**")
