@@ -63,7 +63,10 @@ def test_no_billable_extras_no_iam_no_inbound_access(template):
 def test_launch_template_uses_free_monitoring_and_a_small_deleted_on_termination_disk(template):
     (lt,) = resources(template, "AWS::EC2::LaunchTemplate").values()
     data = lt["Properties"]["LaunchTemplateData"]
-    assert data["Monitoring"]["Enabled"] is False
+    # 1-minute (billed) monitoring only when DetailedMonitoring=true; the default is the free 5-minute data
+    assert data["Monitoring"]["Enabled"] == {"If": ["UseDetailedMonitoring", True, False]}
+    assert template["Parameters"]["DetailedMonitoring"]["Default"] == "false"
+    assert template["Conditions"]["UseDetailedMonitoring"] == {"Equals": [{"Ref": "DetailedMonitoring"}, "true"]}
     assert data["CreditSpecification"]["CpuCredits"] == "unlimited"
     assert data["MetadataOptions"]["HttpTokens"] == "required"
     (disk,) = data["BlockDeviceMappings"]
@@ -77,3 +80,37 @@ def test_plan_and_config_example_match_the_template():
     plan = (ROOT / "docs" / "PHASE8_AWS_PLAN.md").read_text()
     assert "scalix-workers" in plan and "USD 20" in plan and "DELETE_COMPLETE" in plan
     assert "--apply --confirm scalix-workers" in plan and "touch config/LIVE_DISABLED" in plan
+
+
+def test_demo_load_pattern_is_optional_and_minute_aligned(template):
+    """LoadPattern repeats one CPU percentage per clock minute; empty keeps the constant LoadPercent."""
+    import re
+
+    p = template["Parameters"]["LoadPattern"]
+    assert p["Default"] == ""
+    ok = re.compile(p["AllowedPattern"])
+    assert ok.match("") and ok.match("40,90,80") and ok.match("85")
+    assert not ok.match("40, 90") and not ok.match("100") and not ok.match("40;90") and not ok.match("1,2,3,4,5,6,7,8,9,1,2,3,4")
+    user_data = str(template)
+    assert '"${LoadPattern}"' in user_data and "time.time() // 60" in user_data and "min(95.0" in user_data
+
+
+def test_demo_load_script_follows_the_pattern_per_minute(template, monkeypatch):
+    """Run the worker's own load-target function (extracted from UserData) against a fake clock."""
+    import re
+    import textwrap
+
+    (lt,) = resources(template, "AWS::EC2::LaunchTemplate").values()
+    sub = lt["Properties"]["LaunchTemplateData"]["UserData"]["Fn::Base64"]["Sub"]
+    script = textwrap.dedent(sub.split("<<'PY'\n", 1)[1].split("\nPY\n", 1)[0])
+    namespace: dict = {}
+    exec(compile(re.split(r"\ndef burn", script)[0], "scalix-load.py", "exec"), namespace)
+    target = namespace["target"]
+    fake = {"t": 0.0}
+    monkeypatch.setattr(namespace["time"], "time", lambda: fake["t"])
+    seen = []
+    for minute in range(7):
+        fake["t"] = 1_800_000_000 - 1_800_000_000 % 180 + minute * 60 + 30   # minute index divisible by 3 at 0
+        seen.append(target(85.0, [40.0, 90.0, 80.0]))
+    assert seen == [40.0, 90.0, 80.0, 40.0, 90.0, 80.0, 40.0]
+    assert target(85.0, []) == 85.0

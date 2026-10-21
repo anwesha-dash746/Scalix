@@ -166,7 +166,7 @@ def evaluate_cpu_datapoints(datapoints: Any, now: datetime, max_age_seconds: flo
     if age > max_age_seconds:
         return reading(MetricStatus.STALE, f"newest CPU data point is {age:.0f} s old (limit {max_age_seconds:.0f} s); "
                        "not used for decisions", last=fraction, ts=ts, age=age, n=len(parsed))
-    return reading(MetricStatus.OK, f"average CPU {avg:.1f}% for the period starting {ts:%H:%M:%S} UTC "
+    return reading(MetricStatus.OK, f"average CPU {avg:.1f}% for the period starting {ts.astimezone(timezone.utc):%H:%M:%S} UTC "
                    f"({age:.0f} s ago)", value=fraction, last=fraction, ts=ts, age=age, n=len(parsed))
 
 
