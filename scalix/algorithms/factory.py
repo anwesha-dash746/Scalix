@@ -7,12 +7,14 @@ from typing import Any
 from scalix.algorithms.base import CapacityLimits, ScalingPolicy
 from scalix.algorithms.scalix_policy import ScalixPolicy
 from scalix.algorithms.static import StaticPolicy
+from scalix.algorithms.target_tracking import TargetTrackingPolicy
 from scalix.algorithms.threshold import ThresholdPolicy
 
 POLICIES: dict[str, type[ScalingPolicy]] = {
     StaticPolicy.NAME: StaticPolicy,
     ThresholdPolicy.NAME: ThresholdPolicy,
     ScalixPolicy.NAME: ScalixPolicy,
+    TargetTrackingPolicy.NAME: TargetTrackingPolicy,
 }
 POLICY_NAMES = tuple(POLICIES)
 

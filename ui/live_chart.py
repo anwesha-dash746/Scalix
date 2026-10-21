@@ -57,6 +57,7 @@ class ChartSpec:
     height: int = 340
     duration_s: float = DEFAULT_DURATION_S
     caption: str = ""
+    time_unit: str = "min"       # "min" or "h": how the clock and the replay note name the x values
     extra: dict = field(default_factory=dict)
 
     def __post_init__(self) -> None:
@@ -64,6 +65,8 @@ class ChartSpec:
             raise ValueError("a live chart needs at least one series")
         if not 1.0 <= self.duration_s <= MAX_DURATION_S:
             raise ValueError(f"duration_s must be between 1 and {MAX_DURATION_S:g} seconds, got {self.duration_s!r}")
+        if self.time_unit not in ("min", "h"):
+            raise ValueError("time_unit must be 'min' or 'h'")
         if self.y_format not in ("int", "1f", "pct"):
             raise ValueError("y_format must be 'int', '1f' or 'pct'")
         for s in self.series:
@@ -91,7 +94,8 @@ def payload(spec: ChartSpec) -> dict:
         "xMin": min(xs), "xMax": max(xs), "yMin": spec.y_min, "yMax": max(y_max, spec.y_min + 1e-9),
         "yFormat": spec.y_format, "unit": spec.unit, "durationMs": int(spec.duration_s * 1000),
         "ref": None if spec.ref_line is None else {"y": spec.ref_line[0], "label": spec.ref_line[1]},
-        "caption": spec.caption,
+        "caption": spec.caption, "tUnit": spec.time_unit,
+        "tWord": "simulated minutes" if spec.time_unit == "min" else "simulated hours",
         "series": [{"name": s.name, "x": _clean(s.x), "y": _clean(s.y), "color": s.color, "width": s.width,
                     "step": s.step, "tip": s.label_tip} for s in spec.series],
     }
@@ -274,12 +278,12 @@ _TEMPLATE = r"""<!doctype html>
     });
     nowLabel.setAttribute("opacity", playing ? 1 : 0);
     nowLabel.setAttribute("x", Math.min(sx(t) + 6, W - M.r));
-    nowLabel.textContent = "t = " + t.toFixed(1) + " min";
+    nowLabel.textContent = "t = " + t.toFixed(1) + " " + D.tUnit;
     const span = D.xMax - D.xMin;
     meta.textContent = done || t >= D.xMax
-      ? "Replay finished: " + (+span.toFixed(1)) + " simulated minutes. Hover to read values."
+      ? "Replay finished: " + (+span.toFixed(1)) + " " + D.tWord + ". Hover to read values."
       : (t <= D.xMin ? "Replay starts when this chart is on screen." :
-         "Replaying " + (+span.toFixed(1)) + " simulated minutes in " + Math.round(D.durationMs / 1000) + " s · now t = " + t.toFixed(1) + " min");
+         "Replaying " + (+span.toFixed(1)) + " " + D.tWord + " in " + Math.round(D.durationMs / 1000) + " s · now t = " + t.toFixed(1) + " " + D.tUnit);
   }
 
   // ------------------------------------------------------------ playback: starts when visible
@@ -317,7 +321,7 @@ _TEMPLATE = r"""<!doctype html>
     if (!sx || mx < M.l || mx > W - M.r) { tip.style.display = "none"; return; }
     const t = D.xMin + (mx - M.l) / (W - M.l - M.r) * (D.xMax - D.xMin);
     if (t > cur + 1e-9) { tip.style.display = "none"; return; }
-    let rows = '<div><b>t = ' + t.toFixed(1) + ' min</b></div>';
+    let rows = '<div><b>t = ' + t.toFixed(1) + ' ' + D.tUnit + '</b></div>';
     D.series.forEach(s => {
       // the value in effect at t (latest point at or before t), not interpolated, so it matches the data
       let i = 0; while (i + 1 < s.x.length && s.x[i + 1] <= t) i++;

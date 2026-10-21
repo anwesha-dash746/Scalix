@@ -27,8 +27,8 @@ from scalix.sources import DataSource
 from ui import charts
 
 ROOT = Path(__file__).resolve().parent.parent
-PAGES = ["ui/pages/overview.py", "ui/pages/simulation.py", "ui/pages/comparison.py", "ui/pages/aws.py",
-         "ui/pages/history.py"]
+PAGES = ["ui/pages/overview.py", "ui/pages/demo.py", "ui/pages/simulation.py", "ui/pages/comparison.py",
+         "ui/pages/results.py", "ui/pages/aws.py", "ui/pages/history.py"]
 
 
 @pytest.fixture(autouse=True)
@@ -108,7 +108,7 @@ def test_overview_metrics_and_default_run():
         assert expected in labels
     assert at.session_state["is_default_run"] is True
     result = at.session_state["result"]
-    assert set(result.summary["policy"]) == {"STATIC", "THRESHOLD", "SCALIX"}
+    assert set(result.summary["policy"]) == {"STATIC", "THRESHOLD", "SCALIX", "TARGET_TRACKING"}
     assert all(m.help for m in at.metric)  # every tile has a tooltip
 
 
@@ -311,8 +311,9 @@ def test_ui_code_has_no_path_to_aws_writes_or_secrets():
 def test_charts_one_axis_fixed_colours_and_legends():
     import pandas as pd
 
-    ts = pd.DataFrame({"time_s": [0, 5] * 3, "policy": ["STATIC"] * 2 + ["THRESHOLD"] * 2 + ["SCALIX"] * 2,
-                       "provisioned": [8, 8, 8, 9, 8, 10], "utilization": [0.5] * 6, "queue": [0.0] * 6})
+    ts = pd.DataFrame({"time_s": [0, 5] * 4,
+                       "policy": ["STATIC"] * 2 + ["THRESHOLD"] * 2 + ["SCALIX"] * 2 + ["TARGET_TRACKING"] * 2,
+                       "provisioned": [8, 8, 8, 9, 8, 10, 8, 11], "utilization": [0.5] * 8, "queue": [0.0] * 8})
     fig = charts.workers_chart(ts)
     assert [t.name for t in fig.data] == [charts.POLICY_LABELS[p] for p in charts.POLICY_ORDER]
     assert [t.line.color for t in fig.data] == [charts.POLICY_COLORS[p] for p in charts.POLICY_ORDER]
@@ -320,19 +321,20 @@ def test_charts_one_axis_fixed_colours_and_legends():
     one = charts.workers_chart(ts, policies=("SCALIX",))
     assert one.layout.showlegend is False and one.data[0].line.color == charts.POLICY_COLORS["SCALIX"]
     util = charts.utilization_chart(ts[ts["policy"] != "STATIC"])  # colours follow the entity, not the rank
-    assert [t.line.color for t in util.data] == [charts.POLICY_COLORS["THRESHOLD"], charts.POLICY_COLORS["SCALIX"]]
+    assert [t.line.color for t in util.data] == [charts.POLICY_COLORS[p] for p in ("THRESHOLD", "SCALIX", "TARGET_TRACKING")]
 
 
 def test_metric_bars_show_intervals_when_available():
     import pandas as pd
 
-    agg = pd.DataFrame({"policy": list(charts.POLICY_ORDER), "metric": ["m"] * 3, "n": [3] * 3,
-                        "mean": [1.0, 2.0, 3.0], "ci95_low": [0.9, 1.8, 2.5], "ci95_high": [1.1, 2.2, 3.5]})
+    agg = pd.DataFrame({"policy": list(charts.POLICY_ORDER), "metric": ["m"] * 4, "n": [3] * 4,
+                        "mean": [1.0, 2.0, 3.0, 4.0], "ci95_low": [0.9, 1.8, 2.5, 3.6],
+                        "ci95_high": [1.1, 2.2, 3.5, 4.4]})
     fig = charts.metric_bars(agg, "m", "M")
     assert fig.data[0].error_y.visible and fig.data[0].text is None
     single = agg.assign(ci95_low=math.nan, ci95_high=math.nan, n=1)
     fig1 = charts.metric_bars(single, "m", "M")
-    assert not fig1.data[0].error_y.visible and list(fig1.data[0].text) == ["1.00", "2.00", "3.00"]
+    assert not fig1.data[0].error_y.visible and list(fig1.data[0].text) == ["1.00", "2.00", "3.00", "4.00"]
 
 
 # --------------------------------------------------------------------------- budget and saved connection check

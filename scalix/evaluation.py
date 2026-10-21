@@ -55,9 +55,10 @@ SEEDS = 10
 BASE_SEED = 1
 NASA_DAYS = 27
 SLO_P95_SECONDS = 10.0
-POLICY_ORDER = ("STATIC", "THRESHOLD", "SCALIX")
-POLICY_NAMES = {"STATIC": "Static", "THRESHOLD": "Threshold", "SCALIX": "SCALIX"}
-POLICY_COLORS = {"STATIC": "#2a78d6", "THRESHOLD": "#eb6834", "SCALIX": "#1baf7a"}
+POLICY_ORDER = ("STATIC", "THRESHOLD", "SCALIX", "TARGET_TRACKING")
+POLICY_NAMES = {"STATIC": "Static", "THRESHOLD": "Threshold", "SCALIX": "SCALIX", "TARGET_TRACKING": "AWS target tracking"}
+POLICY_COLORS = {"STATIC": "#2a78d6", "THRESHOLD": "#eb6834", "SCALIX": "#1baf7a", "TARGET_TRACKING": "#eda100"}
+POLICY_SHORT = {"STATIC": "Static", "THRESHOLD": "Threshold", "SCALIX": "SCALIX", "TARGET_TRACKING": "AWS TT"}
 SYNTHETIC = ("NORMAL", "RISING", "SPIKE", "MIXED")
 SCENARIO_NAMES = {"NORMAL": "Normal", "RISING": "Rising", "SPIKE": "Spike", "MIXED": "Mixed", "NASA": "NASA 1995"}
 
@@ -82,10 +83,18 @@ METRICS = [
 ]
 
 
-def _policies(scalix: ScalixPolicy | None = None, capacity: CapacityLimits | None = None):
+def _policies(scalix: ScalixPolicy | None = None, capacity: CapacityLimits | None = None, interval: float = 15.0):
+    """Static, Threshold, SCALIX and the AWS target tracking model, all from the same capacity.
+
+    The target tracking model uses one-minute data points (AWS detailed monitoring), or one data point
+    per decision when decisions are slower (``interval`` 300 s = free 5-minute monitoring).
+    """
+    from scalix.algorithms import TargetTrackingPolicy
+
     capacity = capacity or CapacityLimits()
     return (StaticPolicy(worker_count=capacity.initial), ThresholdPolicy(capacity=capacity),
-            scalix or ScalixPolicy(capacity=capacity))
+            scalix or ScalixPolicy(capacity=capacity),
+            TargetTrackingPolicy(capacity=capacity, interval_seconds=interval, datapoint_seconds=max(60.0, interval)))
 
 
 def _tuned_policies():
@@ -120,7 +129,8 @@ class Experiment:
 
 
 SUITE: dict[str, Experiment] = {e.name: e for e in [
-    Experiment("main", "How do the three strategies compare with their default settings?",
+    Experiment("main", "How do the strategies compare with their default settings (including a model of AWS's own "
+               "target tracking policy)?",
                lambda: _synthetic(_policies())),
     Experiment("slow-startup", "Does the comparison hold when new workers take 120 s to start (closer to real EC2)?",
                lambda: _synthetic(_policies(), SimulationConfig(startup_delay_seconds=120.0))),
@@ -146,7 +156,7 @@ SUITE: dict[str, Experiment] = {e.name: e for e in [
                lambda: _nasa(_policies(), SimulationConfig(demand_signal="cpu")), large_files=False),
     Experiment("nasa-aws", "On real traffic with AWS-like timing (5-minute decisions, 120 s start-up, CPU-only "
                "demand signal), which strategy should the AWS controller use?",
-               lambda: _nasa(_policies(), AWS_TIMING), large_files=False),
+               lambda: _nasa(_policies(interval=AWS_TIMING.decision_interval_seconds), AWS_TIMING), large_files=False),
 ]}
 
 LARGE_FILES = ("timeseries.csv", "events.csv", "workloads.csv")
@@ -227,13 +237,16 @@ def verdict(summary: pd.DataFrame, scenario: str, metric: str, direction: str | 
         return "context"
     lower = direction.startswith("lower")
     stats = {}
+    present = set(summary.loc[summary.scenario == scenario, "policy"])
     for p in POLICY_ORDER:
+        if p not in present:
+            continue
         vals = summary[(summary.scenario == scenario) & (summary.policy == p)][metric].to_numpy(dtype=float)
         stats[p] = _ci_stats(vals)
     means = {p: s[0] for p, s in stats.items()}
     best = min(means, key=means.get) if lower else max(means, key=means.get)
     shown = {p: format(m, fmt) for p, m in means.items()}
-    tied = [p for p in POLICY_ORDER if shown[p] == shown[best]]
+    tied = [p for p in POLICY_ORDER if p in shown and shown[p] == shown[best]]
     if len(tied) > 1:  # equal at the precision shown: no winner is named
         return " = ".join(POLICY_NAMES[p] for p in tied) + " (tie)"
     b_mean, b_half, n = stats[best]
@@ -257,6 +270,8 @@ HOLD_PATTERNS = [
     ("suppressed by cooldown", "cooldown"), ("in cooldown", "cooldown"),
     ("just spiked", "demand just spiked"), ("demand is RISING", "demand rising"),
     ("demand is UNKNOWN", "demand trend unknown"), ("already at min", "already at minimum"),
+    ("blocked while new VMs warm up", "new VMs warming up"), ("waiting for a new data point", "waiting for next data point"),
+    ("no alarm", "not low for 15 data points yet"), ("push utilization above target", "would overload the remaining workers"),
 ]
 
 
@@ -316,7 +331,8 @@ def experiment_tables(data: dict, name: str) -> str:
              ""]
     for scenario in _scenarios(s):
         lines += [f"### {SCENARIO_NAMES[scenario]} ({scenario})", "",
-                  "| Metric | Static | Threshold | SCALIX | Best |", "|---|---|---|---|---|"]
+                  "| Metric | " + " | ".join(POLICY_NAMES[p] for p in POLICY_ORDER) + " | Best |",
+                  "|---|" + "---|" * (len(POLICY_ORDER) + 1)]
         for metric, label, fmt, direction in METRICS:
             row = [cell(s, scenario, p, metric, fmt) for p in POLICY_ORDER]
             lines.append(f"| {label} | " + " | ".join(row) + f" | {verdict(s, scenario, metric, direction, fmt)} |")
@@ -350,17 +366,20 @@ def _mean(s: pd.DataFrame, scenario: str, policy: str, metric: str) -> float:
     return float(s[(s.scenario == scenario) & (s.policy == policy)][metric].mean())
 
 
-def comparison_table(datasets: dict[str, dict]) -> str:
-    """SCALIX vs Threshold in every experiment: cost premium (with and without credits) and speed-up."""
-    lines = ["## SCALIX vs Threshold in every experiment", "",
-             "Ratios of the means. Cost premium = SCALIX cost / Threshold cost − 1. Speed-up = Threshold "
+def comparison_table(datasets: dict[str, dict], other: str = "THRESHOLD") -> str:
+    """SCALIX vs another strategy in every experiment: cost premium (with and without credits) and speed-up."""
+    o = POLICY_NAMES[other]
+    lines = [f"## SCALIX vs {o} in every experiment", "",
+             f"Ratios of the means. Cost premium = SCALIX cost / {o} cost − 1. Speed-up = {o} "
              "response time / SCALIX response time (above 1 means SCALIX was faster).", "",
              "| Experiment | Scenario | Cost premium | Premium without CPU credits | Speed-up, average | "
              "Speed-up, p95 | Extra worker-min |", "|---|---|---|---|---|---|---|"]
     for name, data in datasets.items():
         s = data["summary"]
         for scenario in _scenarios(s):
-            t = {m: _mean(s, scenario, "THRESHOLD", m) for m in ("estimated_cost", "cost_hourly_part",
+            if other not in set(s["policy"]):
+                continue
+            t = {m: _mean(s, scenario, other, m) for m in ("estimated_cost", "cost_hourly_part",
                  "response_time_model_avg_s", "response_time_model_p95_s", "worker_minutes")}
             x = {m: _mean(s, scenario, "SCALIX", m) for m in t}
             lines.append(f"| {name} | {SCENARIO_NAMES[scenario]} | {x['estimated_cost'] / t['estimated_cost'] - 1:+.1%} | "
@@ -377,7 +396,8 @@ def slo_table(datasets: dict[str, dict], names=("main", "tuned", "nasa", "nasa-t
              f"Mean p95 response time over the test runs (queueing model); ✓ = at most {SLO_P95_SECONDS:.0f} s. "
              "The tuned settings were chosen to meet this target on *training* seeds 101–110; these are the "
              "unseen test seeds and real NASA days.", "",
-             "| Experiment | Scenario | Static | Threshold | SCALIX |", "|---|---|---|---|---|"]
+             "| Experiment | Scenario | " + " | ".join(POLICY_NAMES[p] for p in POLICY_ORDER) + " |",
+             "|---|---|" + "---|" * len(POLICY_ORDER)]
     for name in names:
         if name not in datasets:
             continue
@@ -450,12 +470,13 @@ STRATEGY_PAIRED_METRICS = [("response_time_model_avg_s", "Resp. avg (s)", ".3f")
 STRATEGY_PAIRED_EXPERIMENTS = ("main", "slow-startup", "tuned", "nasa", "nasa-tuned", "nasa-aws")
 
 
-def strategy_paired_table(datasets: dict[str, dict]) -> str:
-    """SCALIX minus Threshold within one experiment, paired by seed or day (both saw the identical trace).
+def strategy_paired_table(datasets: dict[str, dict], other: str = "THRESHOLD") -> str:
+    """SCALIX minus another strategy within one experiment, paired by seed or day (both saw the identical trace).
 
     Pairing removes the day-to-day variation that makes the plain NASA intervals wide.
     """
-    lines = ["## SCALIX minus Threshold, paired by seed or day", "",
+    o = POLICY_NAMES[other]
+    lines = [f"## SCALIX minus {o}, paired by seed or day", "",
              "Both strategies saw the identical trace in each seed (or NASA day), so each one gives a paired "
              "difference. Negative = SCALIX lower (faster or cheaper). Cells: mean difference ± 95% CI; **bold** = "
              "the interval excludes 0.", "",
@@ -467,7 +488,9 @@ def strategy_paired_table(datasets: dict[str, dict]) -> str:
         s = datasets[name]["summary"]
         for scenario in _scenarios(s):
             x = s[(s.scenario == scenario) & (s.policy == "SCALIX")].set_index("seed")
-            th = s[(s.scenario == scenario) & (s.policy == "THRESHOLD")].set_index("seed")
+            if other not in set(s["policy"]):
+                continue
+            th = s[(s.scenario == scenario) & (s.policy == other)].set_index("seed")
             cells = []
             for metric, _, fmt in STRATEGY_PAIRED_METRICS:
                 diff = (x[metric] - th[metric]).dropna().to_numpy(dtype=float)
@@ -477,6 +500,13 @@ def strategy_paired_table(datasets: dict[str, dict]) -> str:
                 cells.append(f"**{text}**" if significant else text)
             lines.append(f"| {name} | {SCENARIO_NAMES[scenario]} | " + " | ".join(cells) + " |")
     return "\n".join(lines) + "\n"
+
+
+def paired_difference(summary: pd.DataFrame, scenario: str, a: str, b: str, metric: str) -> tuple[float, float, int]:
+    """Mean and 95% CI half-width of (strategy a - strategy b), paired by seed or day."""
+    x = summary[(summary.scenario == scenario) & (summary.policy == a)].set_index("seed")[metric]
+    y = summary[(summary.scenario == scenario) & (summary.policy == b)].set_index("seed")[metric]
+    return _ci_stats((x - y).dropna().to_numpy(dtype=float))
 
 
 def write_tables(datasets: dict[str, dict], out: Path = DOCS_RESULTS, tuned_path: Path | None = None) -> Path:
@@ -491,6 +521,8 @@ def write_tables(datasets: dict[str, dict], out: Path = DOCS_RESULTS, tuned_path
             parts.append(compact_table(datasets[name], name))
     parts.append(comparison_table(datasets))
     parts.append(strategy_paired_table(datasets))
+    parts.append(comparison_table(datasets, "TARGET_TRACKING"))
+    parts.append(strategy_paired_table(datasets, "TARGET_TRACKING"))
     parts.append(slo_table(datasets))
     tuned = tuned_settings_table(tuned_path)
     if tuned and "tuned" in datasets:
@@ -625,8 +657,8 @@ def write_figures(datasets: dict[str, dict], out: Path = DOCS_FIGURES) -> list[P
                 ax.errorbar([i], [max(mean, 1e-3) if log_scale else mean], yerr=[0 if math.isnan(half) else half],
                             fmt="o", markersize=8, color=POLICY_COLORS[p], ecolor="#52514e", elinewidth=1, capsize=3,
                             label=POLICY_NAMES[p], markeredgecolor="#fbfaf7", markeredgewidth=1.5, zorder=3)
-            ax.set_xticks(range(3), [POLICY_NAMES[p][:9] for p in POLICY_ORDER], fontsize=8)
-            ax.set_xlim(-0.6, 2.6)
+            ax.set_xticks(range(len(POLICY_ORDER)), [POLICY_SHORT[p] for p in POLICY_ORDER], fontsize=8)
+            ax.set_xlim(-0.6, len(POLICY_ORDER) - 0.4)
             _style(ax, SCENARIO_NAMES[sc], "")
             if log_scale:
                 ax.set_yscale("log")

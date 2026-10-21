@@ -29,6 +29,18 @@
       "training_mean_cost": 0.371893398021309,
       "training_worst_p95_s": 8.33785016066674
     },
+    "TARGET_TRACKING": {
+      "meets_slo": true,
+      "params": {
+        "scale_in_ratio": 0.9,
+        "target_utilization": 0.5,
+        "warmup_seconds": 60.0
+      },
+      "settings_meeting_slo": 12,
+      "settings_tried": 30,
+      "training_mean_cost": 0.37738200456621,
+      "training_worst_p95_s": 8.343876324983919
+    },
     "THRESHOLD": {
       "meets_slo": true,
       "params": {

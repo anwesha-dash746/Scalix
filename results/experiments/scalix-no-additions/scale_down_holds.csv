@@ -2,22 +2,30 @@ scenario,policy,outcome,decisions
 MIXED,SCALIX,cooldown,255
 MIXED,SCALIX,demand rising,75
 MIXED,SCALIX,scaled down,80
+MIXED,TARGET_TRACKING,not low for 15 data points yet,598
+MIXED,TARGET_TRACKING,other (e.g. exactly at the threshold),1
 MIXED,THRESHOLD,cooldown,149
 MIXED,THRESHOLD,other (e.g. exactly at the threshold),5
 MIXED,THRESHOLD,scaled down,80
 NORMAL,SCALIX,cooldown,121
 NORMAL,SCALIX,demand rising,8
 NORMAL,SCALIX,scaled down,73
+NORMAL,TARGET_TRACKING,not low for 15 data points yet,534
+NORMAL,TARGET_TRACKING,other (e.g. exactly at the threshold),1
+NORMAL,TARGET_TRACKING,scaled down,3
+NORMAL,TARGET_TRACKING,waiting for next data point,1
 NORMAL,THRESHOLD,cooldown,3
 NORMAL,THRESHOLD,other (e.g. exactly at the threshold),3
 NORMAL,THRESHOLD,scaled down,22
 RISING,SCALIX,demand rising,6
 RISING,SCALIX,demand trend unknown,7
 RISING,SCALIX,scaled down,7
+RISING,TARGET_TRACKING,not low for 15 data points yet,28
 RISING,THRESHOLD,scaled down,12
 SPIKE,SCALIX,cooldown,125
 SPIKE,SCALIX,demand rising,9
 SPIKE,SCALIX,scaled down,59
+SPIKE,TARGET_TRACKING,not low for 15 data points yet,481
 SPIKE,THRESHOLD,cooldown,28
 SPIKE,THRESHOLD,other (e.g. exactly at the threshold),9
 SPIKE,THRESHOLD,scaled down,41

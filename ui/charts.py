@@ -12,10 +12,13 @@ from __future__ import annotations
 import pandas as pd
 import plotly.graph_objects as go
 
-POLICY_ORDER = ("STATIC", "THRESHOLD", "SCALIX")
-POLICY_COLORS = {"STATIC": "#2a78d6", "THRESHOLD": "#eb6834", "SCALIX": "#1baf7a"}
-POLICY_LABELS = {"STATIC": "Static (fixed)", "THRESHOLD": "Threshold (70/30)", "SCALIX": "SCALIX (workload-aware)"}
-POLICY_SHORT = {"STATIC": "Static", "THRESHOLD": "Threshold", "SCALIX": "SCALIX"}
+POLICY_ORDER = ("STATIC", "THRESHOLD", "SCALIX", "TARGET_TRACKING")
+# Fourth slot (yellow) validated with the first three on the app surface; like aqua it is below 3:1
+# contrast, so the charts always carry a legend, direct value labels and a table view.
+POLICY_COLORS = {"STATIC": "#2a78d6", "THRESHOLD": "#eb6834", "SCALIX": "#1baf7a", "TARGET_TRACKING": "#eda100"}
+POLICY_LABELS = {"STATIC": "Static (fixed)", "THRESHOLD": "Threshold (70/30)", "SCALIX": "SCALIX (workload-aware)",
+                 "TARGET_TRACKING": "AWS target tracking (model)"}
+POLICY_SHORT = {"STATIC": "Static", "THRESHOLD": "Threshold", "SCALIX": "SCALIX", "TARGET_TRACKING": "AWS TT"}
 
 SURFACE = "#fbfaf7"
 TEXT = "#1f2328"

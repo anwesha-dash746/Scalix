@@ -6,6 +6,12 @@ NASA,SCALIX,demand rising,24805
 NASA,SCALIX,demand trend unknown,24
 NASA,SCALIX,not low for 2 intervals yet,16265
 NASA,SCALIX,scaled down,14654
+NASA,TARGET_TRACKING,already at minimum,751
+NASA,TARGET_TRACKING,not low for 15 data points yet,74429
+NASA,TARGET_TRACKING,other (e.g. exactly at the threshold),679
+NASA,TARGET_TRACKING,scaled down,1458
+NASA,TARGET_TRACKING,waiting for next data point,1060
+NASA,TARGET_TRACKING,would overload the remaining workers,438
 NASA,THRESHOLD,already at minimum,4806
 NASA,THRESHOLD,cooldown,13425
 NASA,THRESHOLD,scaled down,13851

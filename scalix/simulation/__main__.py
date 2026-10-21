@@ -74,7 +74,7 @@ def main(argv: list[str] | None = None) -> int:
                                         worker_capacity_rps=args.capacity,
                                         price_per_worker_hour=args.price, currency=args.currency,
                                         charge_cpu_credits=not args.no_cpu_credits),
-            policies=default_policies(capacity),
+            policies=default_policies(capacity, args.decision_interval),
         )
         result = run_experiment(spec)
     except ValueError as exc:

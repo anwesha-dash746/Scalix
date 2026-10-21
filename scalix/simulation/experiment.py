@@ -48,11 +48,20 @@ DATA_LABEL = ("SIMULATED: utilization is estimated, response time comes from a d
               "cost is estimated from AWS list prices. None of these are AWS measurements or AWS bills.")
 
 
-def default_policies(capacity: CapacityLimits | None = None) -> tuple[ScalingPolicy, ...]:
-    """The three strategies with their default settings, all starting from the same capacity."""
+def default_policies(capacity: CapacityLimits | None = None, decision_interval_seconds: float = 15.0
+                     ) -> tuple[ScalingPolicy, ...]:
+    """The four strategies with their default settings, all starting from the same capacity.
+
+    Static, Threshold and SCALIX, plus TARGET_TRACKING: a model of AWS's own target tracking policy
+    (keep CPU at 50%), added in Phase 8 so SCALIX can be compared with what AWS offers.
+    """
+    from scalix.algorithms.target_tracking import TargetTrackingPolicy
+
     capacity = capacity or CapacityLimits()
     return (StaticPolicy(worker_count=capacity.initial), ThresholdPolicy(capacity=capacity),
-            ScalixPolicy(capacity=capacity))
+            ScalixPolicy(capacity=capacity),
+            TargetTrackingPolicy(capacity=capacity, interval_seconds=decision_interval_seconds,
+                                 datapoint_seconds=max(60.0, decision_interval_seconds)))
 
 
 @dataclass(frozen=True)

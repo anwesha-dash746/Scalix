@@ -20,7 +20,7 @@ decision = policy.decide(context)
 A policy **only decides**. It has no clock, makes no network calls, never touches AWS and changes nothing. Whatever calls it applies the decision: the simulator (`scalix/simulation`) or the AWS controller (`scalix/aws/controller.py`). That gives three benefits:
 
 1. **Testable:** the same input always gives the same output, so the tests need no timing or mocking.
-2. **Fair:** all three strategies receive identical contexts. Only the decision logic differs.
+2. **Fair:** all strategies receive identical contexts. Only the decision logic differs.
 3. **Reusable:** the exact code tested in simulation is the code that would run against AWS.
 
 The worker limits (`CapacityLimits`: minimum / initial / maximum) work like an EC2 Auto Scaling group's min / desired / max sizes. The minimum is always at least 1, so no strategy can remove the last worker.
@@ -89,6 +89,23 @@ over 6 samples); spike: demand jumped 1.75x since the previous interval
 
 The decision log stores these reasons, so every action can be explained afterwards.
 
+### 4.5 For comparison: AWS target tracking (a model of AWS's own policy)
+
+Code: `scalix/algorithms/target_tracking.py`. This is **not** part of SCALIX. It's the yardstick that answers "why not just use AWS's built-in auto-scaling?" It is modelled from AWS's documentation, not taken from AWS's code.
+
+* **Rule:** keep average CPU near a target (default **50%**).
+* **Scale out** after **3 one-minute data points** in a row above the target. It adds enough instances to bring CPU back to the target, rounded up, and instances still starting count as already added.
+* **Scale in** only after **15 one-minute data points** below 90% of the target. It never scales in while new instances warm up (300 s by default), and removes as few instances as possible.
+
+**Worked example:** 4 workers at 90% CPU for 3 minutes. Busy capacity is 4 × 0.9 = 3.6 workers, and 3.6 / 0.5 = 7.2, rounded up to 8 workers, so it adds **+4**.
+
+**How it differs from SCALIX:**
+* It waits for 3 minutes of evidence before acting; SCALIX acts on the latest interval, plus the trend and spike checks.
+* It aims lower (50% against SCALIX's 60%).
+* It's even slower to scale in: it needs 15 quiet minutes.
+
+The evaluation compares the two in [EVALUATION.md §6](EVALUATION.md#6-against-awss-own-policy-target-tracking).
+
 ## 5. The same situations, three strategies
 
 This is the output of `python -m scalix.algorithms.examples`. These are illustrative inputs, not experiment results.
@@ -104,7 +121,7 @@ This is the output of `python -m scalix.algorithms.examples`. These are illustra
 | 15% busy for 2 intervals, demand falling | hold | −1 | −1 |
 | 20% busy but demand just jumped | hold | −1 | **hold** (spike) |
 
-**This table does not show that SCALIX is better.** Acting early and in bigger steps should cut waiting time, but it also means *more workers, so more cost*. The evaluation measured this trade-off on full workloads, including 27 days of real traffic. At default settings SCALIX responded much faster under sudden changes and on real traffic, used much more worker-time, and cost 2–10% more than Threshold at t3.micro list prices. See [EVALUATION.md](EVALUATION.md).
+**This table does not show that SCALIX is better.** Acting early and in bigger steps should cut waiting time, but it also means *more workers, so more cost*. The evaluation measured this trade-off on full workloads, including 27 days of real traffic. At default settings SCALIX responded much faster than Threshold under sudden changes and on real traffic, used much more worker-time, and cost 2–10% more at t3.micro list prices. Against AWS's own target tracking (modelled) it was slower on synthetic bursts but clearly faster on real traffic. See [EVALUATION.md](EVALUATION.md).
 
 ## 6. Design choices to be ready to defend
 

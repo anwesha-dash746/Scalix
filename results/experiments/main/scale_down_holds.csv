@@ -4,6 +4,8 @@ MIXED,SCALIX,demand just spiked,5
 MIXED,SCALIX,demand rising,75
 MIXED,SCALIX,not low for 2 intervals yet,50
 MIXED,SCALIX,scaled down,69
+MIXED,TARGET_TRACKING,not low for 15 data points yet,598
+MIXED,TARGET_TRACKING,other (e.g. exactly at the threshold),1
 MIXED,THRESHOLD,cooldown,149
 MIXED,THRESHOLD,other (e.g. exactly at the threshold),5
 MIXED,THRESHOLD,scaled down,80
@@ -11,6 +13,10 @@ NORMAL,SCALIX,cooldown,68
 NORMAL,SCALIX,demand rising,8
 NORMAL,SCALIX,not low for 2 intervals yet,102
 NORMAL,SCALIX,scaled down,46
+NORMAL,TARGET_TRACKING,not low for 15 data points yet,534
+NORMAL,TARGET_TRACKING,other (e.g. exactly at the threshold),1
+NORMAL,TARGET_TRACKING,scaled down,3
+NORMAL,TARGET_TRACKING,waiting for next data point,1
 NORMAL,THRESHOLD,cooldown,3
 NORMAL,THRESHOLD,other (e.g. exactly at the threshold),3
 NORMAL,THRESHOLD,scaled down,22
@@ -18,11 +24,13 @@ RISING,SCALIX,demand rising,6
 RISING,SCALIX,demand trend unknown,7
 RISING,SCALIX,not low for 2 intervals yet,11
 RISING,SCALIX,scaled down,2
+RISING,TARGET_TRACKING,not low for 15 data points yet,28
 RISING,THRESHOLD,scaled down,12
 SPIKE,SCALIX,cooldown,98
 SPIKE,SCALIX,demand rising,11
 SPIKE,SCALIX,not low for 2 intervals yet,82
 SPIKE,SCALIX,scaled down,50
+SPIKE,TARGET_TRACKING,not low for 15 data points yet,481
 SPIKE,THRESHOLD,cooldown,28
 SPIKE,THRESHOLD,other (e.g. exactly at the threshold),9
 SPIKE,THRESHOLD,scaled down,41

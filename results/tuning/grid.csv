@@ -237,3 +237,33 @@ SCALIX,122,"{""low_intervals_required"": 1, ""preemptive_upper"": 0.65, ""scale_
 SCALIX,123,"{""low_intervals_required"": 2, ""preemptive_upper"": 0.65, ""scale_down_cooldown_seconds"": 60.0, ""target_utilization"": 0.8, ""upper"": 0.8}",26.6801,13.1718,0.365235,386.069,False,False
 SCALIX,124,"{""low_intervals_required"": 1, ""preemptive_upper"": 0.65, ""scale_down_cooldown_seconds"": 90.0, ""target_utilization"": 0.8, ""upper"": 0.8}",26.6801,13.2355,0.365007,383.831,False,False
 SCALIX,125,"{""low_intervals_required"": 2, ""preemptive_upper"": 0.65, ""scale_down_cooldown_seconds"": 90.0, ""target_utilization"": 0.8, ""upper"": 0.8}",26.6801,13.1712,0.365639,389.938,False,False
+TARGET_TRACKING,0,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.4, ""warmup_seconds"": 60.0}",6.15912,6.08007,0.380894,535.969,True,False
+TARGET_TRACKING,1,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.4, ""warmup_seconds"": 60.0}",6.15912,6.08096,0.380445,531.681,True,False
+TARGET_TRACKING,2,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.4, ""warmup_seconds"": 120.0}",6.15912,6.08007,0.380894,535.969,True,False
+TARGET_TRACKING,3,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.4, ""warmup_seconds"": 120.0}",6.15912,6.08096,0.380445,531.681,True,False
+TARGET_TRACKING,4,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.4, ""warmup_seconds"": 300.0}",6.15912,6.08007,0.380894,535.969,True,False
+TARGET_TRACKING,5,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.4, ""warmup_seconds"": 300.0}",6.15912,6.08096,0.380445,531.681,True,False
+TARGET_TRACKING,6,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.5, ""warmup_seconds"": 60.0}",8.34388,6.6611,0.377439,502.944,True,False
+TARGET_TRACKING,7,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.5, ""warmup_seconds"": 60.0}",8.34388,6.66959,0.377382,502.4,True,True
+TARGET_TRACKING,8,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.5, ""warmup_seconds"": 120.0}",8.34388,6.6611,0.377439,502.944,True,False
+TARGET_TRACKING,9,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.5, ""warmup_seconds"": 120.0}",8.34388,6.66959,0.377382,502.4,True,False
+TARGET_TRACKING,10,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.5, ""warmup_seconds"": 300.0}",8.34388,6.6611,0.377439,502.944,True,False
+TARGET_TRACKING,11,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.5, ""warmup_seconds"": 300.0}",8.34388,6.66959,0.377382,502.4,True,False
+TARGET_TRACKING,12,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.6, ""warmup_seconds"": 60.0}",65.9173,22.8631,0.3702,433.744,False,False
+TARGET_TRACKING,13,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.6, ""warmup_seconds"": 60.0}",65.9173,22.9171,0.370336,435.044,False,False
+TARGET_TRACKING,14,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.6, ""warmup_seconds"": 120.0}",65.9173,22.8631,0.3702,433.744,False,False
+TARGET_TRACKING,15,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.6, ""warmup_seconds"": 120.0}",65.9173,22.9171,0.370336,435.044,False,False
+TARGET_TRACKING,16,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.6, ""warmup_seconds"": 300.0}",65.9173,22.8631,0.3702,433.744,False,False
+TARGET_TRACKING,17,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.6, ""warmup_seconds"": 300.0}",65.9173,22.9171,0.370336,435.044,False,False
+TARGET_TRACKING,18,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.7, ""warmup_seconds"": 60.0}",124.013,41.1147,0.364395,378.188,False,False
+TARGET_TRACKING,19,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.7, ""warmup_seconds"": 60.0}",124.013,41.1466,0.364273,377.019,False,False
+TARGET_TRACKING,20,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.7, ""warmup_seconds"": 120.0}",124.013,41.1147,0.364395,378.188,False,False
+TARGET_TRACKING,21,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.7, ""warmup_seconds"": 120.0}",124.013,41.1466,0.364273,377.019,False,False
+TARGET_TRACKING,22,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.7, ""warmup_seconds"": 300.0}",124.013,41.1147,0.364395,378.188,False,False
+TARGET_TRACKING,23,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.7, ""warmup_seconds"": 300.0}",124.013,41.1466,0.364273,377.019,False,False
+TARGET_TRACKING,24,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.8, ""warmup_seconds"": 60.0}",146.856,48.6385,0.361931,354.637,False,False
+TARGET_TRACKING,25,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.8, ""warmup_seconds"": 60.0}",146.856,48.6385,0.361931,354.637,False,False
+TARGET_TRACKING,26,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.8, ""warmup_seconds"": 120.0}",146.856,48.6385,0.361931,354.637,False,False
+TARGET_TRACKING,27,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.8, ""warmup_seconds"": 120.0}",146.856,48.6385,0.361931,354.637,False,False
+TARGET_TRACKING,28,"{""scale_in_ratio"": 0.8, ""target_utilization"": 0.8, ""warmup_seconds"": 300.0}",146.856,48.6385,0.361931,354.637,False,False
+TARGET_TRACKING,29,"{""scale_in_ratio"": 0.9, ""target_utilization"": 0.8, ""warmup_seconds"": 300.0}",146.856,48.6385,0.361931,354.637,False,False

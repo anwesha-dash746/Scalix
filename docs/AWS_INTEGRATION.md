@@ -20,9 +20,9 @@ This page is the overview. The step-by-step details are in [AWS_SETUP.md](AWS_SE
 | Capacity writer (`SetDesiredCapacity` only) | `scalix/aws/writer.py` | Implemented, **never used against AWS** | Stubber only |
 | Audit log | `scalix/aws/audit.py` | Implemented | Unit tests |
 | Dashboard AWS page (read-only, on button press) | `ui/pages/aws.py` | Implemented, **mocked** | Streamlit AppTest with counted calls |
-| CloudFormation template (VPC, launch template, Auto Scaling group, max 2) | – | **Not built** | – |
+| CloudFormation template (VPC, launch template, Auto Scaling group, max 2) | `aws/cloudformation/scalix-workers.yaml` | **Written (Phase 8.1), not deployed** | cfn-lint clean for us-east-1 and us-west-2; offline tests for the 2-worker cap, no IAM, no load balancer, no inbound access, free monitoring |
 | Real account access check | `python -m scalix.aws.check_access` | **Done, 21 October 2026:** AWS Academy Learner Lab, us-east-1, `voclabs` role; 4 reads permitted; 0 groups, 0 instances | Real account (read-only) |
-| Live scaling test | – | **Not run, not approved** | – |
+| Live scaling test | [PHASE8_AWS_PLAN.md](PHASE8_AWS_PLAN.md) | **Planned, not run, not approved** (about USD 0.09) | – |
 
 "Mocked" means the code was exercised with AWS-shaped fake responses (Boto3's Stubber), never by AWS itself. A network trap fails the test if any request tries to leave the computer.
 
@@ -96,13 +96,15 @@ These are untested assumptions about a typical AWS Academy Learner Lab. The acce
 * **LIVE and the infrastructure** would cost money. EC2 instances bill per second while running, and EBS volumes, public IPv4 addresses and any load balancer bill too. A cost estimate is part of the approval request, before anything is created.
 * **Rough size of a live test,** at the list prices in `scalix/pricing.py` (us-east-1, read 21 October 2026): one t3.micro with a public IPv4 address and an 8 GB gp3 disk is about **USD 0.016 per hour**, so 2 instances are about USD 0.033 per hour. If they're kept busier than the 10% CPU baseline, add T3 CPU credits: at 60% CPU that's (0.60 − 0.10) × 2 vCPUs × 2 instances × USD 0.05 = USD 0.10 per hour, and at 100% CPU USD 0.18 per hour. No load balancer is needed, because SCALIX can use the CPU-derived signal. On AWS Academy this comes out of the lab's credit budget, and resources left running keep using it.
 
-## 6. What would come next, only with your approval at each step
+## 6. Next steps, only with your approval at each step
 
-1. **Template and cost review.** Write a CloudFormation template for the smallest possible environment: an Auto Scaling group with max 2 small instances, no load balancer. List every billable resource and its hourly cost. *Writing it costs nothing; deploying it needs approval.*
-2. **Read-only access check** on your account: `python -m scalix.aws.check_access`. *It makes read calls only.*
-3. **Stack creation.** This needs explicit approval of the exact template, region and expected cost.
+The full procedure, with the cost estimate and exact clicks, is in [PHASE8_AWS_PLAN.md](PHASE8_AWS_PLAN.md).
+
+1. **Template and cost review.** *Done (Phase 8.1):* `aws/cloudformation/scalix-workers.yaml`, an Auto Scaling group of max 2 t3.micro workers with no load balancer and no IAM resources. The planned live test is estimated at about USD 0.09.
+2. **Read-only access check** on your account. *Done, 21 October 2026.*
+3. **Stack creation** in the AWS Console. *Needs your approval* of the exact template, region and expected cost.
 4. **Dry runs** against the real group with `--watch`. *Read-only.*
-5. **One live action.** This needs explicit approval of the exact group, the change (e.g. 1 → 2), its cost, its duration and the rollback. See [CONTROLLER.md §7](CONTROLLER.md#7-how-an-explicitly-approved-live-action-would-work).
-6. **Rollback and stack deletion.** Each is a separately approved action.
+5. **One live action** by SCALIX (1 → 2). *Needs your approval.* See [CONTROLLER.md §7](CONTROLLER.md#7-how-an-explicitly-approved-live-action-would-work).
+6. **Stack deletion** and a check that nothing is left. *Needs your approval.*
 
-None of these steps has been started.
+Steps 3–6 have not been started.

@@ -40,7 +40,7 @@ def test_suite_is_fixed_in_advance():
         assert spec.workload.duration_seconds == 86_400.0
         assert not SUITE[name].large_files
     for exp in SUITE.values():
-        assert [p.name for p in exp.spec().policies] == ["STATIC", "THRESHOLD", "SCALIX"]
+        assert [p.name for p in exp.spec().policies] == ["STATIC", "THRESHOLD", "SCALIX", "TARGET_TRACKING"]
         assert exp.question
 
 
@@ -153,7 +153,7 @@ def test_committed_main_summary_has_ten_seeds_per_cell():
         pytest.skip("evaluation outputs not present")
     s = pd.read_csv(path)
     counts = s.groupby(["scenario", "policy"]).size()
-    assert (counts == 10).all() and len(counts) == 12
+    assert (counts == 10).all() and len(counts) == 16
     assert (s["data_source"] == "SIMULATED").all()
     assert not s.isna().any().any() or math.isfinite(float(np.nanmax(s.select_dtypes("number").to_numpy())))
 
@@ -194,3 +194,11 @@ def test_committed_evaluation_doc_tables_match_committed_outputs():
     datasets = {name: evaluation.load(ROOT / "results" / "experiments", name) for name in SUITE}
     assert doc.read_text() == evaluation_doc.render(template.read_text(), datasets)
     assert "{{" not in doc.read_text()
+
+
+def test_paired_difference_is_a_minus_b_matched_by_seed():
+    s = pd.DataFrame([{"scenario": "S", "policy": p, "seed": seed, "m": v}
+                      for p, vals in {"SCALIX": [1.0, 2.0, 4.0], "THRESHOLD": [3.0, 3.0, 6.0]}.items()
+                      for seed, v in zip((3, 1, 2), vals)])
+    mean, half, n = evaluation.paired_difference(s, "S", "SCALIX", "THRESHOLD", "m")
+    assert n == 3 and mean == pytest.approx(-5.0 / 3) and half > 0

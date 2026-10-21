@@ -154,6 +154,10 @@ def simulate(policy: ScalingPolicy, trace: WorkloadTrace, config: SimulationConf
         raise ValueError(f"decision_interval_seconds ({config.decision_interval_seconds}) must be a whole "
                          f"number (>= 1) of workload steps ({step} s)")
     steps_per_decision = int(round(ratio))
+    policy_interval = getattr(policy, "interval_seconds", None)
+    if policy_interval is not None and abs(policy_interval - config.decision_interval_seconds) > 1e-9:
+        raise ValueError(f"{policy.name} expects a decision every {policy_interval:g} s but the simulator decides "
+                         f"every {config.decision_interval_seconds:g} s; set interval_seconds to match")
     limits = policy.limits
     mu = config.worker_capacity_rps
 

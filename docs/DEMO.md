@@ -25,6 +25,24 @@ Open **http://localhost:8501**.
 * The sidebar says **SIMULATION**, which is the default.
 * Every page carries a data label (SIMULATED / MOCKED / LIVE_AWS).
 
+## 1b. The real-traffic demo (2 min), the strongest opener
+
+Open **Demo: real traffic** (13 July 1995 is selected, the Space Shuttle launch day). The first time, it simulates the day in about 10 seconds.
+
+**Say:** "These are real requests from NASA's web server in 1995, replayed for all four strategies on the same clock. Twenty-four hours play in 20 seconds." Then scroll slowly:
+
+* **Workers chart:** SCALIX (green) and AWS target tracking (yellow) rise before the morning burst; Threshold (orange) follows late.
+* **Requests waiting:** Static's queue explodes at the launch peak. In the zoomed chart, SCALIX stays near zero.
+* **Scorecard:** on that day SCALIX had the lowest p95 response.
+
+Each chart starts only when it's on screen, so scroll at your own pace.
+
+## 1c. The evaluation in the app (1 min)
+
+Open **Evaluation results** and pick **Default settings, real NASA traffic**.
+
+**Say:** "Across all 27 real days, SCALIX's p95 was 7 seconds, against Threshold's 28 and AWS's own target-tracking policy at 12.6, for about 1 to 10 percent more cost. On synthetic bursts AWS's policy was a little faster, so SCALIX isn't better everywhere." Show the **SCALIX compared, run by run** table.
+
 ## 2. The three strategies on one situation (1 min)
 
 In the second terminal:
@@ -55,7 +73,7 @@ Then open **Policy comparison**.
 
 Open `docs/EVALUATION.md`, or show `docs/figures/response.png`, `docs/figures/nasa_day.png` and `docs/figures/tradeoff.png`.
 
-**Say:** "This is the fixed suite: 11 experiments, 1,164 runs, defined before running, all reported. With default settings, on a sudden spike SCALIX's p95 response was about 9 s against Threshold's 73 s. On 27 real days of NASA's 1995 web traffic it was 7 s against 28 s. With t3.micro list prices it cost only 2–4% more than Threshold, 10% on real traffic, because T3 CPU credits make spare workers cheap. When we tuned every strategy on separate training seeds they became almost equal on synthetic traffic, but on the real traffic only SCALIX still met our 10-second target at a normal cost."
+**Say:** "This is the fixed suite: 11 experiments, 1,552 runs, defined before running, all reported. With default settings, on a sudden spike SCALIX's p95 response was about 9 s against Threshold's 73 s. On 27 real days of NASA's 1995 web traffic it was 7 s against 28 s. With t3.micro list prices it cost only 2–4% more than Threshold, 10% on real traffic, because T3 CPU credits make spare workers cheap. When we tuned every strategy on separate training seeds they became almost equal on synthetic traffic, but on the real traffic only SCALIX still met our 10-second target at a normal cost."
 
 To show it's reproducible, run one experiment live:
 

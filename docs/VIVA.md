@@ -10,10 +10,11 @@ Changing the number of servers ("workers") automatically as demand changes. With
 **2. What does SCALIX do, in one sentence?**
 It decides how many workers to run by looking at how busy they are *and* where demand is heading. It scales up early and by the right amount, and scales down cautiously.
 
-**3. What are the three strategies?**
+**3. What are the strategies?**
 * **Static:** always 8 workers.
 * **Threshold:** add 1 worker above 70% busy, remove 1 below 30%, with a 60 s cooldown.
 * **SCALIX:** scales up at 70%, or early at 55% if demand is rising or has spiked. Each step is sized so workers end up about 60% busy (at most +3 per decision). It removes 1 worker only after 2 quiet intervals, when demand isn't rising, with a 90 s cooldown.
+* **AWS target tracking (for comparison):** a model of AWS's own policy. It keeps CPU near 50%, scales out after 3 minutes above it, and scales in only after 15 quiet minutes.
 
 **4. What is utilization?**
 The fraction of the workers' capacity actually used. 70% means the workers spent 70% of their time serving requests.
@@ -46,7 +47,7 @@ A seed fixes the random numbers. Ten seeds give ten different but repeatable ver
 A range that, by the usual statistical reasoning, would contain the true average 95% of the time. If two strategies' intervals don't overlap, we call the difference **clear**.
 
 **11. How did you keep the comparison fair?**
-* All three strategies got the same demand trace for each scenario and seed, the same starting workers and the same model.
+* All strategies got the same demand trace for each scenario and seed, the same starting workers and the same model.
 * The suite and seeds were fixed in code before running, and every run is reported.
 * When we tuned settings, we tuned on different seeds (101–110) from the ones we report (1–10 and the real NASA days).
 
@@ -89,68 +90,77 @@ So capacity arrives minutes earlier.
 On noisy real traffic this adds up: 1.84× Threshold's worker-time.
 
 **20. Where does SCALIX *not* outperform?**
-* **Cost**, at default settings, in every scenario.
 * **Calm or slowly rising demand:** its lead is only 0.02–0.07 s, which in practice is a tie.
 * **Tuned, synthetic traffic:** tuned Threshold (scale up above 50%, 15 s cooldown) did as well.
 * **AWS-like timing** (5-minute decisions): even SCALIX missed the 10 s target.
+* **Against AWS target tracking on synthetic bursts:** AWS's policy (modelled) was a little faster on Spike and Mixed.
+* **Cost against Threshold:** dearer at default settings in every scenario (cheaper than AWS target tracking on synthetic traffic, though).
 
 Static is always cheapest on synthetic traffic, but it falls badly behind when demand grows.
 
-**21. Would a higher SCALIX target reduce its cost?**
+**21. Why not just use AWS's own auto-scaling?**
+We tested that. We modelled AWS's recommended policy, *target tracking* ("keep CPU near 50%"), from AWS's documentation and ran it on the same traces:
+* **Synthetic bursts:** AWS's policy was a little faster (Spike p95 7.1 s against SCALIX's 9.1 s), at slightly higher cost.
+* **Real NASA traffic:** SCALIX was clearly faster (p95 7.0 s against 12.6 s per day) for 1.4% more cost.
+* **With AWS-like 5-minute timing:** they were level.
+
+The honest answer is that SCALIX is competitive with AWS's own policy, and better on real, bursty traffic, but not better everywhere. And it's a model of AWS's policy, not AWS itself.
+
+**22. Would a higher SCALIX target reduce its cost?**
 Yes. Raising the target from 60% to 70% saved about 18–42 worker-minutes per run, but its spike p95 rose by about 7 s. It's a speed-versus-cost dial.
 
-**22. What if servers take longer to start?**
+**23. What if servers take longer to start?**
 With a 120 s start-up, both auto-scalers get worse. SCALIX's spike advantage shrinks from about 9× to about 5×, but it remains clear.
 
-**23. What did your two additions to the original design do?**
+**24. What did your two additions to the original design do?**
 These are spike detection and the 2-interval scale-down rule. Switching both off gave more scale-downs (more flapping) and a slightly worse spike p95, but slightly less worker-time. The effect is small. Most of SCALIX's advantage comes from the original design: early scale-up and target-sized steps.
 
-**24. Is high utilization good?**
+**25. Is high utilization good?**
 Not always. Static had the highest utilization (up to 87.6%) because its workers were overloaded while requests queued. Utilization has to be read together with waiting time.
 
 ## AWS and safety
 
-**25. Did you deploy on AWS?**
+**26. Did you deploy on AWS?**
 Not yet. The AWS code is implemented and tested with mocks, and SCALIX has **connected read-only** to a real AWS Academy account: the access check succeeded on 21 October 2026. No infrastructure was created and no scaling action was made, so all results are still simulated. The project's strict AWS budget is USD 20.
 
-**26. What would the AWS part do?**
+**27. What would the AWS part do?**
 * **Read-only mode:** read the Auto Scaling group's size and its CPU from CloudWatch.
 * **Live mode:** with explicit approval, change the group's desired capacity with one API call, `SetDesiredCapacity`.
 
-**27. How do you stop it doing something dangerous?**
+**28. How do you stop it doing something dangerous?**
 * SIMULATION is the default.
 * A real change needs LIVE mode in a local file, `live.enabled`, an exact allowlisted group name, `--apply`, `--confirm <group>`, fresh live data and the kill switch off.
 * Changes are capped at 2 workers, 1 at a time, once every 5 minutes, and are never retried.
 * Every decision is logged before it's applied.
 * The dashboard has no way to make a change.
 
-**28. What happens if CloudWatch has no data?**
+**29. What happens if CloudWatch has no data?**
 The controller holds. Missing, stale or malformed data is never treated as 0% CPU, because that would wrongly trigger a scale-down.
 
-**29. Where are the AWS credentials?**
+**30. Where are the AWS credentials?**
 Only in your own `~/.aws/credentials`, under a named profile. They're never in the code, the config files, Git or the chat. Root credentials are never used.
 
-**30. How does SCALIX get a demand signal on AWS without a load balancer?**
+**31. How does SCALIX get a demand signal on AWS without a load balancer?**
 It uses **CPU utilization × the number of running instances**, i.e. how many instances' worth of work is being done. That costs nothing. It can't see demand beyond what a fully busy fleet serves, but there the 70% CPU rule scales up anyway. In simulation, SCALIX made exactly the same decisions with this signal as with the true request rate in all 40 synthetic runs.
 
-**31. Then why does the AWS controller still default to Threshold?**
+**32. Then why does the AWS controller still default to Threshold?**
 Only for the first live test, which is capped at 2 instances and changes 1 at a time. At that size both policies can make only the same few moves, and Threshold's single rule is easiest to check by hand. In the simulation with AWS-like timing, SCALIX was the better policy (p95 about 8 s lower per day, for 3% more cost), so switching to it later is one line of config.
 
 ## Engineering
 
-**32. How do you know the code is correct?**
+**33. How do you know the code is correct?**
 * There are automated tests for the policies, simulator, metrics, evaluation, AWS layer and dashboard. See [TESTING.md](TESTING.md).
 * The Python policies match the original Java ones decision for decision on 15,000 test situations.
 * We deliberately planted bugs to check that the tests can actually fail.
 
-**33. Why is the policy a "pure function"?**
+**34. Why is the policy a "pure function"?**
 It only takes measurements in and returns a decision, with no clock, no network and no AWS. That makes it easy to test, and the exact same code runs in the simulator and in the AWS controller.
 
-**34. Why Python and not the original Java?**
+**35. Why Python and not the original Java?**
 The rest of the repository, the dashboard and the tests were already Python, and boto3 is AWS's Python library. The Java engine is kept as a reference, and the parity tests prove the port matches it.
 
-**35. What would you do next?**
-* Run the small AWS experiment, with your approval at each step. That's also the only way to measure real latency.
+**36. What would you do next?**
+* Run the prepared Phase 8 live test (the CloudFormation stack is written; it costs about USD 0.09), with approval at each step. That's also the only way to measure real latency.
 * Test on a second, modern real-traffic trace.
 * Make SCALIX release capacity sooner on noisy traffic.
 

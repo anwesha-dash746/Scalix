@@ -74,7 +74,7 @@ results/                 experiment output (the repository's equivalent of a dat
 | 5 | Streamlit dashboard on the Python engine: overview, workload simulation, policy comparison, AWS monitoring (read-only, on demand), scaling history; every value labelled ([DASHBOARD.md](DASHBOARD.md)) | Done |
 | 6 | Evaluation (fixed suite, 4 experiments × 120 runs, seeds 1–10) and final documentation ([EVALUATION.md](EVALUATION.md), [README](../README.md)) | Done (simulated results only; no AWS deployment) |
 | 7 | Local fixes for the Phase 6 limitations: M/M/c queueing response model, AWS list-price cost with T3 CPU credits, tuning on separate training seeds, the NASA 1995 real-traffic trace, and a CPU-derived demand signal for SCALIX (simulator and AWS controller) ([EVALUATION.md](EVALUATION.md), [SIMULATION.md](SIMULATION.md)) | Done (simulated only; no AWS contact) |
-| 8 | AWS: CloudFormation template and cost review, then (each step separately approved) access check, stack, dry runs, one live action, deletion | Not started; needs your approval at each step |
+| 8 | Comparison with AWS's own target tracking (modelled), dashboard demo and results pages, then AWS: CloudFormation template and cost review ([PHASE8_AWS_PLAN.md](PHASE8_AWS_PLAN.md)); then, each step separately approved, stack, dry runs, one live action, deletion | 8.1 done (template written and lint-checked, nothing created); 8.2–8.5 waiting for your approval |
 
 ## Known issues and open questions
 
