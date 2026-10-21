@@ -1,6 +1,18 @@
 # Phase 8: the live AWS test (plan, cost and approval checkpoints)
 
-> **Status: step 8.1 done (files written, nothing created). Steps 8.2–8.5 have NOT been run.** Each of them needs your explicit approval at the time, and you run them yourself in your AWS Academy Learner Lab. **Strict budget: USD 20 only.** This plan is designed to cost **well under USD 1**.
+> **Status: step 8.1 done (files written, nothing created). Steps 8.2–8.5 have NOT been run.** Each of them needs your explicit approval at the time, and you run them yourself in your AWS Academy lab, the **Cloud Architecting sandbox**. **Strict budget: USD 20 only.** This plan is designed to cost **well under USD 1**.
+
+**The sandbox's rules (from its Readme, 21 October 2026) and how the stack fits them:**
+
+| Sandbox rule | This stack |
+|---|---|
+| CloudFormation, EC2 Auto Scaling, CloudWatch allowed | uses only these, plus EC2 networking |
+| Instance types t2/t3 nano–medium only | t3.micro (the template allows only t3.nano or t3.micro) |
+| At most 9 instances, or the lab account may be suspended | at most 2 (group max 2); check nothing else is running |
+| On-Demand only, Amazon-provided AMIs only | On-Demand, Amazon Linux 2023 |
+| EBS gp2 only, at most 35 GB | one 8 GB gp2 disk per worker |
+| IAM read-only | no IAM resources |
+| Don't change the lab region | us-east-1; confirm it in the console's top-right corner |
 
 ## What the test shows
 
@@ -17,10 +29,10 @@ SCALIX's controller reads a **real** Auto Scaling group's CPU from CloudWatch, d
 
 * **Network:** a small VPC (`10.42.0.0/16`) with one public subnet, an internet gateway and a route table. These are free.
 * **Firewall:** a security group with **no inbound rules**. Nobody can connect to the workers, and there's no SSH key.
-* **Launch template:** Amazon Linux 2023 on a t3.micro with an 8 GB encrypted gp3 disk. It uses free 5-minute monitoring, and T3 Unlimited is set explicitly.
+* **Launch template:** Amazon Linux 2023 on a t3.micro with an 8 GB gp2 disk. It uses free 5-minute monitoring, and T3 Unlimited is set explicitly. The disk is gp2, not gp3, and unencrypted, because the AWS Academy Cloud Architecting sandbox allows only gp2 volumes up to 35 GB and only lists KMS keys; the disk holds nothing but the OS and the CPU burner.
 * **Auto Scaling group `scalix-workers`:** min 1, **max 2**, desired 1. It has no scaling policies, because SCALIX's controller is the only thing that changes it.
 * **Synthetic load:** each worker burns about 85% CPU for **25 minutes after boot**, then goes idle, so CloudWatch has something to show.
-* **Not included:** no IAM roles (Learner Labs can't create them, and the workers don't need any), no load balancer, no NAT gateway, no Elastic IP.
+* **Not included:** no IAM roles (the sandbox can't create them, and the workers don't need any), no load balancer, no NAT gateway, no Elastic IP.
 
 ## Cost estimate (us-east-1 list prices, read 21 October 2026)
 
@@ -28,14 +40,14 @@ SCALIX's controller reads a **real** Auto Scaling group's CPU from CloudWatch, d
 |---|---|---|---|
 | t3.micro instance | USD 0.0104 per hour | about 1 h for worker 1 and 0.5 h for worker 2 | USD 0.016 |
 | Public IPv4 address | USD 0.005 per hour per instance | 1.5 instance-hours | USD 0.008 |
-| 8 GB gp3 disk | USD 0.08 per GB-month | 1.5 instance-hours | USD 0.001 |
+| 8 GB gp2 disk | USD 0.10 per GB-month | 1.5 instance-hours | USD 0.002 |
 | T3 surplus CPU credits | USD 0.05 per vCPU-hour above the 10% baseline | 2 workers × 2 vCPUs × 0.75 surplus × 25 min | USD 0.06 |
 | CloudFormation, VPC, subnet, internet gateway, route table, security group, launch template, Auto Scaling | free | – | USD 0 |
 | CloudWatch reads (`GetMetricStatistics`, about 30 calls) | standard API requests | – | about USD 0 |
 | **Total for the planned test** | | | **about USD 0.09** |
 | *If you forget to delete it for 24 hours* (2 idle workers) | | | about USD 0.80 |
 
-**Worst realistic case:** the stack is left running for a week at 2 workers, which comes to about USD 5.50. That's inside USD 20, but the deletion step exists to prevent it. When a Learner Lab session ends, AWS Academy may stop the instances, but don't rely on that: **delete the stack before you end the lab.**
+**Worst realistic case:** the stack is left running for a week at 2 workers, which comes to about USD 5.50. That's inside USD 20, but the deletion step exists to prevent it. The sandbox Readme doesn't say what happens to resources when a session ends, but don't rely on that: **delete the stack before you end the lab.**
 
 ## Steps
 
