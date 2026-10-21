@@ -89,7 +89,15 @@ The policy is the same code the simulator uses, chosen by `controller.policy`. I
 
 **READ_ONLY can never write.** No writer is ever created, the gates "mode is LIVE" and "live.enabled" fail, and every read client blocks `SetDesiredCapacity`.
 
-**The dashboard cannot enable LIVE.** Dashboard code never imports `scalix.aws`, never references the writer, `--apply`, `apply=True`, the local config file, the allowlist or the kill switch. A test scans for these. A second test renders the dashboard with the controller and writer booby-trapped and checks they're never touched. LIVE can only be turned on by editing your local config file **and** running the command line with `--apply --confirm <group>`.
+**The dashboard cannot enable LIVE, but it can approve one change once LIVE is on** (added 21 October 2026). Turning LIVE on still means editing your local config file (`mode: LIVE`, `live.enabled: true`); the dashboard can't change the config. Once it's on, the AWS monitoring page shows an **Approve a live change** panel, built on `scalix/aws/approval.py`:
+
+1. **Get SCALIX's proposal:** one dry run on live data. Only a change that passed every safety check can be approved.
+2. **Approve:** type the exact group name and tick "I approve this one change".
+3. **Fresh and unchanged:** the proposal must be at most 2 minutes old. At the click, the controller re-reads AWS and applies only if it proposes exactly the same change (an extra live gate, "matches the approved proposal"). Every other gate still applies: allowlist, approved maximum, step, cooldown, duplicate, kill switch, LIVE_AWS data, one call, no retry.
+4. **Kill switch on afterwards:** after the write is attempted (APPLIED or FAILED), `config/LIVE_DISABLED` is created. The dashboard can turn the kill switch on, never off.
+5. **Recorded:** the audit log and the Scaling history page show "approved via: dashboard".
+
+Tests: `tests/test_approval.py` covers each rule. `tests/test_ui.py` scans the dashboard code: no writer, no `apply=True`, no credentials, no removing the kill switch, and `approval.approve` called only from the AWS page. It also checks the panel is absent unless the config file enables LIVE, and that it refuses a wrong group name.
 
 ## 6. Audit log
 

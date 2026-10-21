@@ -138,6 +138,7 @@ class Controller:
         self.on_ec2 = on_ec2
         self.lock_path = Path(lock_path) if lock_path else audit.path.with_suffix(".lock")
         self.group = config.aws.auto_scaling_group or (getattr(monitor, "name", None) if source is DataSource.MOCKED else None)
+        self._approved_via: str | None = None
 
     # ------------------------------------------------------------------ helpers
     def _now_utc(self, epoch: float) -> str:
@@ -156,6 +157,7 @@ class Controller:
             "decision": None if d is None else {"action": d.action.value, "delta": d.delta, "reason": d.reason,
                                                  "cooldown_blocked": d.cooldown_blocked},
             "reason": result.reason,
+            "approved_via": self._approved_via,
             "checks": [c.__dict__ for c in result.checks],
             "live_gates": [c.__dict__ for c in result.live_gates],
         }
@@ -182,7 +184,12 @@ class Controller:
                 pass
 
     # ------------------------------------------------------------------ one decision
-    def tick(self, apply: bool = False, confirm_group: str | None = None) -> ControllerResult:
+    def tick(self, apply: bool = False, confirm_group: str | None = None, *,
+             expected: tuple[int, int] | None = None, approved_via: str | None = None) -> ControllerResult:
+        """One decision. ``expected`` (desired before, proposed), when given, adds a live gate: the change
+        is applied only if it is exactly the one the operator approved (used by the dashboard's
+        approval panel). ``approved_via`` is recorded in the audit log."""
+        self._approved_via = (approved_via or "command line") if apply else None
         epoch = float(self.clock())
         stamp = self._now_utc(epoch)
         cfg, live = self.config, self.config.live
@@ -310,6 +317,10 @@ class Controller:
             Check("writer available", self.writer_factory is not None,
                   "yes" if self.writer_factory is not None else "no writer (READ_ONLY or mock)"),
         )
+        if expected is not None:
+            same = (desired, proposed) == tuple(expected)
+            gates += (Check("matches the approved proposal", same,
+                            f"approved {expected[0]} -> {expected[1]}, now {desired} -> {proposed}"),)
         if not apply:
             return finish(Outcome.DRY_RUN, f"would change desired {desired} -> {proposed}{note}; dry run, "
                           "not applied", checks=tuple(action_checks), live_gates=gates)

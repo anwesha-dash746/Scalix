@@ -32,6 +32,7 @@ def audit_table(entries: list[dict]) -> pd.DataFrame:
             "CPU": f"{e['cpu_value']:.0%}" if isinstance(e.get("cpu_value"), (int, float)) else e.get("cpu_status", ""),
             "policy said": f"{d.get('action', '')} {d.get('delta', '')}".strip(),
             "actual AWS change?": "YES" if e.get("outcome") == "APPLIED" else "no",
+            "approved via": e.get("approved_via") or ("command line" if e.get("outcome") in ("APPLYING", "APPLIED", "FAILED") else ""),
             "reason": e.get("reason", ""),
         })
     return pd.DataFrame(rows)

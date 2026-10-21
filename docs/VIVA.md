@@ -132,7 +132,7 @@ Not yet. The AWS code is implemented and tested with mocks, and SCALIX has **con
 * A real change needs LIVE mode in a local file, `live.enabled`, an exact allowlisted group name, `--apply`, `--confirm <group>`, fresh live data and the kill switch off.
 * Changes are capped at 2 workers, 1 at a time, once every 5 minutes, and are never retried.
 * Every decision is logged before it's applied.
-* The dashboard has no way to make a change.
+* The dashboard can only approve a change when the config file already enables LIVE, and then only one proposal at a time: you type the group name, tick a box, it re-checks AWS, and it turns the kill switch on straight after.
 
 **29. What happens if CloudWatch has no data?**
 The controller holds. Missing, stale or malformed data is never treated as 0% CPU, because that would wrongly trigger a scale-down.

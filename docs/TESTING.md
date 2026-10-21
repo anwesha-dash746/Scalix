@@ -4,8 +4,8 @@
 
 | Environment | Command | Result |
 |---|---|---|
-| Full environment: Python 3.13, `requirements.txt` + `requirements-aws.txt`, Java 17 + engine jar | `.venv/bin/python -m pytest -q` | **637 passed**, 0 failed, 0 skipped (78 s) |
-| Clean environment: fresh venv with `requirements.txt` only (no boto3), all environment variables cleared | `python -m pytest -q` | **597 passed, 2 skipped**, 0 failed. The 2 skips are the two boto3 Stubber modules (40 tests), which skip with the reason "boto3 not installed". |
+| Full environment: Python 3.13, `requirements.txt` + `requirements-aws.txt`, Java 17 + engine jar | `.venv/bin/python -m pytest -q` | **649 passed**, 0 failed, 0 skipped (78 s) |
+| Clean environment: fresh venv with `requirements.txt` only (no boto3), all environment variables cleared | `python -m pytest -q` | **609 passed, 2 skipped**, 0 failed. The 2 skips are the two boto3 Stubber modules (40 tests), which skip with the reason "boto3 not installed". |
 | Original Java engine (Part 1), on your Mac, 20 October 2026 | `./mvnw -B test` | 108 / 108 passed |
 
 **No test contacts AWS.** The only real AWS contact so far was the read-only access check you ran by hand on 21 October 2026, outside the tests. The AWS tests use Boto3's Stubber and a network trap, a hook that fails the test if any request tries to leave the computer.
@@ -24,14 +24,15 @@
 | `tests/test_traces_tuning_signal.py` | 23 | *(Phase 7)* The NASA trace keeps every request of the log (1,891,714) and the per-day totals; one scale constant; tuning picks the cheapest setting meeting the target in every scenario and never uses test seeds; the CPU demand signal equals demand below saturation and under-reports it when saturated |
 | `tests/test_experiment.py` | 14 | Identical traces for every policy, output files, statistics (mean, std, 95% CI), reproducibility, the same-start rule |
 | `tests/test_evaluation.py` | 14 | Suite fixed in advance; test seeds never overlap training seeds; identical traces across experiments; tuned experiments use the committed tuned settings; every report cell computed from the outputs; verdicts; paired differences; hold reasons; the committed report **and the tables in EVALUATION.md** equal what the committed CSVs regenerate |
-| `tests/test_aws_logic.py` | 41 | Metric judging (OK / STALE / MISSING / MALFORMED / ERROR, never 0%), masking, access-check logic, no boto3 needed |
+| `tests/test_aws_logic.py` | 42 | Metric judging (OK / STALE / MISSING / MALFORMED / ERROR, never 0%), CPU times shown in real UTC, masking, access-check logic, no boto3 needed |
 | `tests/test_aws_stubbed.py` | 28 | Read-only guard blocks writes and billed calls *before sending*; exact read requests; denied and expired credentials; explicit profile ignores environment keys |
-| `tests/test_controller.py` | 65 | Data checks, action checks, every live gate, cooldowns, duplicates, unresolved actions, the kill switch, the audit log, the dashboard having no write path, and *(Phase 7)* the CPU-derived demand signal |
-| `tests/test_cloudformation.py` | 4 | *(Phase 8)* The live-test stack, checked offline: max 2 t3 workers, the group name the controller expects, no scaling policies, no IAM, no load balancer, NAT or Elastic IP, no inbound access, free monitoring, a small disk deleted on termination, and the plan's safety steps |
+| `tests/test_controller.py` | 65 | Data checks, action checks, every live gate, cooldowns, duplicates, unresolved actions, the kill switch, the audit log, and *(Phase 7)* the CPU-derived demand signal |
+| `tests/test_cloudformation.py` | 6 | *(Phase 8)* The live-test stack, checked offline: max 2 t3 workers, gp2 disks for the sandbox, the optional per-minute demo load pattern (run against a fake clock) and optional 1-minute monitoring, the group name the controller expects, no scaling policies, no IAM, no load balancer, NAT or Elastic IP, no inbound access, free monitoring, a small disk deleted on termination, and the plan's safety steps |
 | `tests/test_controller_stubbed.py` | 12 | The writer sends exactly one `SetDesiredCapacity` with `HonorCooldown=True`, never retries, re-checks the kill switch, and is blocked from every other write |
-| `tests/test_ui.py` | 25 | Every dashboard page renders and is labelled; AWS reads only on a button press; errors are shown, not crashed on; no credentials shown; no write path; the strict budget notice in every mode; the last saved access check shown without contacting AWS; the mocked AWS tab has the live tab's controls and views; the animated charts carry exactly the simulated data, finish within 30 s and start only when visible |
+| `tests/test_approval.py` | 7 | Approving a live change from the dashboard: only a passed dry run can be approved; typed group name, tick box and a proposal under 2 minutes old are required, or AWS isn't contacted at all; a changed situation isn't applied; every controller gate and the kill switch still apply; one call, no retry; the kill switch turns on afterwards and is never turned off; recorded as approved from the dashboard |
+| `tests/test_ui.py` | 27 | Every dashboard page renders and is labelled; AWS reads only on a button press; errors are shown, not crashed on; no credentials shown; no direct write path (the only route is the approval module, from the AWS page); the approval panel appears only when the config file enables LIVE and refuses a wrong group name; the strict budget notice in every mode; the last saved access check shown without contacting AWS; the mocked AWS tab has the live tab's controls and views; the animated charts carry exactly the simulated data, finish within 30 s and start only when visible |
 | `dashboard/tests/` (Part 1 dashboard) | 116 | The original Java-engine dashboard, including 3 integration tests with the real engine jar |
-| **Total** | **637** | |
+| **Total** | **649** | |
 
 ## 3. Do the tests actually catch bugs? (planted-bug checks)
 

@@ -19,10 +19,12 @@ MOCK_CASES = {
     "broken data": dict(cpu_percents=[float("nan")], desired=1, in_service=1),
 }
 
-common.page_header("AWS monitoring", "A read-only view of one EC2 Auto Scaling group: its size and its average "
+common.page_header("AWS monitoring", "A view of one EC2 Auto Scaling group: its size and its average "
                    "CPU from CloudWatch. AWS is contacted only when you press a button below.")
-st.info("This page **only reads**. The dashboard has no control that changes AWS. Capacity changes are only "
-        "possible from the command line, with explicit confirmation (see docs/CONTROLLER.md).",
+st.info("This page **reads only**, unless `config/scalix.local.yaml` itself sets `mode: LIVE` and "
+        "`live.enabled: true`. Then an approval panel appears for **one** change at a time: you see SCALIX's "
+        "proposal, type the group name, tick the box, and the same controller gates apply as on the command line. "
+        "The kill switch turns on straight after (see docs/CONTROLLER.md).",
         icon=":material/visibility:")
 
 config, _ = common.settings()
@@ -36,6 +38,79 @@ if budget:
 else:
     st.warning("**No AWS budget is set.** Set `aws.budget_usd` in the config before planning anything that costs "
                "money.", icon=":material/savings:")
+
+
+def approval_panel(config) -> None:
+    """Approve one live change (only shown when the config file enables LIVE). Logic: scalix.aws.approval."""
+    import time as _time
+
+    from scalix.aws import approval
+    from scalix.aws import audit as audit_module
+    from scalix.aws.audit import AuditLog
+
+    st.subheader("Approve a live change")
+    st.error("**LIVE mode is on in your config file.** Approving here changes your real Auto Scaling group "
+             "(one `SetDesiredCapacity` call). Strict budget: USD 20.", icon=":material/warning:")
+    from scalix.config import kill_switch_active
+
+    kill = kill_switch_active()
+    if kill:
+        st.info(f"Kill switch is on ({kill}), so nothing can be applied. Remove `config/LIVE_DISABLED` by hand "
+                "only when you have decided to make another change.", icon=":material/lock:")
+    if st.button("Get SCALIX's proposal (dry run, live data)", icon=":material/science:", key="approve_get"):
+        try:
+            from scalix.aws.monitoring import CloudWatchMonitor
+
+            with st.spinner("Reading AWS and running SCALIX (dry run)..."):
+                result, proposal = approval.get_proposal(config, CloudWatchMonitor.from_config(config),
+                                                         AuditLog(audit_module.DEFAULT_AUDIT_PATH))
+            st.session_state["approve_result"] = result
+            st.session_state["approve_proposal"] = proposal
+            st.session_state.pop("approve_outcome", None)
+        except Exception as exc:
+            from scalix.aws.session import describe_error
+
+            st.error(f"Could not get a proposal: {describe_error('proposal', exc)}")
+    result = st.session_state.get("approve_result")
+    proposal = st.session_state.get("approve_proposal")
+    if result is not None:
+        st.code(result.render(), language=None)
+    if result is not None and proposal is None:
+        st.info("Nothing to approve: SCALIX proposes no change, or a safety check refused it.")
+    if proposal is not None:
+        age = proposal.age(_time.time())
+        left = max(0, approval.PROPOSAL_MAX_AGE_SECONDS - age)
+        st.markdown(f"**Proposal:** change `{proposal.group}` from **{proposal.desired_before}** to "
+                    f"**{proposal.desired_proposed}** workers. Valid for {left:.0f} more seconds.")
+        with st.form("approve_form", clear_on_submit=True):
+            typed = st.text_input(f"Type the group name to confirm ({proposal.group})", key="approve_typed")
+            ack = st.checkbox("I approve this one change to my real AWS group (about USD 0.03 for this test)",
+                              key="approve_ack")
+            submitted = st.form_submit_button("Apply this one change", type="primary", icon=":material/bolt:")
+        if submitted:
+            try:
+                from scalix.aws.monitoring import CloudWatchMonitor
+
+                with st.spinner("Re-reading AWS and applying if it still matches..."):
+                    outcome = approval.approve(config, proposal, typed, ack,
+                                               monitor=CloudWatchMonitor.from_config(config),
+                                               audit=AuditLog(audit_module.DEFAULT_AUDIT_PATH))
+            except Exception as exc:
+                from scalix.aws.session import describe_error
+
+                outcome = f"Not applied: {describe_error('apply', exc)}"
+            st.session_state["approve_outcome"] = outcome
+            if not isinstance(outcome, str):
+                st.session_state["approve_proposal"] = None   # a proposal can be used once
+    outcome = st.session_state.get("approve_outcome")
+    if isinstance(outcome, str):
+        st.warning(outcome)
+    elif outcome is not None:
+        (st.success if outcome.outcome.value == "APPLIED" else st.error)(
+            f"{outcome.outcome.value}: {outcome.reason}. The kill switch is now on." if outcome.outcome.value
+            in ("APPLIED", "FAILED") else f"{outcome.outcome.value}: {outcome.reason}")
+        st.code(outcome.render(), language=None)
+        st.caption("Recorded in the audit log as approved from the dashboard; see the Scaling history page.")
 
 
 def last_check_summary() -> None:
@@ -163,7 +238,7 @@ def action_buttons(prefix: str, read_disabled: bool) -> tuple[bool, bool]:
 
 MOCK_PROFILE, MOCK_REGION, MOCK_GROUP = "mock-profile", "us-east-1", "mock-scalix-workers"
 
-tab_live, tab_mock = st.tabs(["Live AWS (read-only)", "Mocked preview"])
+tab_live, tab_mock = st.tabs(["Live AWS", "Mocked preview"])
 
 with tab_live:
     if not config.mode.uses_aws:
@@ -212,6 +287,10 @@ with tab_live:
             last_check_summary()
         if a.auto_scaling_group is None:
             st.caption("Reading the group needs `aws.auto_scaling_group`; no group exists yet for this project.")
+        from scalix.aws.approval import live_approval_enabled
+
+        if live_approval_enabled(config):
+            approval_panel(config)
 
 with tab_mock:
     st.markdown("The same view as the live tab, filled with **scripted data shaped exactly like AWS's answers** and "

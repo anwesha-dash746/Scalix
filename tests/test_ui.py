@@ -53,9 +53,11 @@ def isolated(monkeypatch, tmp_path):
 
     real_tick = controller_module.Controller.tick
 
-    def dry_only_tick(self, apply=False, confirm_group=None):
-        assert apply is False and confirm_group is None, "the dashboard asked for a real change"
-        return real_tick(self)
+    def dry_only_tick(self, apply=False, confirm_group=None, **kw):
+        # A real change may only come through the approval module (expected proposal + dashboard label).
+        if apply:
+            assert kw.get("approved_via") == "dashboard" and kw.get("expected"), "unapproved real change"
+        return real_tick(self, apply, confirm_group, **kw)
 
     monkeypatch.setattr(monitoring_module.CloudWatchMonitor, "from_config", classmethod(no_monitor))
     monkeypatch.setattr(check_access_module, "run_access_check", no_access)
@@ -295,15 +297,57 @@ def test_mocked_dry_run_from_the_dashboard_is_recorded_and_never_applies(tmp_pat
 
 # --------------------------------------------------------------------------- static safety scan
 
-def test_ui_code_has_no_path_to_aws_writes_or_secrets():
+def test_ui_code_has_no_direct_path_to_aws_writes_or_secrets():
+    """The dashboard never builds a writer, calls apply, removes the kill switch or touches credentials.
+    Its only route to a real change is scalix.aws.approval.approve, from the AWS page."""
     forbidden = ("set_desired_capacity", "CapacityWriter", "scalix.aws.writer", "apply=True", "--apply",
-                 "writer_factory", "confirm_group", "LIVE_DISABLED", "get_credentials", "secret_access_key",
-                 "write_text", "boto3")
+                 "writer_factory", "confirm_group", "get_credentials", "secret_access_key",
+                 "write_text", "boto3", "unlink", "os.remove", "rmdir", "live.enabled =", "Mode.LIVE")
     offenders = []
+    approve_calls = []
     for py in (ROOT / "ui").rglob("*.py"):
         text = py.read_text(encoding="utf-8")
         offenders += [f"{py.relative_to(ROOT)}: {w}" for w in forbidden if w in text]
+        if "approval.approve(" in text:
+            approve_calls.append(str(py.relative_to(ROOT)))
     assert offenders == []
+    assert approve_calls == ["ui/pages/aws.py"]
+
+
+def live_config_file(tmp_path):
+    (tmp_path / "scalix.local.yaml").write_text(
+        "mode: LIVE\naws:\n  profile: scalix-academy\n  region: us-east-1\n  auto_scaling_group: scalix-workers\n"
+        "live:\n  enabled: true\n  allowed_groups: [scalix-workers]\n  max_capacity: 2\n", encoding="utf-8")
+
+
+def test_approval_panel_appears_only_when_the_config_file_enables_live(tmp_path):
+    at = app().switch_page("ui/pages/aws.py").run()
+    assert "Approve a live change" not in [h.value for h in at.subheader]
+    live_config_file(tmp_path)
+    at = app().switch_page("ui/pages/aws.py").run()
+    assert "Approve a live change" in [h.value for h in at.subheader]
+    assert any("LIVE mode is on" in e.value for e in at.error)
+
+
+def test_approval_panel_refuses_without_the_typed_group_and_never_writes(tmp_path, monkeypatch, isolated):
+    from scalix.aws.monitoring import MockMonitor
+
+    live_config_file(tmp_path)
+    monkeypatch.setattr(monitoring_module.CloudWatchMonitor, "from_config",
+                        classmethod(lambda cls, cfg: MockMonitor([85.0], desired=1, in_service=1, name="scalix-workers")))
+    at = app().switch_page("ui/pages/aws.py").run()
+    next(b for b in at.button if b.key == "approve_get").click().run()
+    assert any("Proposal:" in m.value and "from **1** to **2**" in m.value for m in at.markdown)
+    at.text_input(key="approve_typed").input("scalix-worker")
+    at.checkbox(key="approve_ack").check()
+    at.button[[b.label for b in at.button].index("Apply this one change")].click().run()
+    assert any("Type the group name exactly" in w.value for w in at.warning)
+    at.text_input(key="approve_typed").input("scalix-workers")
+    at.checkbox(key="approve_ack").check()
+    at.button[[b.label for b in at.button].index("Apply this one change")].click().run()
+    # Scripted (MOCKED) data can never pass the live gates, so even a full approval is refused
+    assert any("REFUSED" in e.value for e in at.error) or any("REFUSED" in c.value for c in at.code)
+    assert not (tmp_path / "LIVE_DISABLED").exists()
 
 
 # --------------------------------------------------------------------------- charts
