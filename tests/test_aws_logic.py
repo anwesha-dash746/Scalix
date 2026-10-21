@@ -195,3 +195,17 @@ class TestMockMonitorAndLabels:
     def test_group_state_counts(self):
         g = MockMonitor([10.0], in_service=2, desired=2, clock=lambda: NOW).group_state()
         assert isinstance(g, GroupState) and g.in_service == 2 and g.pending == 0
+
+
+def test_cpu_reading_time_is_shown_in_utc_even_when_boto3_returns_local_time():
+    """boto3 returns CloudWatch timestamps in the computer's local time zone; the reason must say UTC
+    and mean it (found in the first real AWS run: 11:28 IST was printed as '11:28:00 UTC')."""
+    from datetime import datetime, timedelta, timezone
+
+    from scalix.aws.monitoring import evaluate_cpu_datapoints
+
+    ist = timezone(timedelta(hours=5, minutes=30))
+    now = datetime(2026, 10, 21, 6, 3, 29, tzinfo=timezone.utc)
+    point = {"Timestamp": datetime(2026, 10, 21, 11, 28, 0, tzinfo=ist), "Average": 82.2, "Unit": "Percent"}
+    r = evaluate_cpu_datapoints([point], now, 900)
+    assert "period starting 05:58:00 UTC" in r.reason and "11:28" not in r.reason

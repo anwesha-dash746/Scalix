@@ -26,6 +26,24 @@ Parameters:
     Default: 85
     MinValue: 10
     MaxValue: 95
+  LoadPattern:
+    Description: >-
+      Optional demo pattern: CPU percentages, one per clock minute, repeating (e.g. "40,90,80"). Empty = a
+      constant LoadPercent. Use with DetailedMonitoring=true so CloudWatch reports every minute.
+    Type: String
+    Default: ""
+    AllowedPattern: "^$|^[0-9]{1,2}(,[0-9]{1,2}){0,11}$"
+    ConstraintDescription: up to 12 whole percentages from 0 to 99, separated by commas, no spaces
+  DetailedMonitoring:
+    Description: >-
+      true = 1-minute CloudWatch data (billed, about USD 0.003 per instance-hour) for a fast demo;
+      false = free 5-minute data.
+    Type: String
+    Default: "false"
+    AllowedValues: ["false", "true"]
+
+Conditions:
+  UseDetailedMonitoring: !Equals [!Ref DetailedMonitoring, "true"]
 
 Resources:
   Vpc:
@@ -93,7 +111,8 @@ Resources:
         CreditSpecification:
           CpuCredits: unlimited       # T3 default; surplus credits are charged (see docs/PHASE8_AWS_PLAN.md)
         Monitoring:
-          Enabled: false              # free 5-minute CloudWatch data; 1-minute detailed monitoring is billed
+          # free 5-minute CloudWatch data by default; 1-minute detailed monitoring (billed) only when asked
+          Enabled: !If [UseDetailedMonitoring, true, false]
         MetadataOptions:
           HttpTokens: required
         SecurityGroupIds: [!Ref WorkerSecurityGroup]
@@ -114,16 +133,25 @@ Resources:
             # Synthetic CPU load so CloudWatch shows a busy worker. Stops by itself after LoadMinutes.
             cat > /usr/local/bin/scalix-load.py <<'PY'
             import multiprocessing, sys, time
-            def burn(percent, until):
+            def target(constant, pattern):
+                # A pattern gives one percentage per clock minute (aligned to the minute, like
+                # CloudWatch's 1-minute data points), repeating; otherwise the constant is used.
+                if not pattern:
+                    return constant
+                return pattern[int(time.time() // 60) % len(pattern)]
+            def burn(constant, pattern, until):
                 while time.time() < until:
+                    percent = min(95.0, max(0.0, target(constant, pattern)))
                     start = time.time()
                     while time.time() - start < 0.1 * percent / 100:
                         pass
-                    time.sleep(0.1 * (100 - percent) / 100)
+                    time.sleep(max(0.0, 0.1 - (time.time() - start)))
             if __name__ == "__main__":
-                minutes, percent = float(sys.argv[1]), float(sys.argv[2])
+                minutes, constant = float(sys.argv[1]), float(sys.argv[2])
+                raw = sys.argv[3] if len(sys.argv) > 3 else ""
+                pattern = [float(x) for x in raw.split(",") if x.strip()]
                 until = time.time() + minutes * 60
-                workers = [multiprocessing.Process(target=burn, args=(percent, until))
+                workers = [multiprocessing.Process(target=burn, args=(constant, pattern, until))
                            for _ in range(multiprocessing.cpu_count())]
                 for w in workers:
                     w.start()
@@ -131,7 +159,7 @@ Resources:
                     w.join()
             PY
             if [ "${LoadMinutes}" -gt 0 ]; then
-              nohup python3 /usr/local/bin/scalix-load.py ${LoadMinutes} ${LoadPercent} > /var/log/scalix-load.log 2>&1 &
+              nohup python3 /usr/local/bin/scalix-load.py ${LoadMinutes} ${LoadPercent} "${LoadPattern}" > /var/log/scalix-load.log 2>&1 &
             fi
 
   WorkerGroup:

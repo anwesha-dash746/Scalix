@@ -125,6 +125,37 @@ touch config/LIVE_DISABLED
 3. Check the lab page's remaining credit.
 4. End the lab.
 
+## Fast demo mode (for showing the professor)
+
+The standard test waits 5 minutes for each CloudWatch reading. For a live demo, the stack has two optional parameters:
+
+| Parameter | Demo value | What it does |
+|---|---|---|
+| `LoadPattern` | `40,90,80` | Each worker's CPU follows this list, **one value per clock minute**, repeating: 40% → 90% → 80% → 40% … for `LoadMinutes`. Empty (the default) keeps the constant `LoadPercent`. |
+| `DetailedMonitoring` | `true` | CloudWatch reports CPU **every minute** instead of every 5 minutes. Billed: about USD 0.003 per instance-hour, so a 1-hour demo with 2 workers costs under USD 0.01 extra. |
+
+And in `config/scalix.local.yaml`, read every minute:
+
+```yaml
+aws:
+  metric_period_seconds: 60
+  max_metric_age_seconds: 300
+controller:
+  decision_interval_seconds: 60
+```
+
+**What the professor sees,** with `--watch 6` (one dry-run decision per minute):
+
+| CPU that minute | 1 worker (dry runs) | after the approved live scale-up to 2 |
+|---|---|---|
+| 40% | HOLD: within the 30–70% band | HOLD |
+| 90% | SCALE_UP 1 → 2 proposed (spike) | HOLD: already at max 2 |
+| 80% | SCALE_UP 1 → 2 proposed (above 70%) | HOLD: already at max 2 |
+
+**Be honest about the timing:** CloudWatch publishes each 1-minute point about 1–3 minutes late, so each decision shows the CPU of a minute or two ago, not this second. The outcomes still change every minute. And as in the main test, the load is synthetic and per worker: adding a worker adds load instead of sharing it.
+
+**Demo sequence (about 20 minutes, under USD 0.10):** create the stack with the two demo parameters → wait about 5 minutes after `CREATE_COMPLETE` → `--watch 6` → approve one live action during a 90% minute → kill switch on → show AWS's Activity history and the dashboard's Scaling history → delete the stack.
+
 ## Stop conditions
 
 Stop and tell me if any of these happen; don't work around it:
