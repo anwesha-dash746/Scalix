@@ -68,6 +68,8 @@ def test_launch_template_uses_free_monitoring_and_a_small_deleted_on_termination
     assert data["MetadataOptions"]["HttpTokens"] == "required"
     (disk,) = data["BlockDeviceMappings"]
     assert disk["Ebs"]["VolumeSize"] <= 8 and disk["Ebs"]["DeleteOnTermination"] is True
+    # the AWS Academy sandbox allows only gp2 volumes of at most 35 GB
+    assert disk["Ebs"]["VolumeType"] == "gp2" and disk["Ebs"]["VolumeSize"] <= 35
     assert "KeyName" not in data  # no SSH key: nobody logs in
 
 

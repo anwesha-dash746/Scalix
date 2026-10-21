@@ -99,7 +99,10 @@ Resources:
         SecurityGroupIds: [!Ref WorkerSecurityGroup]
         BlockDeviceMappings:
           - DeviceName: /dev/xvda
-            Ebs: {VolumeSize: 8, VolumeType: gp3, DeleteOnTermination: true, Encrypted: true}
+            # gp2, at most 35 GB: the AWS Academy Cloud Architecting sandbox only allows gp2 volumes up to 35 GB.
+            # Not encrypted: the disk holds only the OS and a CPU burner, and the sandbox's KMS access is
+            # list-only, so an encryption-key problem could stop instances launching.
+            Ebs: {VolumeSize: 8, VolumeType: gp2, DeleteOnTermination: true}
         TagSpecifications:
           - ResourceType: instance
             Tags: [{Key: Name, Value: scalix-worker}, {Key: Project, Value: SCALIX}]
